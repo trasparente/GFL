@@ -110,6 +110,7 @@ var gfl = {
     apiCall.err = function(){
       console.log(this.responseText);
     };
+    apiCall.call();
     // url = "https://api.github.com/repos/" + systemRepositoryName + "/git/refs/heads/master";
     // getAPI( url, systemRef, error, {} );
   },
