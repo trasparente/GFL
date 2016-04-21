@@ -7,7 +7,7 @@
     <title>GFL</title>
     <link rel="stylesheet" href="normalize.css">
   </head>
-  <body>
+  <body hidden>
     <header>
       <h1>GFL</h1>
     </header>
@@ -47,13 +47,13 @@
     repo.owner = url.array[0];
     repo.name = url.slash[1];
     repo.home = "https://" + repo.owner + ".github.io/" + repo.name;
-    repo.master = "https://github.com/" + repo.owner + "/" + repo.name + "/blob";
+    repo.static = "https://rawgit.com/" + repo.owner + "/" + repo.name;
     function loadAssets() {
       var script = document.createElement("script");
-      script.src = repo.master + "/master/core/scripts/init.js";
+      script.src = repo.static + "/master/core/scripts/init.js";
       document.body.appendChild(script);
       var style = document.createElement("link");
-      style.href = repo.master + "/master/core/styles/style.css";
+      style.href = repo.static + "/master/core/styles/style.css";
       style.rel = 'stylesheet';
       document.head.appendChild(style);
     }
