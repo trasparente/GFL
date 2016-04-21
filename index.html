@@ -51,6 +51,7 @@
     function loadAssets() {
       var script = document.createElement("script");
       script.src = repo.static + "/master/core/scripts/init.js";
+      script.type = 'text/javascript';
       document.body.appendChild(script);
       var style = document.createElement("link");
       style.href = repo.static + "/master/core/styles/style.css";
