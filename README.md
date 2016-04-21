@@ -5,4 +5,4 @@ GIT Football League
 ## Usage
 
 * Fork
-* Edit [`README.md` on gh-pages branch](GFL/edit/gh-pages/README.md)
+* Edit <a href="GFL/edit/gh-pages/README.md">`README.md` on gh-pages branch</a>
