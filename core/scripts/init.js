@@ -34,15 +34,17 @@ var gfl = {
       // PLAYER
       if( repo.content.owner.type == "User" ){
         if( repo.content.permissions.admin === true ){
-          gfl.playerConnected();
+          // Player connected
+          monitor( "game started", repo.content.parent.created_at );
+          monitor( "players", repo.content.parent.forks );
+          monitor( "joined game", repo.content.created_at );
+          gfl.checkParentSHA();
         }else{
           // Player in wrong page
           gfl.guestConnected();
           // monitor("You don&apos;t own this repository", "<a href='" + repo.content.parent.html_url + "'>fork</a> your own copy");
         }
       }
-
-      return "check ownership";
     };
     apiCall.err = function(){
       console.log(this.responseText);
@@ -76,35 +78,37 @@ var gfl = {
     return "waiting login";
   },
   gmConnected: function(){
-    apiCall.url += "/pulls";
+    apiCall.url = "https://api.github.com/repos/" + repo.owner + "/" + repo.name + "/git/refs/heads/master";
     apiCall.cb = function(){
-      repo.pulls = JSON.parse( this.responseText );
-      if( repo.pulls.length !== 0 ){
-        monitor( "pending pulls", "<a href='" + repo.content.html_url + "/pulls'>" + repo.pull.length + ' pulls</a>' );
-      }else{
-        monitor( "pending pulls", "no pulls" );
-      }
-      // url = "https://api.github.com/repos/" + username + "/" + reponame + "/contents/schema/settings.json";
-      // getAPI( url, gmSettings, gmNosettings, '{"ref":"master"}' );
+      repo.ref = JSON.parse( this.responseText );
+      monitor( 'version', repo.ref.object.sha );
+      gfl.checkFile('leagues.owner.js');
     };
-    apiCall.err = function(){
-      console.log(this.responseText);
+    apiCall.call();
+  },
+  checkFile: function(file){
+    // load leagues.owner.js
+    apiCall.url = "https://api.github.com/repos/" + repo.owner + "/" + repo.name + "/contents/core/scripts/" + file;
+    apiCall.data = '{"ref":"master"}';
+    apiCall.cb = function(){
+      var script = JSON.parse( this.responseText );
+      console.log(script);
+      // var script = document.createElement("script");
+      // script.type = 'text/javascript';
+      // script.innerHTML = "console.log('eddai');";
+      // document.body.appendChild(script);
     };
     apiCall.call();
   },
   guestConnected: function(){
     console.log("guest connected");
   },
-  playerConnected: function(){
-    monitor( "game started", repo.content.parent.created_at );
-    monitor( "players", repo.content.parent.forks );
-    monitor( "joined game", repo.content.created_at );
-    // Player connected
+  checkParentSHA: function(){
     apiCall.url = "https://api.github.com/repos/" + repo.content.parent.full_name + "/git/refs/heads/master";
     apiCall.cb = function(){
       parent.ref = JSON.parse( this.responseText );
       monitor( 'forked from', '<a href="http://' + repo.content.parent.owner.login + '.github.io/' + repo.content.parent.name + '">' + repo.content.parent.owner.login + '/' + repo.content.parent.name + '</a>' );
-      monitor( 'parent version', parent.ref.object.sha );
+      monitor( 'parent <em>master</em> version', parent.ref.object.sha );
       gfl.checkSHA();
     };
     apiCall.err = function(){
@@ -122,13 +126,12 @@ var gfl = {
         monitor( 'version', repo.ref.object.sha );
         // checkSettings();
       }else{
-        monitor( 'version', 'need update from ' + repo.ref.object.sha );
+        monitor( '<em>master</em> version', 'need update from ' + repo.ref.object.sha );
         gfl.update();
         // update();
       }
     };
     apiCall.call();
-    // getAPI( url, playerRef, error, {} );
   },
   update: function(){
     apiCall.url = "https://api.github.com/repos/" + repo.owner + "/" + repo.name + "/git/refs/heads/master";
