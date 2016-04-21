@@ -1,4 +1,4 @@
 html { overflow-y: scroll; }
 [hidden] { display: none; }
-body{ font-size: 1.2em; padding: 0em 1em; }
+body{ font-size: 1.2em; padding: 0em 1em; display: block; }
 main { padding: 1em; }
