@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "id": "https://raw.githubusercontent.com/fork-n-play/GFL/master/core/json/core-schema.json",
+  "type": "object",
+  "title": "Core",
+  "description": "Core values for GFL",
+  "properties": {
+    "rolls": {
+      "type": "array",
+      "title": "Rolls",
+      "description": "Base dice rolls",
+      "format": "tabs",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "roll.json"
+      }
+    },
+    "gauges": {
+      "type": "array",
+      "title": "Gauges",
+      "description": "Graduated value associated with a name",
+      "format": "tabs",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "gauge.json"
+      },
+      "options": {
+        "disable_array_reorder": true
+      }
+    }
+  },
+  "required": [
+    "rolls",
+    "gauges"
+  ]
+}
