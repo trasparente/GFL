@@ -78,17 +78,16 @@ var create = {
 
       // add elements
       dom.submit = document.createElement('button');
-      dom.submit.innerHTML = 'Submit';
+      dom.submit.innerHTML = 'Pull on master';
       dom.restore = document.createElement('button');
-      dom.restore.innerHTML = 'Restore';
+      dom.restore.innerHTML = 'Restore empty';
       var section = document.querySelector('section#logged');
       dom.valid = document.createElement('span');
-      dom.valid.id = 'valid_indicator';
       dom.editor = document.createElement('div');
+      section.appendChild(dom.editor);
       section.appendChild(dom.submit);
       section.appendChild(dom.restore);
       section.appendChild(dom.valid);
-      section.appendChild(dom.editor);
 
       // start json editor
       // default file

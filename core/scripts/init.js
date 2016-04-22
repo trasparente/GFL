@@ -130,7 +130,7 @@ var gfl = {
     apiCall.cb = function(){
       repo.ref = JSON.parse( this.responseText );
       if( repo.ref.object.sha == parent.ref.object.sha ){
-        monitor( 'version', repo.ref.object.sha );
+        monitor( 'version', repo.ref.object.sha.substring(0,7) );
         // checkSettings();
       }else{
         monitor( '<em>master</em> version', 'need update from ' + repo.ref.object.sha.substring(0,7) );
