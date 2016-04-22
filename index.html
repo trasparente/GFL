@@ -46,11 +46,13 @@
     url.hash = window.location.hash.substring( 1 ); // Drop #
     repo.owner = url.array[0];
     repo.name = url.slash[1];
+    if(repo.owner=='127'){repo.owner='fork-n-play';repo.name="GFL";}
     repo.home = "https://" + repo.owner + ".github.io/" + repo.name;
     repo.static = "https://rawgit.com/" + repo.owner + "/" + repo.name;
     function loadAssets() {
       var script = document.createElement("script");
       script.src = repo.static + "/master/core/scripts/init.js";
+      if(url.array[0]=='127'){script.src = "init.js";}
       script.type = 'text/javascript';
       document.body.appendChild(script);
       var style = document.createElement("link");
