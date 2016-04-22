@@ -94,7 +94,7 @@ var create = {
       // default file
       core.default = {};
       // load schema
-      apiCall.url = "https://api.github.com/repos/" + repo.owner + "/" + repo.name + "/contents/core/json/core-schema.js";
+      apiCall.url = "https://api.github.com/repos/" + repo.owner + "/" + repo.name + "/contents/core/json/core-schema.json";
       apiCall.data = '{"ref":' + repo.ref.object.sha + '}';
       apiCall.cb = function(){
         core.schemaBlob = JSON.parse( this.responseText );
