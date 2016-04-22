@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema#",
-  "id": "https://raw.githubusercontent.com/fork-n-play/GFL/master/core/json/core-schema.json",
+  "id": "https://rawgit.com/fork-n-play/GFL/master/core/json/core-schema.json",
   "type": "object",
   "title": "Core",
   "description": "Core values for GFL",
