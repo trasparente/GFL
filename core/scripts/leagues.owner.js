@@ -98,7 +98,7 @@ var create = {
       apiCall.data = '{"ref":' + repo.ref.object.sha + '}';
       apiCall.cb = function(){
         core.schemaBlob = JSON.parse( this.responseText );
-        core.schema = atob(core.schemaBlob.content);
+        core.schema = JSON.parse(atob(core.schemaBlob.content));
         // Initialize the editor
         var editor = new JSONEditor(dom.editor,{
           ajax: true,
