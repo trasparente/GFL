@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GFL - Login</title>
+    <link rel="stylesheet" href="../normalize.css">
+  </head>
+  <body hidden>
+    <header>
+      <h1>GFL</h1>
+    </header>
+    <main>
+      <section id="login">
+        <header>
+          <h2>Login</h2>
+        </header>
+        <ul>
+          <li>Paste your <strong>personal token</strong> below.</li>
+          <li>Generate a new token <a href="https://github.com/settings/tokens/new">here</a> (you&apos;ll need only the <em>public_repo</em> scope selected).</li>
+          <li>You can revoke personal tokens at any time on the same page.</li>
+        </ul>
+        <form>
+          <input type="text" name="token" id="token" value="" size="50">
+          <input type="button" name="submitLogin" id="submitLogin" value="GO">
+        </form>
+      </section>
+    </main>
+    <footer><small></small></footer>
+    <script src="../loader.js"></script>
+  </body>
+</html>

@@ -12,59 +12,17 @@
       <h1>GFL</h1>
     </header>
     <main>
-      <section id="login" hidden>
-        <header>
-          <h2>Login</h2>
-        </header>
-        <ul>
-          <li>Paste your <strong>personal token</strong> below.</li>
-          <li>Generate a new token <a href="https://github.com/settings/tokens/new">here</a> (you&apos;ll need only the <em>public_repo</em> scope selected).</li>
-          <li>You can revoke personal tokens at any time on the same page.</li>
-        </ul>
-        <form>
-          <input type="text" name="token" id="token" value="" size="50">
-          <input type="button" name="submitLogin" id="submitLogin" value="GO">
-        </form>
-      </section>
-      <section id="logged" hidden>
+      <section>
         <header>
           <h2>Home</h2>
-          <ul id="monitor"></ul>
+          <details>
+            <summary>Monitor</summary>
+            <ul id="monitor"></ul>
+          </details>
         </header>
-        <div id="settings" style="display: none;">
-          <div id='editor_holder'></div>
-          <button id='submit'>Submit</button>
-        </div>
       </section>
     </main>
     <footer><small></small></footer>
-    <script type="text/javascript">
-    var url = {},
-        repo = {};
-    url.array = window.location.host.split( '.' ); // pathArray[0]
-    url.slash = window.location.pathname.split( '/' ); // pathSlash[1]
-    url.hash = window.location.hash.substring( 1 ); // Drop #
-    repo.owner = url.array[0];
-    repo.name = url.slash[1];
-    if(repo.owner=='127'){repo.owner='fork-n-play';repo.name="GFL";}
-    repo.home = "https://" + repo.owner + ".github.io/" + repo.name;
-    repo.static = "https://rawgit.com/" + repo.owner + "/" + repo.name;
-    function loadAssets() {
-      var script = document.createElement("script");
-      script.src = repo.static + "/master/core/scripts/init.js";
-      if(url.array[0]=='127'){script.src = "init.js";}
-      script.type = 'text/javascript';
-      document.body.appendChild(script);
-      var style = document.createElement("link");
-      style.href = repo.static + "/master/core/styles/style.css";
-      style.rel = 'stylesheet';
-      document.head.appendChild(style);
-    }
-    if (window.addEventListener)
-      window.addEventListener("load", loadAssets, false);
-    else if (window.attachEvent)
-      window.attachEvent("onload", loadAssets);
-    else window.onload = loadAssets;
-    </script>
+    <script src="loader.js"></script>
   </body>
 </html>
