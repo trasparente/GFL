@@ -81,7 +81,7 @@ var create = {
       dom.submit.innerHTML = 'Pull on master';
       dom.restore = document.createElement('button');
       dom.restore.innerHTML = 'Restore empty';
-      var section = document.querySelector('section#logged');
+      var section = document.querySelector('section');
       dom.valid = document.createElement('span');
       dom.editor = document.createElement('div');
       section.appendChild(dom.editor);
@@ -143,3 +143,10 @@ var create = {
 };
 
 var start = league.start();
+
+
+function appendi( what, after, text){
+  var ele = document.createElement(what);
+  ele.innerHTML = text;
+  document.querySelector(after).appendChild(ele);
+}
