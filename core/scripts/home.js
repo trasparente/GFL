@@ -6,7 +6,7 @@ var home = {
   start: function(){
     if (user.type == 'guest') home.checkLeagues();
     if (user.type == 'owner' && repo.type == 'org') home.checkPulls();
-    if (user.type == 'owner' && repo.type == 'usr') home.chekParentSHA();
+    if (user.type == 'owner' && repo.type == 'usr') home.checkParentSHA();
   },
   checkParentSHA: function(){
     apiCall.url = "https://api.github.com/repos/" + repo.content.parent.full_name + "/git/refs/heads/master";
@@ -73,7 +73,7 @@ var home = {
         monitor( "pending pulls", "<a href='" + repo.content.html_url + "/pulls'>" + repo.pull.length + ' pulls</a>' );
       }else{
         monitor( "pending pulls", "no pulls" );
-        league.checkSHA();
+        home.checkSHA();
       }
     };
     apiCall.err = function(){
