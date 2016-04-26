@@ -45,7 +45,7 @@ var fnp = {
         repo.type = 'org';
         monitor( "game started", repo.content.created_at );
         monitor( "players", repo.content.forks );
-        if(repo.content.permissions.admin === true){
+        if(repo.content.permissions && repo.content.permissions.admin === true){
           user.type = 'owner';
         }else{
           user.type = 'guest';
