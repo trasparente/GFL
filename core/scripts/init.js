@@ -7,8 +7,14 @@ var user = {},
 
 var fnp = {
   start: function(){
+    dom.summary = document.createElement('summary');
+    dom.summary.innerHTML = 'Monitor';
     dom.monitor = document.createElement('ul');
-    document.querySelector('main > section > head').appendChild(dom.monitor);
+    dom.details = document.createElement('details');
+    dom.details.setAttribute('open','');
+    dom.details.appendChild(dom.summary);
+    dom.details.appendChild(dom.monitor);
+    document.querySelector('main > section > head').appendChild(dom.details);
     if(localStorage.getItem( 'fnp.user.token')) user.token = atob( localStorage.getItem( 'fnp.user.token' ) );
     if(!url.page) url.script='home'; else url.script=url.page;
     apiCall.accept = 'application/vnd.github.v3.full+json';
@@ -54,7 +60,7 @@ var fnp = {
           }
           monitor( "joined game", repo.content.created_at );
         }else{
-          monitor( "error","user repo is not a fork");
+          monitor( "error", "user repo is not a fork");
         }
       }
       fnp.loadScript();
@@ -108,7 +114,6 @@ function monitor( name, data ){
   listItem.innerHTML = name + ": " + data;
   dom.monitor.appendChild( listItem );
 }
-
 
 // START
 var start = fnp.start();
