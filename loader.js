@@ -19,6 +19,12 @@ function loadAssets() {
   // if(url.array[0]=='127'){script.src = "init.js";} // DEBUG
   script.type = 'text/javascript';
   document.body.appendChild(script);
+  if(url.page && url.page == 'setup'){
+    var jsoneditor = document.createElement("script");
+    script.src = repo.static + "master/core/scripts/jsoneditor.js";
+    script.type = 'text/javascript';
+    document.body.appendChild(jsoneditor);
+  }
   var style = document.createElement("link");
   style.href = repo.static + "master/core/styles/style.css";
   style.rel = 'stylesheet';
