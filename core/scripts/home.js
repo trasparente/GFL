@@ -7,76 +7,90 @@ var home = {
   start: function(){
     if (user.type == 'guest') home.checkCore();
     if (user.type == 'owner' && repo.type == 'org') home.checkPulls();
-    if (user.type == 'owner' && repo.type == 'usr') home.checkParentSHA();
+    if (user.type == 'owner' && repo.type == 'usr') home.checkDataParent();
   },
-  checkParentSHA: function(){
-    apiCall.url = "https://api.github.com/repos/" + repo.content.parent.full_name + "/git/refs/heads/master";
-    apiCall.cb = function(){
-      parent.ref = JSON.parse( this.responseText );
-      parent.sha = parent.ref.object.sha;
-      monitor( 'forked from', '<a href="http://' + repo.content.parent.owner.login + '.github.io/' + repo.content.parent.name + '">' + repo.content.parent.owner.login + '/' + repo.content.parent.name + '</a>' );
-      monitor( 'parent <em>master</em> SHA', parent.sha.substring(0,7) );
-      home.checkSHA();
-    };
-    apiCall.err = function(){
-      monitor('error','cannot read parent SHA');
-    };
-    apiCall.call();
+  checkDataParent: function(){
+    if(repo.content.fork){
+      apiCall.url = "https://api.github.com/repos/" + repo.content.parent.full_name + "/git/refs/heads/data";
+      apiCall.cb = function(){
+        parent.data.ref = JSON.parse( this.responseText );
+        parent.data.sha = parent.data.ref.object.sha;
+        monitor( 'forked from', '<a href="http://' + repo.content.parent.owner.login + '.github.io/' + repo.content.parent.name + '">' + repo.content.parent.full_name + '</a>' );
+        monitor( 'parent <em>data</em> SHA', parent.data.sha.substring(0,7) );
+        home.checkData();
+      };
+      apiCall.err = function(){
+        monitor('error','cannot read parent data SHA');
+      };
+      apiCall.call();
+    }else{
+      home.checkData();
+    }
   },
-  checkSHA: function(){
-    apiCall.url = repo.API + "/git/refs/heads/master";
+  checkData: function(){
+    apiCall.url = repo.API + "/git/refs/heads/data";
     apiCall.cb = function(){
-      repo.ref = JSON.parse( this.responseText );
-      repo.sha = repo.ref.object.sha;
-      if( repo.sha == parent.sha || repo.type == 'org' ){
-        monitor( 'SHA', repo.sha.substring(0,7) );
-        home.checkCore();
+      repo.data.ref = JSON.parse( this.responseText );
+      repo.data.sha = repo.data.ref.object.sha;
+      if( repo.data.sha == parent.data.sha || !repo.content.fork ){
+        monitor( '<em>data</em> SHA', repo.data.sha.substring(0,7) );
+        home.checkMasterParent();
       }else{
-        monitor( 'SHA', 'need update from ' + repo.sha.substring(0,7) );
-        home.update();
+        monitor( '<em>data</em> SHA', 'need update from ' + parent.data.sha.substring(0,7) );
+        home.update('data', parent.data.sha);
       }
     };
     apiCall.err = function(){
-      monitor('error', 'cannot read SHA');
+      monitor('error', 'cannot read data SHA');
     };
     apiCall.call();
   },
-  update: function(){
-    apiCall.url = repo.API + "/git/refs/heads/master";
+  update: function(branch, sha){
+    apiCall.url = repo.API + "/git/refs/heads/" + branch;
     apiCall.accept = 'application/vnd.github.v3.patch';
     apiCall.method = 'PATCH';
-    apiCall.data = '{"sha":"' + parent.sha + '"}';
+    apiCall.data = '{"sha":"' + sha + '"}';
     apiCall.cb = function(){
       apiCall.accept = 'application/vnd.github.v3.full+json';
       apiCall.method = 'GET';
-      monitor('updated', '<a href="' + repo.home + '">proceed</a>');
+      monitor(branch + 'updated', '<a href="' + repo.home + '">proceed</a>');
     };
     apiCall.err = function(){
-      monitor('error','cannot update master head');
+      monitor('error','cannot update ' + branch);
     };
     apiCall.call();
   },
   checkCore: function(){
-    apiCall.url = repo.API + "/contents/core/json/core.json";
-    if(repo.sha) apiCall.data = '{"ref":' + repo.sha + '}';
+    apiCall.url = repo.API + "/contents/setup.json";
+    if(repo.data.sha){
+      apiCall.data = '{"ref":' + repo.data.sha + '}';
+    }else{
+      apiCall.data = '{"ref": "data"}';
+    }
     apiCall.cb = function(){
       core.content = JSON.parse( this.responseText );
       apiCall.data = '';
-      console.log('core', core.content);
+      core.obj = JSON.parse( atob(core.content.content) );
+      console.log('setup', core.obj);
       home.checkLeagues();
     };
     apiCall.err = function(){
-      if(repo.type == 'org' && user.type == 'owner') monitor('warning','no core, <a href="' + repo.home + '/setup/">create</a>'); else monitor('warning','no core');
+      if(repo.type == 'org' && user.type == 'owner') monitor('warning','no setup, <a href="' + repo.home + '/setup/">create</a>'); else monitor('warning','no setup');
     };
     apiCall.call();
   },
   checkLeagues: function(){
     apiCall.url = repo.API + "/contents/leagues/leagues.json";
-    if(repo.sha) apiCall.data = '{"ref":' + repo.sha + '}';
+    if(repo.data.sha){
+      apiCall.data = '{"ref":' + repo.data.sha + '}';
+    }else{
+      apiCall.data = '{"ref": "data"}';
+    }
     apiCall.cb = function(){
       leagues.content = JSON.parse( this.responseText );
       apiCall.data = '';
-      console.log('defaul content is "automatic" league', leagues.content);
+      leagues.obj = JSON.parse( atob(leagues.content.content) );
+      console.log('defaul content is "automatic" league', leagues.obj);
     };
     apiCall.err = function(){
       monitor('error','no leagues');
@@ -91,7 +105,7 @@ var home = {
         monitor( "pending pulls", "<a href='" + repo.content.html_url + "/pulls'>" + repo.pull.length + ' pulls</a>' );
       }else{
         monitor( "pending pulls", "no pulls" );
-        home.checkSHA();
+        home.checkDataSHA();
       }
     };
     apiCall.err = function(){
@@ -99,6 +113,55 @@ var home = {
     };
     apiCall.call();
   },
+  checkMasterParent: function(){
+    if(repo.content.fork){
+      apiCall.url = "https://api.github.com/repos/" + repo.content.parent.full_name + "/git/refs/heads/master";
+      apiCall.cb = function(){
+        parent.ref = JSON.parse( this.responseText );
+        parent.sha = parent.ref.object.sha;
+        monitor( 'forked from', '<a href="http://' + repo.content.parent.owner.login + '.github.io/' + repo.content.parent.name + '">' + repo.content.parent.full_name + '</a>' );
+        monitor( 'parent <em>master</em> SHA', parent.sha.substring(0,7) );
+        home.checkMaster();
+      };
+      apiCall.err = function(){
+        monitor('error','cannot read parent SHA');
+      };
+      apiCall.call();
+    }else{
+      home.checkMaster();
+    }
+  },
+  checkMaster: function(){
+    apiCall.url = repo.API + "/git/refs/heads/master";
+    apiCall.cb = function(){
+      repo.ref = JSON.parse( this.responseText );
+      repo.sha = repo.ref.object.sha;
+      if( repo.sha == parent.sha || !repo.content.fork ){
+        monitor( '<em>master</em> SHA', repo.sha.substring(0,7) );
+        home.checkCore();
+      }else{
+        monitor( '<em>master</em> SHA', 'need update from ' + parent.sha.substring(0,7) );
+        home.update('master', parent.sha);
+      }
+    };
+    apiCall.err = function(){
+      monitor('error', 'cannot read SHA');
+    };
+    apiCall.call();
+  },
+  checkDataSHA: function(){
+    apiCall.url = repo.API + "/git/refs/heads/data";
+    apiCall.cb = function(){
+      repo.data.ref = JSON.parse( this.responseText );
+      repo.data.sha = repo.data.ref.object.sha;
+      monitor( '<em>data</em> SHA', repo.data.sha.substring(0,7) );
+      home.checkMasterParent();
+    };
+    apiCall.err = function(){
+      monitor('error', 'cannot read data SHA');
+    };
+    apiCall.call();
+  }
 };
 
 var start = home.start();
