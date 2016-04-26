@@ -21,8 +21,8 @@ function loadAssets() {
   document.body.appendChild(script);
   if(url.page && url.page == 'setup'){
     var jsoneditor = document.createElement("script");
-    script.src = repo.static + "master/core/scripts/jsoneditor.js";
-    script.type = 'text/javascript';
+    jsoneditor.src = repo.static + "master/core/scripts/jsoneditor.js";
+    jsoneditor.type = 'text/javascript';
     document.body.appendChild(jsoneditor);
   }
   var style = document.createElement("link");
