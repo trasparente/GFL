@@ -41,14 +41,7 @@ var owner = {
 
 var edit = {
   Core: function(){
-    // load json-editor
-    var script = document.createElement("script");
-    var file = 'jsoneditor.js';
-    if(repo.sha) script.src = repo.static + repo.sha + '/core/scripts/' + file; else script.src = repo.static + 'master/core/scripts/' + file;
-    script.type = 'text/javascript';
-    document.body.appendChild(script);
-
-    // add elements
+    // add DOM elements
     dom.submit = document.createElement('button');
     dom.submit.innerHTML = 'Pull request';
     dom.reset = document.createElement('button');
@@ -61,7 +54,6 @@ var edit = {
     section.appendChild(dom.reset);
     section.appendChild(dom.valid);
 
-    // start json editor
     // load schema
     apiCall.url = repo.API + "/contents/core/json/core-schema.json";
     if(repo.sha) apiCall.data = '{"ref":' + repo.sha + '}';
