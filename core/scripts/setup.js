@@ -1,4 +1,4 @@
-// owner.js
+// setup.js
 
 var leagues = {},
   core = {};
@@ -83,7 +83,13 @@ var edit = {
           apiCall.method = 'PUT';
           apiCall.data = '{"message": "core created", "content": "' + core.encoded + '", "branch": "master", "sha": "' + core.sha + '"}';
         }
-        console.log(editor.getValue());
+        apiCall.cb = function(){
+          console.log('ok', JSON.parse( this.responseText ));
+        };
+        apiCall.err = function(){
+          console.log('err', JSON.parse( this.responseText ));
+        };
+        apiCall.call();
       });
       dom.reset.addEventListener('click',function() {
         editor.setValue(core.default);
