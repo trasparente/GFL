@@ -9,14 +9,14 @@ repo.owner = url.array[0];
 repo.name = url.slash[1];
 if(url.slash[2]) url.page = url.slash[2];
 if(url.slash[3]) url.pageowner = url.slash[3];
-if(repo.owner=='127'){repo.owner='petrosh';repo.name="GFL";} // DEBUG
+if(repo.owner=='127'){repo.owner='fork-n-play';repo.name="GFL";} // DEBUG
 repo.home = "http://" + repo.owner + ".github.io/" + repo.name;
 repo.API = "https://api.github.com/repos/" + repo.owner + "/" + repo.name;
-repo.static = "https://rawgit.com/" + repo.owner + "/" + repo.name + "/";
+repo.static = "https://cdn.rawgit.com/" + repo.owner + "/" + repo.name + "/";
 function loadAssets() {
   var script = document.createElement("script");
   script.src = repo.static + "master/core/scripts/init.js";
-  if(url.array[0]=='127'){script.src = "init.js";} // DEBUG
+  // if(url.array[0]=='127'){script.src = "init.js";} // DEBUG
   script.type = 'text/javascript';
   document.body.appendChild(script);
   var style = document.createElement("link");
