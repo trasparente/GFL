@@ -2,7 +2,7 @@
 
 var user = {},
   apiCall = {},
-  parent = {},
+  parent = { data: {} },
   dom = {};
 
 var fnp = {
