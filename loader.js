@@ -1,7 +1,8 @@
 // loader.js
 
 var url = {},
-  repo = {};
+  repo = { data: {} };
+  
 url.array = window.location.host.split( '.' );
 url.slash = window.location.pathname.split( '/' );
 url.hash = window.location.hash.substring( 1 );
