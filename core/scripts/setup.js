@@ -33,6 +33,7 @@ var owner = {
     apiCall.err = function(){
       monitor('warning','no core');
       core.default = {};
+      core.content = 'absent';
       edit.Core();
     };
     apiCall.call();
@@ -74,7 +75,7 @@ var edit = {
       });
       dom.submit.addEventListener('click',function() {
         core.encoded = btoa(editor.getValue());
-        if(core.default == {}){
+        if(core.content == 'absent'){
           apiCall.url = repo.API + '/contents/core/json/core.json';
           apiCall.method = 'PUT';
           apiCall.data = '{"message": "core created", "content": "' + core.encoded + '", "branch": "master"}';
