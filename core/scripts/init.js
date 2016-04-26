@@ -14,7 +14,7 @@ var fnp = {
     dom.details.setAttribute('open','');
     dom.details.appendChild(dom.summary);
     dom.details.appendChild(dom.monitor);
-    document.querySelector('main > section > head').appendChild(dom.details);
+    document.querySelector('main > section > header').appendChild(dom.details);
     if(localStorage.getItem( 'fnp.user.token')) user.token = atob( localStorage.getItem( 'fnp.user.token' ) );
     if(!url.page) url.script='home'; else url.script=url.page;
     apiCall.accept = 'application/vnd.github.v3.full+json';
