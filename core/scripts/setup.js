@@ -26,6 +26,7 @@ var owner = {
     apiCall.cb = function(){
       core.content = JSON.parse( this.responseText );
       core.default = core.content;
+      core.sha = core.content.content.sha;
       apiCall.data = '';
       edit.Core();
     };
@@ -80,6 +81,16 @@ var edit = {
         disable_array_reorder: false
       });
       dom.submit.addEventListener('click',function() {
+        core.encoded = btoa(editor.getValue());
+        if(core.default == {}){
+          apiCall.url = repo.API + '/contents/core/json/core.json';
+          apiCall.method = 'PUT';
+          apiCall.data = '{"message": "core created", "content": "' + core.encoded + '", "branch": "master"}';
+        }else{
+          apiCall.url = repo.API + '/contents/core/json/core.json';
+          apiCall.method = 'PUT';
+          apiCall.data = '{"message": "core created", "content": "' + core.encoded + '", "branch": "master", "sha": "' + core.sha + '"}';
+        }
         console.log(editor.getValue());
       });
       dom.reset.addEventListener('click',function() {
