@@ -1,7 +1,0 @@
-html { overflow-y: scroll; }
-body[hidden] { font-size: 1.2em; padding: 0em 1em; display: block; }
-main { padding: 1em; }
-summary { cursor: pointer; }
-summary:focus { outline: none; }
-h1 a { color: inherit; text-decoration: none; }
-h1 a:hover { text-decoration: underline; }
