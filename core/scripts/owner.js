@@ -12,6 +12,7 @@ var owner = {
     apiCall.cb = function(){
       repo.ref = JSON.parse( this.responseText );
       repo.sha = repo.ref.object.sha;
+      monitor( 'SHA', repo.sha.substring(0,7) );
       owner.checkCore();
     };
     apiCall.err = function(){
