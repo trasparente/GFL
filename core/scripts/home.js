@@ -1,10 +1,11 @@
 // home.js
 
-var leagues = {};
+var leagues = {},
+  core = {};
 
 var home = {
   start: function(){
-    if (user.type == 'guest') home.checkLeagues();
+    if (user.type == 'guest') home.checkCore();
     if (user.type == 'owner' && repo.type == 'org') home.checkPulls();
     if (user.type == 'owner' && repo.type == 'usr') home.checkParentSHA();
   },
@@ -29,11 +30,14 @@ var home = {
       repo.sha = repo.ref.object.sha;
       if( repo.sha == parent.sha || repo.type == 'org' ){
         monitor( 'SHA', repo.sha.substring(0,7) );
-        home.checkLeagues();
+        home.checkCore();
       }else{
         monitor( 'SHA', 'need update from ' + repo.sha.substring(0,7) );
         home.update();
       }
+    };
+    apiCall.err = function(){
+      monitor('error', 'cannot read SHA');
     };
     apiCall.call();
   },
@@ -49,6 +53,21 @@ var home = {
     };
     apiCall.err = function(){
       monitor('error','cannot update master head');
+    };
+    apiCall.call();
+  },
+  checkCore: function(){
+    apiCall.url = repo.API + "/contents/core/json/core.json";
+    if(repo.sha) apiCall.data = '{"ref":' + repo.sha + '}';
+    apiCall.cb = function(){
+      core.content = JSON.parse( this.responseText );
+      apiCall.data = '';
+      console.log('core', core.content);
+      home.checkLeagues();
+    };
+    apiCall.err = function(){
+      if(user.type == 'org') monitor('error','no core, <a href="' + repo.home + '/owner/">create</a>');
+      if(user.type == 'usr') monitor('error','no core');
     };
     apiCall.call();
   },
@@ -77,7 +96,7 @@ var home = {
       }
     };
     apiCall.err = function(){
-      console.log(this.responseText);
+      monitor('error', 'cannot read Pulls');
     };
     apiCall.call();
   },

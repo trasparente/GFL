@@ -2,11 +2,14 @@
 
 var user = {},
   apiCall = {},
-  parent = {};
+  parent = {},
+  dom = {};
 
-var gfl = {
+var fnp = {
   start: function(){
-    if(localStorage.getItem( 'gfl.user.token')) user.token = atob( localStorage.getItem( 'gfl.user.token' ) );
+    dom.monitor = document.createElement('ul');
+    document.querySelector('main > section > head').appendChild(dom.monitor);
+    if(localStorage.getItem( 'fnp.user.token')) user.token = atob( localStorage.getItem( 'fnp.user.token' ) );
     if(!url.page) url.script='home'; else url.script=url.page;
     apiCall.accept = 'application/vnd.github.v3.full+json';
     apiCall.method = 'GET';
@@ -15,11 +18,11 @@ var gfl = {
     apiCall.cb = function(){
       repo.ref = JSON.parse( this.responseText );
       repo.sha = repo.ref.object.sha;
-      gfl.getThisRepo();
+      fnp.getThisRepo();
     };
     apiCall.err = function(){
       monitor( 'SHA', 'no SHA' );
-      gfl.getThisRepo();
+      fnp.getThisRepo();
     };
     apiCall.call();
   },
@@ -54,15 +57,15 @@ var gfl = {
           monitor( "error","user repo is not a fork");
         }
       }
-      gfl.loadScript();
+      fnp.loadScript();
     };
     apiCall.err = function(){
       repo.type = 'usr';
       user.type = 'guest';
       // Bad credentials, revoked token
       user.token = '';
-      localStorage.removeItem("gfl.user.token");
-      gfl.loadScript();
+      localStorage.removeItem("fnp.user.token");
+      fnp.loadScript();
     };
     apiCall.call();
   },
@@ -103,9 +106,9 @@ apiCall.call = function(){
 function monitor( name, data ){
   var listItem = document.createElement( 'li' );
   listItem.innerHTML = name + ": " + data;
-  document.getElementById( "monitor" ).appendChild( listItem );
+  dom.monitor.appendChild( listItem );
 }
 
 
 // START
-var start = gfl.start();
+var start = fnp.start();

@@ -6,8 +6,8 @@ document.getElementById( "submitLogin" ).addEventListener('click', function(e) {
     document.getElementById( "submitLogin" ).setAttribute("disabled", "true");
     apiCall.url = "https://api.github.com";
     apiCall.cb = function(){
-      localStorage.setItem("gfl.user.token", btoa(user.token));
-      monitor("logged","<a href='" + repo.home + "'>Proceed</a>");
+      localStorage.setItem("fnp.user.token", btoa(user.token));
+      window.location = repo.home;
     };
     apiCall.err = function(){
       monitor("error","wrong token, try again");
