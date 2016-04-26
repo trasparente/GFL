@@ -12,7 +12,8 @@ if(url.slash[3]) url.pageowner = url.slash[3];
 if(repo.owner=='127'){repo.owner='fork-n-play';repo.name="GFL";} // DEBUG
 repo.home = "http://" + repo.owner + ".github.io/" + repo.name;
 repo.API = "https://api.github.com/repos/" + repo.owner + "/" + repo.name;
-repo.static = "https://cdn.rawgit.com/" + repo.owner + "/" + repo.name + "/";
+repo.static = "https://rawgit.com/" + repo.owner + "/" + repo.name + "/";
+repo.cdn.static = "https://cdn.rawgit.com/" + repo.owner + "/" + repo.name + "/";
 function loadAssets() {
   var script = document.createElement("script");
   script.src = repo.static + "master/core/scripts/init.js";
