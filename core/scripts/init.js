@@ -82,7 +82,7 @@ var fnp = {
   loadScript: function(){
     var script = document.createElement("script");
     var file = url.script + '.js';
-    if(repo.sha) script.src = repo.static + repo.sha + '/core/scripts/' + file; else script.src = repo.static + 'master/core/scripts/' + file;
+    if(repo.sha) script.src = repo.cdn.static + repo.sha + '/core/scripts/' + file; else script.src = repo.static + 'master/core/scripts/' + file;
     script.type = 'text/javascript';
     document.body.appendChild(script);
   }
