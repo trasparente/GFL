@@ -5,6 +5,7 @@ var leagues = {},
 
 var home = {
   start: function(){
+    monitor('GitHub', '<a href="https://github.com/' + repo.content.full_name + '">' + repo.content.full_name + '</a>');
     if (user.type == 'guest') home.checkCore();
     if (user.type == 'owner' && repo.type == 'org') home.checkPulls();
     if (user.type == 'owner' && repo.type == 'usr') home.checkDataParent();
