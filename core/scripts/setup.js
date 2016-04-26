@@ -21,7 +21,6 @@ var owner = {
     apiCall.call();
   },
   checkCore: function(){
-    core.default = {};
     apiCall.url = repo.API + "/contents/core/json/core.json";
     if(repo.sha) apiCall.data = '{"ref":' + repo.sha + '}';
     apiCall.cb = function(){
@@ -31,7 +30,8 @@ var owner = {
       edit.Core();
     };
     apiCall.err = function(){
-      monitor('error','no core');
+      monitor('warning','no core');
+      core.default = {};
       edit.Core();
     };
     apiCall.call();
@@ -49,17 +49,15 @@ var edit = {
 
     // add elements
     dom.submit = document.createElement('button');
-    dom.submit.innerHTML = 'Push on master';
-    dom.restore = document.createElement('button');
-    dom.restore.innerHTML = 'Restore online core';
+    dom.submit.innerHTML = 'Pull request';
     dom.reset = document.createElement('button');
-    dom.reset.innerHTML = 'Reset empty';
+    dom.reset.innerHTML = 'Reset default';
     var section = document.querySelector('section');
     dom.valid = document.createElement('span');
     dom.editor = document.createElement('div');
     section.appendChild(dom.editor);
     section.appendChild(dom.submit);
-    section.appendChild(dom.restore);
+    section.appendChild(dom.reset);
     section.appendChild(dom.valid);
 
     // start json editor
@@ -84,11 +82,8 @@ var edit = {
       dom.submit.addEventListener('click',function() {
         console.log(editor.getValue());
       });
-      dom.restore.addEventListener('click',function() {
-        editor.setValue(core.default);
-      });
       dom.reset.addEventListener('click',function() {
-        editor.setValue({});
+        editor.setValue(core.default);
       });
       editor.on('change',function() {
         var errors = editor.validate();

@@ -66,7 +66,7 @@ var home = {
       home.checkLeagues();
     };
     apiCall.err = function(){
-      if(repo.type == 'org' && user.type == 'owner') monitor('error','no core, <a href="' + repo.home + '/owner/">create</a>'); else monitor('error','no core');
+      if(repo.type == 'org' && user.type == 'owner') monitor('warning','no core, <a href="' + repo.home + '/owner/">create</a>'); else monitor('warning','no core');
     };
     apiCall.call();
   },
