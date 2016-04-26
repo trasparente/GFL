@@ -84,7 +84,9 @@ var edit = {
           apiCall.data = '{"message": "core edited", "content": "' + core.encoded + '", "branch": "master", "sha": "' + core.sha + '"}';
         }
         apiCall.cb = function(){
-          console.log('ok', JSON.parse( this.responseText ));
+          var divs = document.querySelector('div[data-schemaid]');
+          divs.setAttribute('hidden','');
+          monitor('saved', '<a href="' + repo.home + '/setup/">proceed</a>');
         };
         apiCall.err = function(){
           console.log('err', JSON.parse( this.responseText ));

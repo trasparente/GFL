@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/schema#",
   "id": "https://rawgit.com/fork-n-play/GFL/master/core/json/core-schema.json",
   "type": "object",
-  "title": "Core Schema",
+  "title": "Setup",
   "description": "Core values for GFL",
   "properties": {
     "rolls": {
