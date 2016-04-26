@@ -40,6 +40,7 @@ var owner = {
 var edit = {
   Core: function(){
     // load json-editor
+    var script = document.createElement("script");
     var file = 'jsoneditor.js';
     if(repo.sha) script.src = repo.static + repo.sha + '/core/scripts/' + file; else script.src = repo.static + 'master/core/scripts/' + file;
     script.type = 'text/javascript';
