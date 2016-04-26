@@ -25,8 +25,8 @@ var owner = {
     if(repo.sha) apiCall.data = '{"ref":' + repo.sha + '}';
     apiCall.cb = function(){
       core.content = JSON.parse( this.responseText );
-      core.default = core.content;
-      core.sha = core.content.content.sha;
+      core.default = JSON.parse( atob(core.content.content) );
+      core.sha = core.content.sha;
       apiCall.data = '';
       edit.Core();
     };
@@ -81,7 +81,7 @@ var edit = {
         }else{
           apiCall.url = repo.API + '/contents/core/json/core.json';
           apiCall.method = 'PUT';
-          apiCall.data = '{"message": "core created", "content": "' + core.encoded + '", "branch": "master", "sha": "' + core.sha + '"}';
+          apiCall.data = '{"message": "core edited", "content": "' + core.encoded + '", "branch": "master", "sha": "' + core.sha + '"}';
         }
         apiCall.cb = function(){
           console.log('ok', JSON.parse( this.responseText ));
