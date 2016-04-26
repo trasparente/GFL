@@ -45,11 +45,11 @@ var home = {
     apiCall.url = repo.API + "/git/refs/heads/master";
     apiCall.accept = 'application/vnd.github.v3.patch';
     apiCall.method = 'PATCH';
-    apiCall.data = '{"sha":"' + parent.ref.object.sha + '"}';
+    apiCall.data = '{"sha":"' + parent.sha + '"}';
     apiCall.cb = function(){
       apiCall.accept = 'application/vnd.github.v3.full+json';
       apiCall.method = 'GET';
-      home.checkSHA();
+      monitor('updated', '<a href="' + repo.home + '">proceed</a>');
     };
     apiCall.err = function(){
       monitor('error','cannot update master head');
