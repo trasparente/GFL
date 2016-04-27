@@ -1,12 +1,12 @@
 // home.js
 
 var leagues = {},
-  core = {};
+  setup = {};
 
 var home = {
   start: function(){
-    monitor('GitHub', '<a href="https://github.com/' + repo.content.full_name + '">' + repo.content.full_name + '</a>');
-    if (user.type == 'guest') home.checkCore();
+    monitor('repository', '<a href="https://github.com/' + repo.content.full_name + '">' + repo.content.full_name + '</a>');
+    if (user.type == 'guest') home.checkSetup();
     if (user.type == 'owner' && repo.type == 'org') home.checkPulls();
     if (user.type == 'owner' && repo.type == 'usr') home.checkDataParent();
   },
@@ -61,7 +61,7 @@ var home = {
     };
     apiCall.call();
   },
-  checkCore: function(){
+  checkSetup: function(){
     apiCall.url = repo.API + "/contents/setup.json";
     if(repo.data.sha){
       apiCall.data = '{"ref":' + repo.data.sha + '}';
@@ -69,10 +69,10 @@ var home = {
       apiCall.data = '{"ref": "data"}';
     }
     apiCall.cb = function(){
-      core.content = JSON.parse( this.responseText );
+      setup.content = JSON.parse( this.responseText );
       apiCall.data = '';
-      core.obj = JSON.parse( atob(core.content.content) );
-      console.log('setup', core.obj);
+      setup.obj = JSON.parse( atob(setup.content.content) );
+      console.log('setup', setup.obj);
       home.checkLeagues();
     };
     apiCall.err = function(){
@@ -139,7 +139,7 @@ var home = {
       repo.sha = repo.ref.object.sha;
       if( repo.sha == parent.sha || !repo.content.fork ){
         monitor( '<em>master</em> SHA', repo.sha.substring(0,7) );
-        home.checkCore();
+        home.checkSetup();
       }else{
         monitor( '<em>master</em> SHA', 'need update from ' + parent.sha.substring(0,7) );
         home.update('master', parent.sha);

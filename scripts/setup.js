@@ -1,7 +1,7 @@
 // setup.js
 
 var leagues = {},
-  core = {};
+  setup = {};
 
 var owner = {
   start: function(){
@@ -13,35 +13,35 @@ var owner = {
       repo.ref = JSON.parse( this.responseText );
       repo.sha = repo.ref.object.sha;
       monitor( 'SHA', repo.sha.substring(0,7) );
-      owner.checkCore();
+      owner.checkSetup();
     };
     apiCall.err = function(){
       monitor('error', 'cannot read SHA');
     };
     apiCall.call();
   },
-  checkCore: function(){
-    apiCall.url = repo.API + "/contents/core/json/core.json";
+  checkSetup: function(){
+    apiCall.url = repo.API + "/contents/json/setup.json";
     if(repo.sha) apiCall.data = '{"ref":' + repo.sha + '}';
     apiCall.cb = function(){
-      core.content = JSON.parse( this.responseText );
-      core.default = JSON.parse( atob(core.content.content) );
-      core.sha = core.content.sha;
+      setup.content = JSON.parse( this.responseText );
+      setup.default = JSON.parse( atob(setup.content.content) );
+      setup.sha = setup.content.sha;
       apiCall.data = '';
-      edit.Core();
+      edit.Setup();
     };
     apiCall.err = function(){
-      monitor('warning','no core');
-      core.default = {};
-      core.content = 'absent';
-      edit.Core();
+      monitor('warning','no setup');
+      setup.default = {};
+      setup.content = 'absent';
+      edit.Setup();
     };
     apiCall.call();
   }
 };
 
 var edit = {
-  Core: function(){
+  Setup: function(){
     // add DOM elements
     dom.submit = document.createElement('button');
     dom.submit.innerHTML = 'Pull request';
@@ -56,16 +56,16 @@ var edit = {
     section.appendChild(dom.valid);
 
     // load schema
-    apiCall.url = repo.API + "/contents/core/json/core-schema.json";
+    apiCall.url = repo.API + "/contents/json/setup-schema.json";
     if(repo.sha) apiCall.data = '{"ref":' + repo.sha + '}';
     apiCall.cb = function(){
-      core.schemaBlob = JSON.parse( this.responseText );
-      core.schema = JSON.parse(atob(core.schemaBlob.content));
+      setup.schemaBlob = JSON.parse( this.responseText );
+      setup.schema = JSON.parse(atob(setup.schemaBlob.content));
       // Initialize the editor
       var editor = new JSONEditor(dom.editor,{
         ajax: true,
-        schema: core.schema,
-        startval: core.default,
+        schema: setup.schema,
+        startval: setup.default,
         no_additional_properties: false,
         required_by_default: false,
         // Special
@@ -74,15 +74,15 @@ var edit = {
         disable_array_reorder: false
       });
       dom.submit.addEventListener('click',function() {
-        core.encoded = btoa(editor.getValue());
-        if(core.content == 'absent'){
-          apiCall.url = repo.API + '/contents/core/json/core.json';
+        setup.encoded = btoa(editor.getValue());
+        if(setup.content == 'absent'){
+          apiCall.url = repo.API + '/contents/json/setup.json';
           apiCall.method = 'PUT';
-          apiCall.data = '{"message": "core created", "content": "' + core.encoded + '", "branch": "master"}';
+          apiCall.data = '{"message": "setup created", "content": "' + setup.encoded + '", "branch": "master"}';
         }else{
-          apiCall.url = repo.API + '/contents/core/json/core.json';
+          apiCall.url = repo.API + '/contents/json/setup.json';
           apiCall.method = 'PUT';
-          apiCall.data = '{"message": "core edited", "content": "' + core.encoded + '", "branch": "master", "sha": "' + core.sha + '"}';
+          apiCall.data = '{"message": "setup edited", "content": "' + setup.encoded + '", "branch": "master", "sha": "' + setup.sha + '"}';
         }
         apiCall.cb = function(){
           var divs = document.querySelector('div[data-schemaid]');
@@ -95,7 +95,7 @@ var edit = {
         apiCall.call();
       });
       dom.reset.addEventListener('click',function() {
-        editor.setValue(core.default);
+        editor.setValue(setup.default);
       });
       editor.on('change',function() {
         var errors = editor.validate();
@@ -110,7 +110,7 @@ var edit = {
       });
     };
     apiCall.err = function(){
-      monitor('error', 'no core-schema');
+      monitor('error', 'no setup-schema');
     };
     apiCall.call();
   }
