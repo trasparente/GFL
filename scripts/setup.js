@@ -8,7 +8,7 @@ var setup = {
     if (user.type == 'owner' && repo.type == 'org') setup.checkSetup(); else window.location = repo.home;
   },
   checkSetup: function(){
-    apiCall.url = repo.API + "/contents/json/setup.json";
+    apiCall.url = repo.API + "/contents/setup.json";
     if(repo.data.sha) apiCall.data = '{"ref":' + repo.data.sha + '}'; else apiCall.data = '{"ref": "data"}';
       apiCall.cb = function(){
       setup.content = JSON.parse( this.responseText );
@@ -63,11 +63,11 @@ var edit = {
       dom.submit.addEventListener('click',function() {
         setup.encoded = btoa(editor.getValue());
         if(setup.content == 'absent'){
-          apiCall.url = repo.API + '/contents/json/setup.json';
+          apiCall.url = repo.API + '/contents/setup.json';
           apiCall.method = 'PUT';
           apiCall.data = '{"message": "setup created", "content": "' + setup.encoded + '", "branch": "data"}';
         }else{
-          apiCall.url = repo.API + '/contents/json/setup.json';
+          apiCall.url = repo.API + '/contents/setup.json';
           apiCall.method = 'PUT';
           apiCall.data = '{"message": "setup edited", "content": "' + setup.encoded + '", "branch": "data", "sha": "' + setup.sha + '"}';
         }
