@@ -69,6 +69,9 @@ var setup = {
         apiCall.cb = function(){
           var divs = document.querySelector('div[data-schemaid]');
           divs.setAttribute('hidden','');
+          dom.reset.setAttribute('hidden','');
+          dom.valid.setAttribute('hidden','');
+          dom.submit.setAttribute('hidden','');
           monitor('saved', '<a href="' + repo.home + '/setup/">proceed</a>');
         };
         apiCall.err = function(){
