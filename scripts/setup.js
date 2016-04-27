@@ -3,27 +3,14 @@
 var leagues = {},
   setup = {};
 
-var owner = {
+var setup = {
   start: function(){
-    if (user.type == 'owner' && repo.type == 'org') owner.checkSHA(); else window.location = repo.home;
-  },
-  checkSHA: function(){
-    apiCall.url = repo.API + "/git/refs/heads/master";
-    apiCall.cb = function(){
-      repo.ref = JSON.parse( this.responseText );
-      repo.sha = repo.ref.object.sha;
-      monitor( 'SHA', repo.sha.substring(0,7) );
-      owner.checkSetup();
-    };
-    apiCall.err = function(){
-      monitor('error', 'cannot read SHA');
-    };
-    apiCall.call();
+    if (user.type == 'owner' && repo.type == 'org') setup.checkSetup(); else window.location = repo.home;
   },
   checkSetup: function(){
     apiCall.url = repo.API + "/contents/json/setup.json";
-    if(repo.sha) apiCall.data = '{"ref":' + repo.sha + '}';
-    apiCall.cb = function(){
+    if(repo.data.sha) apiCall.data = '{"ref":' + repo.data.sha + '}'; else apiCall.data = '{"ref": "data"}';
+      apiCall.cb = function(){
       setup.content = JSON.parse( this.responseText );
       setup.default = JSON.parse( atob(setup.content.content) );
       setup.sha = setup.content.sha;
@@ -44,7 +31,7 @@ var edit = {
   Setup: function(){
     // add DOM elements
     dom.submit = document.createElement('button');
-    dom.submit.innerHTML = 'Pull request';
+    dom.submit.innerHTML = 'Save on master';
     dom.reset = document.createElement('button');
     dom.reset.innerHTML = 'Reset default';
     var section = document.querySelector('section');
@@ -57,7 +44,7 @@ var edit = {
 
     // load schema
     apiCall.url = repo.API + "/contents/json/setup-schema.json";
-    if(repo.sha) apiCall.data = '{"ref":' + repo.sha + '}';
+    if(repo.sha) apiCall.data = '{"ref":' + repo.sha + '}'; else apiCall.data = '{"ref": "master"}';
     apiCall.cb = function(){
       setup.schemaBlob = JSON.parse( this.responseText );
       setup.schema = JSON.parse(atob(setup.schemaBlob.content));
@@ -78,11 +65,11 @@ var edit = {
         if(setup.content == 'absent'){
           apiCall.url = repo.API + '/contents/json/setup.json';
           apiCall.method = 'PUT';
-          apiCall.data = '{"message": "setup created", "content": "' + setup.encoded + '", "branch": "master"}';
+          apiCall.data = '{"message": "setup created", "content": "' + setup.encoded + '", "branch": "data"}';
         }else{
           apiCall.url = repo.API + '/contents/json/setup.json';
           apiCall.method = 'PUT';
-          apiCall.data = '{"message": "setup edited", "content": "' + setup.encoded + '", "branch": "master", "sha": "' + setup.sha + '"}';
+          apiCall.data = '{"message": "setup edited", "content": "' + setup.encoded + '", "branch": "data", "sha": "' + setup.sha + '"}';
         }
         apiCall.cb = function(){
           var divs = document.querySelector('div[data-schemaid]');
@@ -116,4 +103,4 @@ var edit = {
   }
 };
 
-var start = owner.start();
+var start = setup.start();
