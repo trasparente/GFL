@@ -41,7 +41,7 @@ var fnp = {
     apiCall.url = repo.API;
     apiCall.cb = function(){
       repo.content = JSON.parse( this.responseText );
-      monitor('repository', '<a href="https://github.com/' + repo.content.full_name + '">' + repo.content.full_name + '</a> HEAD: ' + repo.sha);
+      monitor('repository', '<a href="https://github.com/' + repo.content.full_name + '">' + repo.content.full_name + '</a> HEAD: ' + repo.sha.substring(0,7));
       // ORGANIZATION
       if( repo.content.owner.type == "Organization" ){
         repo.type = 'org';
