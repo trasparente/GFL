@@ -14,7 +14,7 @@ var home = {
       home.checkLeagues();
     };
     apiCall.err = function(){
-      if(repo.type == 'org' && user.type == 'owner') monitor('warning','no setup, <a href="' + repo.home + '/setup/">create</a>'); else monitor('warning','no setup');
+      if(repo.type == 'org' && user.type == 'owner') monitor('warning','no setup, <a href="' + repo.home + '/setup/">create</a>'); else monitor('error','no setup');
     };
     apiCall.call();
   },
@@ -27,7 +27,7 @@ var home = {
       monitor('leagues', '<a href="' + repo.home + '/league/setup">create</a>');
     };
     apiCall.err = function(){
-      monitor('warning','no leagues');
+      if(repo.type == 'org' && user.type == 'owner') monitor('warning','no leagues, <a href="' + repo.home + '/league/setup/">create</a>'); else monitor('error','no leagues');
     };
     apiCall.call();
   }
