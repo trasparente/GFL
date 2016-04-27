@@ -9,7 +9,7 @@ url.hash = window.location.hash.substring( 1 );
 repo.owner = url.array[0];
 repo.name = url.slash[1];
 if(url.slash[2]) url.page = url.slash[2];
-if(url.slash[3]) url.pageowner = url.slash[3];
+if(url.slash[3]) url.setup = url.slash[3];
 repo.home = "http://" + repo.owner + ".github.io/" + repo.name;
 repo.API = "https://api.github.com/repos/" + repo.owner + "/" + repo.name;
 repo.static = "https://rawgit.com/" + repo.owner + "/" + repo.name + "/";
@@ -19,7 +19,7 @@ function loadAssets() {
   script.src = repo.static + "master/scripts/init.js";
   script.type = 'text/javascript';
   document.body.appendChild(script);
-  if(url.page && url.page == 'setup'){
+  if((url.page && url.page == 'setup') || (url.setup && url.page)){
     var jsoneditor = document.createElement("script");
     jsoneditor.src = repo.static + "master/scripts/jsoneditor.js";
     jsoneditor.type = 'text/javascript';
