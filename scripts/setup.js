@@ -8,8 +8,7 @@ var setup = {
     if (user.type == 'owner' && repo.type == 'org') setup.checkSetup(); else window.location = repo.home;
   },
   checkSetup: function(){
-    apiCall.url = repo.API + "/contents/setup.json";
-    if(repo.data.sha) apiCall.data = '{"ref":' + repo.data.sha + '}'; else apiCall.data = '{"ref": "data"}';
+    if(repo.data.sha) apiCall.url = repo.API + '/contents/setup.json?ref=' + repo.data.sha; else apiCall.url = repo.API + '/contents/setup.json?ref=data';
       apiCall.cb = function(){
       setup.content = JSON.parse( this.responseText );
       setup.default = JSON.parse( atob(setup.content.content) );
@@ -61,7 +60,7 @@ var edit = {
         disable_array_reorder: false
       });
       dom.submit.addEventListener('click',function() {
-        setup.encoded = btoa(editor.getValue());
+        setup.encoded = btoa(JSON.stringify(editor.getValue()));
         if(setup.content == 'absent'){
           apiCall.url = repo.API + '/contents/setup.json';
           apiCall.method = 'PUT';

@@ -156,6 +156,7 @@ var fnp = {
     apiCall.cb = function(){
       apiCall.accept = 'application/vnd.github.v3.full+json';
       apiCall.method = 'GET';
+      apiCall.data = '';
       monitor( '<em>' + branch + '</em> updated', '<a href="' + window.location.href + '">proceed</a>');
     };
     apiCall.err = function(){
