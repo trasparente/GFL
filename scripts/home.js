@@ -10,7 +10,7 @@ var home = {
       setup.content = JSON.parse( this.responseText );
       setup.default = JSON.parse( atob(setup.content.content) );
       setup.sha = setup.content.sha;
-      console.log('setup', setup.default);
+      monitor('setup', '<a href="' + repo.home + '/setup">edit</a>');
       home.checkLeagues();
     };
     apiCall.err = function(){
@@ -24,7 +24,7 @@ var home = {
       leagues.content = JSON.parse( this.responseText );
       apiCall.data = '';
       leagues.obj = JSON.parse( atob(leagues.content.content) );
-      console.log('defaul content is "automatic" league', leagues.obj);
+      monitor('leagues', '<a href="' + repo.home + '/league/setup">create</a>');
     };
     apiCall.err = function(){
       monitor('warning','no leagues');
