@@ -1,6 +1,7 @@
 html { overflow-y: scroll; }
 body[hidden] { font-size: 1.2em; padding: 0em 1em; display: block; }
-a:visited { color: blue; text-decoration: none; }
+a { text-decoration: none; }
+a:visited { color: blue; }
 a:active { color: white; }
 a:hover { text-decoration: underline; }
 h1 a, h1 a:visited { color: inherit; }
