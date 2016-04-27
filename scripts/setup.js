@@ -8,26 +8,22 @@ var setup = {
     if (user.type == 'owner' && repo.type == 'org') setup.checkSetup(); else window.location = repo.home;
   },
   checkSetup: function(){
-    if(repo.data.sha) apiCall.url = repo.API + '/contents/setup.json?ref=' + repo.data.sha; else apiCall.url = repo.API + '/contents/setup.json?ref=data';
+    apiCall.url = searchFile('setup.json');
       apiCall.cb = function(){
       setup.content = JSON.parse( this.responseText );
       setup.default = JSON.parse( atob(setup.content.content) );
       setup.sha = setup.content.sha;
-      apiCall.data = '';
-      edit.Setup();
+      setup.Edit();
     };
     apiCall.err = function(){
       monitor('warning','no setup');
       setup.default = {};
       setup.content = 'absent';
-      edit.Setup();
+      setup.Edit();
     };
     apiCall.call();
-  }
-};
-
-var edit = {
-  Setup: function(){
+  },
+  Edit: function(){
     // add DOM elements
     dom.submit = document.createElement('button');
     dom.submit.innerHTML = 'Save on master';

@@ -5,13 +5,12 @@ var leagues = {},
 
 var home = {
   start: function(){
-    apiCall.url = repo.API + "/contents/setup.json";
-    if(repo.data.sha) apiCall.data = '{"ref":' + repo.data.sha + '}'; else apiCall.data = '{"ref": "data"}';
+    apiCall.url = searchFile('setup.json');
     apiCall.cb = function(){
       setup.content = JSON.parse( this.responseText );
-      apiCall.data = '';
-      setup.obj = JSON.parse( atob(setup.content.content) );
-      console.log('setup', setup.obj);
+      setup.default = JSON.parse( atob(setup.content.content) );
+      setup.sha = setup.content.sha;
+      console.log('setup', setup.default);
       home.checkLeagues();
     };
     apiCall.err = function(){
@@ -20,8 +19,7 @@ var home = {
     apiCall.call();
   },
   checkLeagues: function(){
-    apiCall.url = repo.API + "/contents/leagues/leagues.json";
-    if(repo.data.sha) apiCall.data = '{"ref":' + repo.data.sha + '}'; else apiCall.data = '{"ref": "data"}';
+    apiCall.url = searchFile('leagues/leagues.json');
     apiCall.cb = function(){
       leagues.content = JSON.parse( this.responseText );
       apiCall.data = '';

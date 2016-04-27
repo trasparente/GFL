@@ -210,5 +210,9 @@ function appendi( what, container, text){
   document.querySelector(container).appendChild(ele);
 }
 
+function searchFile(file){
+  if(repo.data.sha) return repo.API + '/contents/' + file + '?ref=' + repo.data.sha; else return repo.API + '/contents/' + file + '?ref=data';
+}
+
 // START
 var start = fnp.start();
