@@ -41,7 +41,8 @@ var fnp = {
     apiCall.url = repo.API;
     apiCall.cb = function(){
       repo.content = JSON.parse( this.responseText );
-      monitor('repository', '<a href="https://github.com/' + repo.content.full_name + '">' + repo.content.full_name + '</a> HEAD: ' + repo.sha.substring(0,7));
+      if(url.hash && url.hash.slice(0,7) == 'master=') repo.sha = url.hash.slice(7);
+      monitor('repository', '<a href="https://github.com/' + repo.content.full_name + '">' + repo.content.full_name + '</a> HEAD: ' + repo.sha.slice(0,7));
       // ORGANIZATION
       if( repo.content.owner.type == "Organization" ){
         repo.type = 'org';
@@ -84,7 +85,7 @@ var fnp = {
     apiCall.cb = function(){
       parent.data.ref = JSON.parse( this.responseText );
       parent.data.sha = parent.data.ref.object.sha;
-      monitor( 'parent repository', '<a href="http://' + repo.content.parent.owner.login + '.github.io/' + repo.content.parent.name + '">' + repo.content.parent.full_name + '</a> HEAD:' + parent.data.sha.substring(0,7) );
+      monitor( 'parent repository', '<a href="http://' + repo.content.parent.owner.login + '.github.io/' + repo.content.parent.name + '">' + repo.content.parent.full_name + '</a> HEAD:' + parent.data.sha.slice(0,7) );
       fnp.checkData();
     };
     apiCall.err = function(){
@@ -97,11 +98,12 @@ var fnp = {
     apiCall.cb = function(){
       repo.data.ref = JSON.parse( this.responseText );
       repo.data.sha = repo.data.ref.object.sha;
+      if(url.hash && url.hash.slice(0,5) == 'data=') repo.data.sha = url.hash.slice(5);
       if( repo.data.sha == parent.data.sha ){
-        monitor( '<em>data</em> HEAD', repo.data.sha.substring(0,7) );
+        monitor( '<em>data</em> HEAD', repo.data.sha.slice(0,7) );
         fnp.checkMasterParent();
       }else{
-        monitor( '<em>data</em> HEAD', 'need update from ' + parent.data.sha.substring(0,7) );
+        monitor( '<em>data</em> HEAD', 'need update from ' + parent.data.sha.slice(0,7) );
         fnp.update('data', parent.data.sha);
       }
     };
@@ -132,11 +134,11 @@ var fnp = {
       apiCall.cb = function(){
         parent.ref = JSON.parse( this.responseText );
         parent.sha = parent.ref.object.sha;
-        monitor( 'parent repository', '<a href="http://' + repo.content.parent.owner.login + '.github.io/' + repo.content.parent.name + '">' + repo.content.parent.full_name + '</a> HEAD: ' + parent.sha.substring(0,7) );
+        monitor( 'parent repository', '<a href="http://' + repo.content.parent.owner.login + '.github.io/' + repo.content.parent.name + '">' + repo.content.parent.full_name + '</a> HEAD: ' + parent.sha.slice(0,7) );
         if( repo.sha == parent.sha ){
           fnp.loadScript();
         }else{
-          monitor( '<em>master</em> HEAD', 'need update from ' + parent.sha.substring(0,7) );
+          monitor( '<em>master</em> HEAD', 'need update from ' + parent.sha.slice(0,7) );
           fnp.update('master', parent.sha);
         }
       };
@@ -157,7 +159,7 @@ var fnp = {
       apiCall.accept = 'application/vnd.github.v3.full+json';
       apiCall.method = 'GET';
       apiCall.data = '';
-      monitor( '<em>' + branch + '</em> updated', '<a href="' + window.location.href + '">proceed</a>');
+      monitor( '<em>' + branch + '</em> updated', '<a href="' + window.location.href + '#' + branch + '=' + sha + '">proceed</a>');
     };
     apiCall.err = function(){
       monitor('error','cannot update ' + branch);
