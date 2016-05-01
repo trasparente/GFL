@@ -13,6 +13,9 @@ fnp.home = {
         fnp.setup.sha = this.sha;
         if(fnp.repo.type == 'Organization' && fnp.user.type == 'owner') fnp.monitor('setup', '<a href="' + fnp.repo.home + '/setup">edit</a>'); else fnp.monitor('setup','found');
         fnp.home.checkLeagues();
+      },
+      err: function(){
+        if(fnp.repo.type == 'Organization' && fnp.user.type == 'owner') monitor('warning','no setup, <a href="' + fnp.repo.home + '/setup/">create</a>'); else fnp.monitor('error','no setup');
       }
     });
   },
@@ -23,6 +26,9 @@ fnp.home = {
         fnp.leagues.content = this;
         fnp.leagues.obj = JSON.parse( atob(this.content) );
         if(fnp.repo.type == 'Organization' && fnp.user.type == 'owner') fnp.monitor('leagues', '<a href="' + fnp.repo.home + '/league/setup">edit</a>'); else fnp.monitor('leagues','found');
+      },
+      err: function(){
+        if(fnp.repo.type == 'Organization' && fnp.user.type == 'owner') fnp.monitor('warning','no leagues, <a href="' + fnp.repo.home + '/league/setup/">create</a>'); else fnp.monitor('error','no leagues');
       }
     });
   }
