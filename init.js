@@ -26,16 +26,22 @@ var fnp = {
   load: function(){
     fnp.repo.master = fnp.url.masterHash;
     fnp.repo.data.sha = fnp.url.dataHash;
-    document.body.appendChild(fnp.create('script', 'scripts/loader.js', 'text/javascript'));
-    document.head.appendChild(fnp.create('link', 'styles/style.css', 'stylesheet'));
+    document.body.appendChild(fnp.appendScript('scripts/loader.js'));
+    document.head.appendChild(fnp.appendStyle('styles/style.css'));
     if((fnp.url.page && fnp.url.page == 'setup') || (fnp.url.page && fnp.url.setup)){
       document.body.appendChild(fnp.create('script', 'scripts/jsoneditor.js', 'text/javascript'));
     }
   },
-  create: function(tag, file, type) {
-    var element = document.createElement(tag);
+  appendScript: function(file) {
+    var element = document.createElement('script');
     element.src = fnp.repo.rawgit + '/' + file;
-    element.type = type;
+    element.type = 'text/javascript';
+    return element;
+  },
+  appendStyle: function(file) {
+    var element = document.createElement('link');
+    element.src = fnp.repo.rawgit + '/' + file;
+    element.rel = 'stylesheet';
     return element;
   },
   init: function(){
