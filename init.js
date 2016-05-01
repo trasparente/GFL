@@ -9,7 +9,9 @@ var fnp = {
     get hash() {return window.location.hash.substring( 1 );},
     get page() {return this.slash[2] ? this.slash[2]: false;},
     get setup() {return this.slash[3] ? this.slash[3]: false;},
-    get script() {return this.page ? (this.setup ? this.page + '.' + this.setup : this.page) : 'home';}
+    get script() {return this.page ? (this.setup ? this.page + '.' + this.setup : this.page) : 'home';},
+    get masterHash() {return this.hash && this.hash.slice(0,7) === 'master=' ? this.hash.slice(7) : 'master';},
+    get dataHash() {return this.hash && this.hash.slice(0,5) === 'data=' ? this.hash.slice(5) : 'data';}
   },
   repo: {
     get owner() {return fnp.url.array[0];},
@@ -18,8 +20,11 @@ var fnp = {
     get API() {return 'https://api.github.com/repos/' + this.owner + '/' + this.name;},
     get static() {return 'https://rawgit.com/' + this.owner + '/' + this.name;},
     get cdn() {return 'https://cdn.rawgit.com/' + this.owner + '/' + this.name;},
-    get master() {return fnp.url.hash && fnp.url.hash.slice(0,7) === 'master=' ? fnp.url.hash.slice(7) : 'master';},
-    get rawgit() {return this.master === 'master' ? this.static + '/master' : this.cdn + '/' + this.master;}
+    get rawgit() {return this.master === 'master' ? this.static + '/master' : this.cdn + '/' + this.master;},
+    master: fnp.url.masterHash,
+    data: {
+      sha: fnp.url.dataHash
+    }
   },
   load: function(){
     document.body.appendChild(fnp.create('script', 'scripts/loader.js', 'text/javascript'));
