@@ -19,18 +19,18 @@ var fnp = {
     get static() {return 'https://rawgit.com/' + this.owner + '/' + this.name;},
     get cdn() {return 'https://cdn.rawgit.com/' + this.owner + '/' + this.name;},
     get master() {return fnp.url.hash && fnp.url.hash.slice(0,7) === 'master=' ? fnp.url.hash.slice(7) : 'master';},
-    get rawgit() {return this.master === 'master' ? this.static + '/master' : this.cdn + this.master;}
+    get rawgit() {return this.master === 'master' ? this.static + '/master' : this.cdn + '/' + this.master;}
   },
   load: function(){
-    document.body.appendChild(fnp.create('script','scripts/loader.js','text/javascript'));
-    document.head.appendChild(fnp.create('link','styles/style.css','stylesheet'));
+    document.body.appendChild(fnp.create('script', 'scripts/loader.js', 'text/javascript'));
+    document.head.appendChild(fnp.create('link', 'styles/style.css', 'stylesheet'));
     if((fnp.url.page && fnp.url.page == 'setup') || (fnp.url.page && fnp.url.setup)){
-      document.body.appendChild(fnp.create('script','scripts/jsoneditor.js','text/javascript'));
+      document.body.appendChild(fnp.create('script', 'scripts/jsoneditor.js', 'text/javascript'));
     }
   },
   create: function(tag, file, type) {
     var element = document.createElement(tag);
-    element.src = fnp.repo.static + '/' + fnp.url.master + '/' + file;
+    element.src = fnp.repo.rawgit + '/' + file;
     element.type = type;
     return element;
   },
