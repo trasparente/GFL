@@ -108,6 +108,32 @@
       "options": {
         "disable_array_reorder": true
       }
+    },
+    "team": {
+      "type": "object",
+      "id": "team",
+      "title": "Team",
+      "description": "Schema for a team",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Team name",
+          "minLength": 1
+        }
+      }
+    },
+    "league": {
+      "type": "object",
+      "id": "league",
+      "title": "League",
+      "description": "Schema for a league",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "League name",
+          "minLength": 1
+        }
+      }
     }
   },
   "required": [
