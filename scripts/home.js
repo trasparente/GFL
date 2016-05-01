@@ -10,11 +10,11 @@ var home = {
       setup.content = JSON.parse( this.responseText );
       setup.default = JSON.parse( atob(setup.content.content) );
       setup.sha = setup.content.sha;
-      monitor('setup', '<a href="' + repo.home + '/setup">edit</a>');
+      if(repo.type == 'org' && user.type == 'owner') monitor('setup', '<a href="' + repo.home + '/setup">edit</a>'); else monitor('setup','found');
       home.checkLeagues();
     };
     apiCall.err = function(){
-      if(repo.type == 'org' && user.type == 'owner') monitor('warning','no setup, <a href="' + repo.home + '/setup/">create</a>'); else monitor('error','no setup');
+      if(repo.type == 'org' && user.type == 'owner') monitor('warning','no setup, <a href="' + repo.home + '/setup/">create</a>'); else monitor('warning','no setup');
     };
     apiCall.call();
   },
@@ -24,10 +24,10 @@ var home = {
       leagues.content = JSON.parse( this.responseText );
       apiCall.data = '';
       leagues.obj = JSON.parse( atob(leagues.content.content) );
-      monitor('leagues', '<a href="' + repo.home + '/league/setup">create</a>');
+      if(repo.type == 'org' && user.type == 'owner') monitor('leagues', '<a href="' + repo.home + '/league/setup">edit</a>'); else monitor('leagues','found');
     };
     apiCall.err = function(){
-      if(repo.type == 'org' && user.type == 'owner') monitor('warning','no leagues, <a href="' + repo.home + '/league/setup/">create</a>'); else monitor('error','no leagues');
+      if(repo.type == 'org' && user.type == 'owner') monitor('warning','no leagues, <a href="' + repo.home + '/league/setup/">create</a>'); else monitor('warning','no leagues');
     };
     apiCall.call();
   }

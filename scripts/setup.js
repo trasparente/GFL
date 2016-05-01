@@ -57,13 +57,11 @@ var setup = {
       });
       dom.submit.addEventListener('click',function() {
         setup.encoded = btoa(JSON.stringify(editor.getValue()));
+        apiCall.url = repo.API + '/contents/setup.json';
+        apiCall.method = 'PUT';
         if(setup.content == 'absent'){
-          apiCall.url = repo.API + '/contents/setup.json';
-          apiCall.method = 'PUT';
           apiCall.data = '{"message": "setup created", "content": "' + setup.encoded + '", "branch": "data"}';
         }else{
-          apiCall.url = repo.API + '/contents/setup.json';
-          apiCall.method = 'PUT';
           apiCall.data = '{"message": "setup edited", "content": "' + setup.encoded + '", "branch": "data", "sha": "' + setup.sha + '"}';
         }
         apiCall.cb = function(){
