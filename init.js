@@ -29,7 +29,7 @@ var fnp = {
     document.body.appendChild(fnp.appendScript('scripts/loader.js'));
     document.head.appendChild(fnp.appendStyle('styles/style.css'));
     if((fnp.url.page && fnp.url.page == 'setup') || (fnp.url.page && fnp.url.setup)){
-      document.body.appendChild(fnp.create('script', 'scripts/jsoneditor.js', 'text/javascript'));
+      document.body.appendChild(fnp.appendScript('scripts/jsoneditor.js'));
     }
   },
   appendScript: function(file) {
@@ -40,7 +40,7 @@ var fnp = {
   },
   appendStyle: function(file) {
     var element = document.createElement('link');
-    element.src = fnp.repo.rawgit + '/' + file;
+    element.href = fnp.repo.rawgit + '/' + file;
     element.rel = 'stylesheet';
     return element;
   },
