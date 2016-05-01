@@ -24,8 +24,8 @@ var fnp = {
     data: {}
   },
   load: function(){
-    this.repo.master = fnp.url.masterHash;
-    this.data.sha = fnp.url.dataHash;
+    fnp.repo.master = fnp.url.masterHash;
+    fnp.repo.data.sha = fnp.url.dataHash;
     document.body.appendChild(fnp.create('script', 'scripts/loader.js', 'text/javascript'));
     document.head.appendChild(fnp.create('link', 'styles/style.css', 'stylesheet'));
     if((fnp.url.page && fnp.url.page == 'setup') || (fnp.url.page && fnp.url.setup)){
