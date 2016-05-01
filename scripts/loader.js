@@ -107,7 +107,7 @@ fnp.checkPulls = function(){
     url: fnp.repo.API + "/pulls",
     cb: function(){
       fnp.repo.pulls = this;
-      if( repo.pulls.length !== 0 ){
+      if( fnp.repo.pulls.length !== 0 ){
         fnp.monitor( "pending pulls", "<a href='" + fnp.repo.content.html_url + "/pulls'>" + fnp.repo.pull.length + ' pulls</a>' );
       }else{
         fnp.monitor( "pending pulls", "no pulls" );
