@@ -55,10 +55,10 @@ fnp.monitor = function (property, value) {
 };
 
 fnp.loader = function(){
-  this.dom.setup();
-  this.apiCall( fnp.repo.API, function(response){
-    if(response){
-      console.log('ok', response);
+  fnp.dom.setup();
+  fnp.apiCall( fnp.repo.API, function(){
+    if(this){
+      console.log('ok', this.responseText);
     }else{
       console.log('no');
     }
