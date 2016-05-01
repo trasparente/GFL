@@ -173,7 +173,7 @@ fnp.update = function(branch, sha){
     accept: 'application/vnd.github.v3.patch',
     method: 'PATCH',
     cb: function(){
-      fnp.monitor( '<em>' + branch + '</em> updated', '<a href="' + window.location.href + '#' + branch + '=' + sha + '">proceed</a>');
+      fnp.monitor( '<em>' + branch + '</em> updated', '<a href="' + window.location.href + '#' + branch + '=' + sha + '" onclick="window.location.reload()">proceed</a>');
     }
   });
 };
