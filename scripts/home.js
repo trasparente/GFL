@@ -18,7 +18,7 @@ fnp.home = {
   },
   checkLeagues: function(){
     fnp.apiCall({
-      url: fnp.searchFile('leagues/leagues.json'),
+      url: fnp.searchDataFile('leagues/leagues.json'),
       cb: function(){
         fnp.leagues.content = this;
         fnp.leagues.obj = JSON.parse( atob(this.content) );
