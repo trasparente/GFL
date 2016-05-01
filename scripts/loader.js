@@ -13,8 +13,8 @@ fnp.user = {
 
 fnp.apiCall = function(url, cb){
   var method = 'GET', accept = 'application/vnd.github.v3.full+json';
-  if(argument[2]) method = argument[2];
-  if(argument[3]) accept = argument[3];
+  if(arguments[2]) method = arguments[2];
+  if(arguments[3]) accept = arguments[3];
   var xhr = new XMLHttpRequest();
   xhr.open ( method, url, true );
   xhr.setRequestHeader( 'Accept', accept );
