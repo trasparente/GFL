@@ -5,7 +5,10 @@
 
 // fnp.user = {};
 // fnp.apiCall = {};
-// fnp.parent = { data: {} };
+
+fnp.parent = {
+  data: {}
+};
 
 fnp.user = {
   get token() { if(localStorage.getItem( 'fnp.user.token')) return atob( localStorage.getItem( 'fnp.user.token' ) ); else return false; }
@@ -60,23 +63,138 @@ fnp.monitor = function (property, value) {
   fnp.dom.ul.appendChild( li );
 };
 
-fnp.loader = function(){
+fnp.getThisRepo = function(){
+  fnp.apiCall({
+    cb: function(){
+      fnp.repo.content = this;
+      fnp.monitor('repository', '<a href="https://github.com/' + this.full_name + '">' + this.full_name + '</a> ' + fnp.repo.master.slice(0,7));
+      fnp.repo.type = this.owner.type;
+      // ORGANIZATION
+      if( this.owner.type == "Organization" ){
+        fnp.monitor( "game started", this.created_at );
+        fnp.monitor( "players", this.forks );
+        if(this.permissions && this.permissions.admin === true){
+          fnp.user.type = 'owner';
+          fnp.checkPulls();
+        }else{
+          fnp.user.type = 'guest';
+          fnp.loadScript();
+        }
+      }
+      // PLAYER
+      if( this.owner.type == "User" ){
+        if(this.fork){
+          fnp.monitor( "game started", this.parent.created_at );
+          fnp.monitor( "players", this.parent.forks );
+          if( this.permissions && this.permissions.admin === true ){
+            fnp.user.type = 'owner';
+            fnp.checkDataParent();
+          }else{
+            fnp.user.type = 'guest';
+            fnp.loadScript();
+          }
+          fnp.monitor( "joined", this.created_at );
+        }else{
+          fnp.monitor( "error", "user repo is not a fork");
+        }
+      }
+    }
+  });
+};
+
+fnp.checkPulls = function(){
+  fnp.apiCall({
+    url: repo.API + "/pulls",
+    cb: function(){
+      fnp.repo.pulls = this;
+      if( repo.pulls.length !== 0 ){
+        fnp.monitor( "pending pulls", "<a href='" + fnp.repo.content.html_url + "/pulls'>" + fnp.repo.pull.length + ' pulls</a>' );
+      }else{
+        fnp.monitor( "pending pulls", "no pulls" );
+        fnp.checkMasterParent();
+      }
+    }
+  });
+};
+
+fnp.checkDataParent = function(){
+  // Get data parent HEAD
+  fnp.apiCall({
+    url: "https://api.github.com/repos/" + fnp.repo.content.parent.full_name + "/git/refs/heads/data",
+    cb: function(){
+      fnp.parent.data.sha = this.object.sha;
+      fnp.monitor( 'parent <em>data</em> HEAD', fnp.parent.data.sha.slice(0,7) );
+      fnp.checkData();
+    }
+  });
+};
+
+fnp.checkData = function(){
+  // Get data HEAD
+  fnp.apiCall({
+    url: "https://api.github.com/repos/" + repo.API + "/git/refs/heads/data",
+    cb: function(){
+      fnp.repo.data.sha = this.object.sha;
+      if( fnp.repo.data.sha == fnp.parent.data.sha ){
+        fnp.monitor( '<em>data</em> HEAD', fnp.repo.data.sha.slice(0,7) );
+        fnp.checkMasterParent();
+      }else{
+        fnp.monitor( '<em>data</em> HEAD', 'need update from ' + fnp.parent.data.sha.slice(0,7) );
+        fnp.update('data', fnp.parent.data.sha);
+      }
+    }
+  });
+};
+
+fnp.checkMasterParent = function(){
+  if(repo.content.fork){
+    fnp.apiCall({
+      url: "https://api.github.com/repos/" + repo.content.parent.full_name + "/git/refs/heads/master",
+      cb: function(){
+        fnp.parent.master = this.object.sha;
+        fnp.monitor( 'parent repository', '<a href="http://' + fnp.repo.content.parent.owner.login + '.github.io/' + fnp.repo.content.parent.name + '">' + fnp.repo.content.parent.full_name + '</a> ' + fnp.parent.master.slice(0,7) );
+        if( fnp.repo.master == fnp.parent.master ){
+          fnp.loadScript();
+        }else{
+          monitor( '<em>master</em> HEAD', 'need update from ' + fnp.parent.master.slice(0,7) );
+          fnp.update('master', fnp.parent.master);
+        }
+      }
+    });
+  }else{
+    fnp.loadScript();
+  }
+};
+
+fnp.update = function(branch, sha){
+  fnp.apiCall({
+    url: repo.API + "/git/refs/heads/" + branch,
+    data: '{"sha":"' + sha + '"}',
+    accept: 'application/vnd.github.v3.patch',
+    method: 'PATCH',
+    cb: function(){
+      fnp.monitor( '<em>' + branch + '</em> updated', '<a href="' + window.location.href + '#' + branch + '=' + sha + '">proceed</a>');
+    }
+  });
+};
+
+fnp.loadScript = function(){
+  fnp.create('script', 'scripts/' + fnp.url.script + '.js', 'text/javascript');
+};
+
+fnp.getMasterHead = function(){
   // Setup DOM
   fnp.dom.setup();
   // Get master HEAD
   fnp.apiCall({
     url: fnp.repo.API + "/git/refs/heads/master",
     cb: function(){
-      if(this){
-        fnp.repo.master = this.object.sha;
-        console.log('ok', this);
-      }else{
-        console.log('no');
-      }
+      fnp.repo.master = this.object.sha;
+      fnp.getThisRepo();
     }
   });
 };
 
 // loader
 
-fnp.loader();
+fnp.getMasterHead();
