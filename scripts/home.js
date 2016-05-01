@@ -15,7 +15,7 @@ fnp.home = {
         fnp.home.checkLeagues();
       },
       err: function(){
-        if(fnp.repo.type == 'Organization' && fnp.user.type == 'owner') monitor('warning','no setup, <a href="' + fnp.repo.home + '/setup/">create</a>'); else fnp.monitor('error','no setup');
+        if(fnp.repo.type == 'Organization' && fnp.user.type == 'owner') fnp.monitor('warning','no setup, <a href="' + fnp.repo.home + '/setup/">create</a>'); else fnp.monitor('error','no setup');
       }
     });
   },
