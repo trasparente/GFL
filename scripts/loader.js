@@ -179,7 +179,7 @@ fnp.update = function(branch, sha){
 };
 
 fnp.loadScript = function(){
-  fnp.create('script', 'scripts/' + fnp.url.script + '.js', 'text/javascript');
+  fnp.appendScript('scripts/' + fnp.url.script + '.js');
 };
 
 fnp.getMasterHead = function(){
