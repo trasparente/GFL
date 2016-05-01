@@ -20,7 +20,7 @@ var fnp = {
     get API() {return 'https://api.github.com/repos/' + this.owner + '/' + this.name;},
     get static() {return 'https://rawgit.com/' + this.owner + '/' + this.name;},
     get cdn() {return 'https://cdn.rawgit.com/' + this.owner + '/' + this.name;},
-    get rawgit() {return this.master === 'master' ? this.static + '/master' : this.cdn + '/' + this.master;},
+    get rawgit() {return this.master == 'master' ? this.static + '/master' : this.cdn + '/' + this.master;},
     data: {}
   },
   load: function(){
