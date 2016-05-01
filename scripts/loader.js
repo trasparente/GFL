@@ -11,10 +11,11 @@ fnp.user = {
   get token() { if(localStorage.getItem( 'fnp.user.token')) return atob( localStorage.getItem( 'fnp.user.token' ) ); else return false; }
 };
 
-fnp.apiCall = function(url, cb){
-  var method = 'GET', accept = 'application/vnd.github.v3.full+json';
+fnp.apiCall = function(url, cb){ // url, cb [, method, accept, data]
+  var method = 'GET', accept = 'application/vnd.github.v3.full+json', data = '';
   if(arguments[2]) method = arguments[2];
   if(arguments[3]) accept = arguments[3];
+  if(arguments[4]) data = arguments[4];
   var xhr = new XMLHttpRequest();
   xhr.open ( method, url, true );
   xhr.setRequestHeader( 'Accept', accept );
@@ -34,7 +35,7 @@ fnp.apiCall = function(url, cb){
         console.log( xhr );
     }
   };
-  xhr.send( apiCall.data );
+  xhr.send( data );
 };
 
 fnp.dom = {
