@@ -21,7 +21,6 @@ var fnp = {
     get static() {return 'https://rawgit.com/' + this.owner + '/' + this.name;},
     get cdn() {return 'https://cdn.rawgit.com/' + this.owner + '/' + this.name;},
     get rawgit() {return this.master === 'master' ? this.static + '/master' : this.cdn + '/' + this.master;},
-    master: fnp.url.masterHash,
     data: {}
   },
   load: function(){
