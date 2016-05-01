@@ -41,7 +41,7 @@ fnp.apiCall = function(obj){ // url, cb, err, methos, accept, data
       }
     }
   };
-  xhr.send( data );
+  xhr.send( obj.data );
 };
 
 fnp.dom = {
