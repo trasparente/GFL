@@ -6,7 +6,7 @@ fnp.setup = {};
 fnp.home = {
   start: function(){
     fnp.apiCall({
-      url: fnp.searchFile('setup.json'),
+      url: fnp.searchDataFile('setup.json'),
       cb: function(){
         fnp.setup.content = this;
         fnp.setup.default = JSON.parse( atob(this.content) );
