@@ -147,16 +147,16 @@ fnp.checkData = function(){
 };
 
 fnp.checkMasterParent = function(){
-  if(repo.content.fork){
+  if(fnp.repo.content.fork){
     fnp.apiCall({
-      url: "https://api.github.com/repos/" + repo.content.parent.full_name + "/git/refs/heads/master",
+      url: "https://api.github.com/repos/" + fnp.repo.content.parent.full_name + "/git/refs/heads/master",
       cb: function(){
         fnp.parent.master = this.object.sha;
         fnp.monitor( 'parent repository', '<a href="http://' + fnp.repo.content.parent.owner.login + '.github.io/' + fnp.repo.content.parent.name + '">' + fnp.repo.content.parent.full_name + '</a> ' + fnp.parent.master.slice(0,7) );
         if( fnp.repo.master == fnp.parent.master ){
           fnp.loadScript();
         }else{
-          monitor( '<em>master</em> HEAD', 'need update from ' + fnp.parent.master.slice(0,7) );
+          fnp.monitor( '<em>master</em> HEAD', 'need update from ' + fnp.parent.master.slice(0,7) );
           fnp.update('master', fnp.parent.master);
         }
       }
