@@ -132,7 +132,7 @@ fnp.checkDataParent = function(){
 fnp.checkData = function(){
   // Get data HEAD
   fnp.apiCall({
-    url: "https://api.github.com/repos/" + fnp.repo.API + "/git/refs/heads/data",
+    url: fnp.repo.API + "/git/refs/heads/data",
     cb: function(){
       fnp.repo.data.sha = this.object.sha;
       if( fnp.repo.data.sha == fnp.parent.data.sha ){
