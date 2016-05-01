@@ -1,36 +1,31 @@
 // home.js
 
-var leagues = {},
-  setup = {};
+fnp.leagues = {};
+fnp.setup = {};
 
-var home = {
+fnp.home = {
   start: function(){
-    apiCall.url = searchFile('setup.json');
-    apiCall.cb = function(){
-      setup.content = JSON.parse( this.responseText );
-      setup.default = JSON.parse( atob(setup.content.content) );
-      setup.sha = setup.content.sha;
-      if(repo.type == 'org' && user.type == 'owner') monitor('setup', '<a href="' + repo.home + '/setup">edit</a>'); else monitor('setup','found');
-      home.checkLeagues();
-    };
-    apiCall.err = function(){
-      if(repo.type == 'org' && user.type == 'owner') monitor('warning','no setup, <a href="' + repo.home + '/setup/">create</a>'); else monitor('warning','no setup');
-    };
-    apiCall.call();
+    fnp.apiCall({
+      url: fnp.searchFile('setup.json'),
+      cb: function(){
+        fnp.setup.content = this;
+        fnp.setup.default = JSON.parse( atob(this.content) );
+        fnp.setup.sha = this.sha;
+        if(fnp.repo.type == 'Organization' && fnp.user.type == 'owner') fnp.monitor('setup', '<a href="' + fnp.repo.home + '/setup">edit</a>'); else fnp.monitor('setup','found');
+        fnp.home.checkLeagues();
+      }
+    });
   },
   checkLeagues: function(){
-    apiCall.url = searchFile('leagues/leagues.json');
-    apiCall.cb = function(){
-      leagues.content = JSON.parse( this.responseText );
-      apiCall.data = '';
-      leagues.obj = JSON.parse( atob(leagues.content.content) );
-      if(repo.type == 'org' && user.type == 'owner') monitor('leagues', '<a href="' + repo.home + '/league/setup">edit</a>'); else monitor('leagues','found');
-    };
-    apiCall.err = function(){
-      if(repo.type == 'org' && user.type == 'owner') monitor('warning','no leagues, <a href="' + repo.home + '/league/setup/">create</a>'); else monitor('warning','no leagues');
-    };
-    apiCall.call();
+    fnp.apiCall({
+      url: fnp.searchFile('leagues/leagues.json'),
+      cb: function(){
+        fnp.leagues.content = this;
+        fnp.leagues.obj = JSON.parse( atob(this.content) );
+        if(fnp.repo.type == 'Organization' && fnp.user.type == 'owner') fnp.monitor('leagues', '<a href="' + fnp.repo.home + '/league/setup">edit</a>'); else fnp.monitor('leagues','found');
+      }
+    });
   }
 };
 
-var start = home.start();
+fnp.home.start();

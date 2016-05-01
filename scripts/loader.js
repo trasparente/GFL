@@ -195,6 +195,10 @@ fnp.getMasterHead = function(){
   });
 };
 
+fnp.searchDataFile = function(file){
+  return fnp.repo.API + '/contents/' + file + '?ref=' + (fnp.repo.data.sha ? fnp.repo.data.sha : 'data');
+};
+
 // loader
 
 fnp.getMasterHead();
