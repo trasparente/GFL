@@ -11,28 +11,34 @@ fnp.user = {
   get token() { if(localStorage.getItem( 'fnp.user.token')) return atob( localStorage.getItem( 'fnp.user.token' ) ); else return false; }
 };
 
-fnp.apiCall = function(url, cb){ // url, cb [, method, accept, data]
-  var method = 'GET', accept = 'application/vnd.github.v3.full+json', data = '';
-  if(arguments[2]) method = arguments[2];
-  if(arguments[3]) accept = arguments[3];
-  if(arguments[4]) data = arguments[4];
+fnp.apiCall = function(obj){ // url, cb, err, methos, accept, data
+  if(!obj.hasOwnProperty('cb')) obj.cb = function(){ console.log(this); };
+  if(!obj.hasOwnProperty('url')) obj.url = fnp.repo.API;
+  if(!obj.hasOwnProperty('method')) obj.method = 'GET';
+  if(!obj.hasOwnProperty('accept')) obj.accept = 'application/vnd.github.v3.full+json';
+  if(!obj.hasOwnProperty('data')) obj.data = null;
+  if(!obj.hasOwnProperty('err')) obj.err = false;
   var xhr = new XMLHttpRequest();
-  xhr.open ( method, url, true );
-  xhr.setRequestHeader( 'Accept', accept );
+  xhr.open ( obj.method, obj.url, true );
+  xhr.setRequestHeader( 'Accept', obj.accept );
   if(fnp.user.token) xhr.setRequestHeader( 'Authorization', 'token ' + fnp.user.token );
   xhr.onreadystatechange = function() {
     if ( xhr.readyState == 4 && xhr.status == 200 ) {
-      if (typeof cb == "function") {
+      if (typeof obj.cb == "function") {
         if (xhr.getResponseHeader("X-RateLimit-Remaining") < 5) fnp.monitor('Rate Limit', 'exceeded');
         if (xhr.getResponseHeader("X-RateLimit-Remaining") < 2) window.location = fnp.repo.home + '/login/';
         var xrate = document.querySelector("footer > small");
         xrate.innerHTML = "X-RateLimit-Remaining: " + xhr.getResponseHeader( "X-RateLimit-Remaining" );
-        cb.apply( xhr );
+        obj.cb.apply( JSON.parse(xhr.responseText) );
       }
     }
     if ( xhr.readyState == 4 && xhr.status >= 400 ) {
-        fnp.monitor('error', 'API call error, check console.');
+      if(typeof obj.err == "function"){
+        obj.err.apply( xhr );
+      }else{
+        fnp.monitor('API error', obj.url);
         console.log( xhr );
+      }
     }
   };
   xhr.send( data );
@@ -55,12 +61,18 @@ fnp.monitor = function (property, value) {
 };
 
 fnp.loader = function(){
+  // Setup DOM
   fnp.dom.setup();
-  fnp.apiCall( fnp.repo.API, function(){
-    if(this){
-      console.log('ok', this.responseText);
-    }else{
-      console.log('no');
+  // Get master HEAD
+  fnp.apiCall({
+    url: fnp.repo.API + "/git/refs/heads/master",
+    cb: function(){
+      if(this){
+        fnp.repo.master = this.object.sha;
+        console.log('ok', this);
+      }else{
+        console.log('no');
+      }
     }
   });
 };
