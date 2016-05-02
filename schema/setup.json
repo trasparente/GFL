@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema#",
-  "id": "https://rawgit.com/fork-n-play/GFL/master/json/setup-schema.json",
+  "id": "https://rawgit.com/fork-n-play/GFL/master/schema/setup.json",
   "type": "object",
   "title": "Setup",
   "description": "Setup values for GFL",

@@ -1,102 +1,83 @@
 // setup.js
 
-var leagues = {},
-  setup = {};
-
-var setup = {
+fnp.setup = {
   start: function(){
-    if (user.type == 'owner' && repo.type == 'org') setup.checkSetup(); else window.location = repo.home;
+    if (fnp.user.type == 'owner' && fnp.repo.type == 'Organization') fnp.setup.checkSetup(); else window.location = fnp.repo.home;
   },
   checkSetup: function(){
-    apiCall.url = searchFile('setup.json');
-      apiCall.cb = function(){
-      setup.content = JSON.parse( this.responseText );
-      setup.default = JSON.parse( atob(setup.content.content) );
-      setup.sha = setup.content.sha;
-      setup.Edit();
-    };
-    apiCall.err = function(){
-      monitor('warning','no setup');
-      setup.default = {};
-      setup.content = 'absent';
-      setup.Edit();
-    };
-    apiCall.call();
+    fnp.apiCall({
+      url: fnp.searchDataFile('setup.json'),
+      cb: function(){
+        fnp.setup.content = this;
+        fnp.setup.default = JSON.parse( atob(this.content) );
+        fnp.setup.sha = this.sha;
+        fnp.setup.Edit();
+      },
+      err: function(){
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, attributes: { innerHTML: 'warning: no setup' } });
+        fnp.setup.default = {};
+        fnp.setup.content = 'absent';
+        fnp.setup.Edit();
+      }
+    });
   },
   Edit: function(){
-    // add DOM elements
-    dom.submit = document.createElement('button');
-    dom.submit.innerHTML = 'Save on master';
-    dom.reset = document.createElement('button');
-    dom.reset.innerHTML = 'Reset default';
-    var section = document.querySelector('section');
-    dom.valid = document.createElement('span');
-    dom.editor = document.createElement('div');
-    section.appendChild(dom.editor);
-    section.appendChild(dom.submit);
-    section.appendChild(dom.reset);
-    section.appendChild(dom.valid);
+    fnp.dom.editor = fnp.appendi({ tag: 'div', parent: 'section', attributes: {} });
+    fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', attributes: { innerHTML: 'Save on master' } });
+    fnp.dom.reset = fnp.appendi({ tag: 'button', parent: 'section', attributes: { innerHTML: 'Reset default' } });
+    fnp.dom.valid = fnp.appendi({ tag: 'span', parent: 'section', attributes: {} });
 
     // load schema
-    apiCall.url = repo.API + "/contents/json/setup-schema.json";
-    if(repo.sha) apiCall.data = '{"ref":' + repo.sha + '}'; else apiCall.data = '{"ref": "master"}';
-    apiCall.cb = function(){
-      setup.schemaBlob = JSON.parse( this.responseText );
-      setup.schema = JSON.parse(atob(setup.schemaBlob.content));
-      // Initialize the editor
-      var editor = new JSONEditor(dom.editor,{
-        ajax: true,
-        schema: setup.schema,
-        startval: setup.default,
-        no_additional_properties: false,
-        required_by_default: false,
-        // Special
-        disable_properties: true,
-        disable_edit_json: true,
-        disable_array_reorder: false
-      });
-      dom.submit.addEventListener('click',function() {
-        setup.encoded = btoa(JSON.stringify(editor.getValue()));
-        apiCall.url = repo.API + '/contents/setup.json';
-        apiCall.method = 'PUT';
-        if(setup.content == 'absent'){
-          apiCall.data = '{"message": "setup created", "content": "' + setup.encoded + '", "branch": "data"}';
-        }else{
-          apiCall.data = '{"message": "setup edited", "content": "' + setup.encoded + '", "branch": "data", "sha": "' + setup.sha + '"}';
-        }
-        apiCall.cb = function(){
-          var divs = document.querySelector('div[data-schemaid]');
-          divs.setAttribute('hidden','');
-          dom.reset.setAttribute('hidden','');
-          dom.valid.setAttribute('hidden','');
-          dom.submit.setAttribute('hidden','');
-          monitor('saved', '<a href="' + repo.home + '/setup/">proceed</a>');
-        };
-        apiCall.err = function(){
-          console.log('err', JSON.parse( this.responseText ));
-        };
-        apiCall.call();
-      });
-      dom.reset.addEventListener('click',function() {
-        editor.setValue(setup.default);
-      });
-      editor.on('change',function() {
-        var errors = editor.validate();
-        if(errors.length) {
-          console.log(errors);
-          dom.valid.style.color = 'red';
-          dom.valid.textContent = "not valid";
-        } else {
-          dom.valid.style.color = 'green';
-          dom.valid.textContent = "valid";
-        }
-      });
-    };
-    apiCall.err = function(){
-      monitor('error', 'no setup-schema');
-    };
-    apiCall.call();
+    fnp.apiCall({
+      url: fnp.searchMasterFile('schema/setup.json'),
+      cb: function(){
+        fnp.setup.schemaBlob = this;
+        fnp.setup.schema = JSON.parse( atob(this.content) );
+        // Initialize the editor
+        var editor = new JSONEditor(fnp.dom.editor,{
+          ajax: true,
+          schema: fnp.setup.schema,
+          startval: fnp.setup.default,
+          no_additional_properties: false,
+          required_by_default: false,
+          // Special
+          disable_properties: true,
+          disable_edit_json: true,
+          disable_array_reorder: false
+        });
+        fnp.dom.submit.addEventListener('click',function() {
+          fnp.setup.encoded = btoa( JSON.stringify(editor.getValue()) );
+          fnp.apiCall({
+            url: fnp.searchDataFile('setup.json'),
+            method: 'PUT',
+            data: function(){ return fnp.setup.content == 'absent' ? '{"message": "setup created", "content": "' + fnp.setup.encoded + '", "branch": "data"}' : '{"message": "setup edited", "content": "' + fnp.setup.encoded + '", "branch": "data", "sha": "' + fnp.setup.sha + '"}'; },
+            cb: function(){
+              var divs = document.querySelector('div[data-schemaid]');
+              divs.setAttribute('hidden','');
+              fnp.dom.reset.setAttribute('hidden','');
+              fnp.dom.valid.setAttribute('hidden','');
+              fnp.dom.submit.setAttribute('hidden','');
+              fnp.appendi({ tag: 'li', parent: fnp.dom.ul, attributes: { innerHTML: 'saved: <a href="' + fnp.repo.home + '/setup/">proceed</a>' } });
+            }
+          });
+        });
+        fnp.dom.reset.addEventListener('click',function() {
+          editor.setValue(fnp.setup.default);
+        });
+        editor.on('change',function() {
+          var errors = editor.validate();
+          if(errors.length) {
+            console.log(errors);
+            fnp.dom.valid.style.color = 'red';
+            fnp.dom.valid.textContent = "not valid";
+          } else {
+            fnp.dom.valid.style.color = 'green';
+            fnp.dom.valid.textContent = "valid";
+          }
+        });
+      }
+    });
   }
 };
 
-var start = setup.start();
+fnp.setup.start();
