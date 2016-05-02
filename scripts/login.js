@@ -11,7 +11,7 @@ document.getElementById( 'submitLogin' ).addEventListener('click', function(e) {
         window.location = fnp.repo.home;
       },
       err: function(){
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, attributes: { 'innerHTML': 'error: wrong token, try again' } });
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, attributes: { innerHTML: 'error: wrong token, try again' } });
         document.getElementById('submitLogin').removeAttribute('disabled');
         document.getElementById('token').value = '';
         document.getElementById('token').focus();
