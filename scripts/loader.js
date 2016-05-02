@@ -42,7 +42,7 @@ fnp.apiCall = function(obj){ // url, cb, err, methos, accept, data
 };
 
 fnp.dom = {
-  get ul() {return document.querySelector('header > details > ul');},
+  get ul() {return 'main > section > header > details > ul';},
   setup: function(){
     fnp.appendi({ tag: 'details', parent: 'main > section > header', attributes: { open: '' } });
     fnp.appendi({ tag: 'ul', parent: 'section > header > details', attributes: {} });
