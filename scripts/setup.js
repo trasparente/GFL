@@ -14,7 +14,7 @@ fnp.setup = {
         fnp.setup.Edit();
       },
       err: function(){
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, attributes: { innerHTML: 'warning: no setup' } });
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'warning: no setup' });
         fnp.setup.default = {};
         fnp.setup.content = 'absent';
         fnp.setup.Edit();
@@ -23,8 +23,8 @@ fnp.setup = {
   },
   Edit: function(){
     fnp.dom.editor = fnp.appendi({ tag: 'div', parent: 'section', attributes: {} });
-    fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', attributes: { innerHTML: 'Save on master' } });
-    fnp.dom.reset = fnp.appendi({ tag: 'button', parent: 'section', attributes: { innerHTML: 'Reset default' } });
+    fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Save on master' });
+    fnp.dom.reset = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Reset default' });
     fnp.dom.valid = fnp.appendi({ tag: 'span', parent: 'section', attributes: {} });
 
     // load schema
@@ -57,7 +57,7 @@ fnp.setup = {
               fnp.dom.reset.setAttribute('hidden','');
               fnp.dom.valid.setAttribute('hidden','');
               fnp.dom.submit.setAttribute('hidden','');
-              fnp.appendi({ tag: 'li', parent: fnp.dom.ul, attributes: { innerHTML: 'saved: <a href="' + fnp.repo.home + '/setup/">proceed</a>' } });
+              fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/setup/">proceed</a>' });
             }
           });
         });
