@@ -26,23 +26,20 @@ var fnp = {
   load: function(){
     fnp.repo.master = fnp.url.masterHash;
     fnp.repo.data.sha = fnp.url.dataHash;
-    document.body.appendChild(fnp.appendScript('scripts/loader.js'));
-    document.head.appendChild(fnp.appendStyle('styles/style.css'));
+    fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/loader.js', type: 'text/javascript' } });
+    fnp.appendi({ tag: 'link', parent: 'head', attributes: { href: fnp.repo.rawgit + '/styles/style.css', rel: 'stylesheet' } });
     if((fnp.url.page && fnp.url.page == 'setup') || (fnp.url.page && fnp.url.setup)){
-      document.body.appendChild(fnp.appendScript('scripts/jsoneditor.js'));
+      fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/jsoneditor.js', type: 'text/javascript' } });
     }
   },
-  appendScript: function(file) {
-    var element = document.createElement('script');
-    element.src = fnp.repo.rawgit + '/' + file;
-    element.type = 'text/javascript';
-    return element;
-  },
-  appendStyle: function(file) {
-    var element = document.createElement('link');
-    element.href = fnp.repo.rawgit + '/' + file;
-    element.rel = 'stylesheet';
-    return element;
+  appendi: function(obj){
+    var element = document.createElement(obj.tag);
+    for (var key in obj.attributes) {
+      if (obj.attributes.hasOwnProperty(key)) {
+        element.setAttribute(key, obj.attributes[key]);
+      }
+    }
+    document.querySelector(obj.parent).appendChild(element);
   },
   init: function(){
     if (window.addEventListener)
