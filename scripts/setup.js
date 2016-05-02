@@ -50,7 +50,7 @@ fnp.setup = {
           fnp.apiCall({
             url: fnp.searchDataFile('setup.json'),
             method: 'PUT',
-            data: function(){ return fnp.setup.content == 'absent' ? '{"message": "setup created", "content": "' + fnp.setup.encoded + '", "branch": "data"}' : '{"message": "setup edited", "content": "' + fnp.setup.encoded + '", "branch": "data", "sha": "' + fnp.setup.sha + '"}'; },
+            data: fnp.setup.content == 'absent' ? '{"message": "setup created", "content": "' + fnp.setup.encoded + '", "branch": "data"}' : '{"message": "setup edited", "content": "' + fnp.setup.encoded + '", "branch": "data", "sha": "' + fnp.setup.sha + '"}',
             cb: function(){
               var divs = document.querySelector('div[data-schemaid]');
               divs.setAttribute('hidden','');
