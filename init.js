@@ -39,7 +39,7 @@ var fnp = {
         element.setAttribute(key, obj.attributes[key]);
       }
     }
-    if(obj.innerHTML) element.innerHTML = obj.innerHTML;
+    if(obj.hasOwnProperty('innerHTML')) element.innerHTML = obj.innerHTML;
     return document.querySelector(obj.parent).appendChild(element);
   },
   init: function(){
