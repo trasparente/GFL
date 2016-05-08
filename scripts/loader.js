@@ -20,24 +20,28 @@ fnp.apiCall = function(obj){ // url, cb, err, methos, accept, data
   xhr.setRequestHeader( 'Accept', obj.accept );
   if(fnp.user.token) xhr.setRequestHeader( 'Authorization', 'token ' + fnp.user.token );
   xhr.onreadystatechange = function() {
-    if ( xhr.readyState == 4 && xhr.status == 200 ) {
-      if (typeof obj.cb == "function") {
-        if (xhr.getResponseHeader("X-RateLimit-Remaining") < 5) fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'rate limit: exceeded' });
-        if (xhr.getResponseHeader("X-RateLimit-Remaining") < 2) window.location = fnp.repo.home + '/login/';
-        var xrate = document.querySelector("footer > small");
-        xrate.innerHTML = "X-RateLimit-Remaining: " + xhr.getResponseHeader( "X-RateLimit-Remaining" );
-        obj.cb.apply( JSON.parse(xhr.responseText) );
+    if(xhr.readyState == 4){
+      document.querySelector('body').style.backgroundColor = "white";
+      if ( xhr.status == 200 ) {
+        if (typeof obj.cb == "function") {
+          if (xhr.getResponseHeader("X-RateLimit-Remaining") < 5) fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'rate limit: exceeded' });
+          if (xhr.getResponseHeader("X-RateLimit-Remaining") < 2) window.location = fnp.repo.home + '/login/';
+          var xrate = document.querySelector("footer > small");
+          xrate.innerHTML = "X-RateLimit-Remaining: " + xhr.getResponseHeader( "X-RateLimit-Remaining" );
+          obj.cb.apply( JSON.parse(xhr.responseText) );
+        }
       }
-    }
-    if ( xhr.readyState == 4 && xhr.status >= 400 ) {
-      if(typeof obj.err == "function"){
-        obj.err.apply( xhr );
-      }else{
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'api error: ' + obj.url });
-        console.log( xhr );
+      if ( xhr.status >= 400 ) {
+        if(typeof obj.err == "function"){
+          obj.err.apply( xhr );
+        }else{
+          fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'api error: ' + obj.url });
+          console.log( xhr );
+        }
       }
     }
   };
+  document.querySelector('body').style.backgroundColor = "whitesmoke";
   xhr.send( obj.data );
 };
 
@@ -98,7 +102,7 @@ fnp.checkPulls = function(){
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'pending pulls: <a href="' + fnp.repo.content.html_url + '/pulls">' + fnp.repo.pulls.length + ' pulls</a>' });
       }else{
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'pending pulls: no' });
-        fnp.checkMasterParent();
+        fnp.checkData();
       }
     }
   });
@@ -122,7 +126,7 @@ fnp.checkData = function(){
     url: fnp.repo.API + "/git/refs/heads/data",
     cb: function(){
       fnp.repo.data.sha = this.object.sha;
-      if( fnp.repo.data.sha == fnp.parent.data.sha ){
+      if( fnp.repo.data.sha == fnp.parent.data.sha || this.owner.type == "Organization" ){
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>data</em> HEAD: ' + fnp.repo.data.sha.slice(0,7) });
         fnp.checkMasterParent();
       }else{

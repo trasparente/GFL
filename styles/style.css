@@ -1,10 +1,12 @@
 html { overflow-y: scroll; }
-body[hidden] { font-size: 1.2em; padding: 0em 1em; display: block; }
+body[hidden] { font-size: 1.2em; display: block; }
+body > header > h1 { margin: 0; padding: 0.67em 1em; }
 a { text-decoration: none; }
 a:visited { color: blue; }
 a:active { color: white; }
 a:hover { text-decoration: underline; }
 h1 a, h1 a:visited { color: inherit; }
-main { padding: 1em; }
+main { padding: 1em 2em; }
+footer { padding: 1em; }
 summary { cursor: pointer; }
 summary:focus { outline: none; }
