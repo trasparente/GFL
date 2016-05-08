@@ -33,7 +33,7 @@ fnp.apiCall = function(obj){ // url, cb, err, methos, accept, data
       if(typeof obj.err == "function"){
         obj.err.apply( xhr );
       }else{
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'api error' + obj.url });
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'api error: ' + obj.url });
         console.log( xhr );
       }
     }

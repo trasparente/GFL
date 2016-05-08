@@ -129,6 +129,20 @@
         }
       }
     },
+    "leagues": {
+      "type": "array",
+      "id": "leagues",
+      "title": "Leagues",
+      "items": {
+        "$ref": "#/definitions/league"
+      }
+    }
+  },
+  "required": [
+    "rolls",
+    "gauges"
+  ],
+  "definitions": {
     "league": {
       "type": "object",
       "id": "league",
@@ -287,11 +301,10 @@
             }
           }
         }
-      }
+      },
+      "required": [
+        "name"
+      ]
     }
-  },
-  "required": [
-    "rolls",
-    "gauges"
-  ]
+  }
 }

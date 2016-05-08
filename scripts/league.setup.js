@@ -1,8 +1,10 @@
-// setup.js
+// league.setup.js
 
-fnp.setup = {
+fnp.leagues = {};
+
+fnp.league = {
   start: function(){
-    if (fnp.user.type == 'owner' && fnp.repo.type == 'Organization') fnp.setup.checkSetup(); else window.location = fnp.repo.home;
+    if (fnp.user.type == 'owner' && fnp.repo.type == 'Organization') fnp.league.checkSetup(); else window.location = fnp.repo.home;
   },
   checkSetup: function(){
     fnp.apiCall({
@@ -11,13 +13,27 @@ fnp.setup = {
         fnp.setup.content = this;
         fnp.setup.default = JSON.parse( atob(this.content) );
         fnp.setup.sha = this.sha;
-        fnp.setup.Edit();
+        fnp.league.checkLeagues();
       },
       err: function(){
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'warning: no setup' });
-        fnp.setup.default = {};
-        fnp.setup.content = 'absent';
-        fnp.setup.Edit();
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'warning: no setup, <a href="' + fnp.repo.home + '/setup/">create</a>' });
+      }
+    });
+  },
+  checkLeagues: function(){
+    fnp.apiCall({
+      url: fnp.searchDataFile('leagues/leagues.json'),
+      cb: function(){
+        fnp.leagues.content = this;
+        fnp.leagues.default = JSON.parse( atob(this.content) );
+        fnp.leagues.sha = this.sha;
+        fnp.league.Edit();
+      },
+      err: function(){
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'warning: no leagues' });
+        fnp.leagues.default = {};
+        fnp.leagues.content = 'absent';
+        fnp.league.Edit();
       }
     });
   },
@@ -36,8 +52,8 @@ fnp.setup = {
         // Initialize the editor
         var editor = new JSONEditor(fnp.dom.editor,{
           ajax: true,
-          schema: fnp.setup.schema,
-          startval: fnp.setup.default,
+          schema: fnp.setup.schema.leagues,
+          startval: fnp.leagues.default,
           no_additional_properties: false,
           required_by_default: false,
           // Special
@@ -47,23 +63,23 @@ fnp.setup = {
         });
         fnp.dom.submit.addEventListener('click',function() {
           fnp.dom.submit.setAttribute('disabled','');
-          fnp.setup.encoded = btoa( JSON.stringify(editor.getValue()) );
+          fnp.leagues.encoded = btoa( JSON.stringify(editor.getValue()) );
           fnp.apiCall({
-            url: fnp.searchDataFile('setup.json'),
+            url: fnp.searchDataFile('leagues/leagues.json'),
             method: 'PUT',
-            data: fnp.setup.content == 'absent' ? '{"message": "setup created", "content": "' + fnp.setup.encoded + '", "branch": "data"}' : '{"message": "setup edited", "content": "' + fnp.setup.encoded + '", "branch": "data", "sha": "' + fnp.setup.sha + '"}',
+            data: fnp.leagues.content == 'absent' ? '{"message": "leagues created", "content": "' + fnp.leagues.encoded + '", "branch": "data"}' : '{"message": "leagues edited", "content": "' + fnp.leagues.encoded + '", "branch": "data", "sha": "' + fnp.leagues.sha + '"}',
             cb: function(){
               var divs = document.querySelector('div[data-schemaid]');
               divs.setAttribute('hidden','');
               fnp.dom.reset.setAttribute('hidden','');
               fnp.dom.valid.setAttribute('hidden','');
               fnp.dom.submit.setAttribute('hidden','');
-              fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/setup/">proceed</a>' });
+              fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/leagues/setup/">proceed</a>' });
             }
           });
         });
         fnp.dom.reset.addEventListener('click',function() {
-          editor.setValue(fnp.setup.default);
+          editor.setValue(fnp.leagues.default);
         });
         editor.on('change',function() {
           var errors = editor.validate();
