@@ -126,7 +126,7 @@ fnp.checkData = function(){
     url: fnp.repo.API + "/git/refs/heads/data",
     cb: function(){
       fnp.repo.data.sha = this.object.sha;
-      if( fnp.repo.data.sha == fnp.parent.data.sha || fnp.repo.owner.type == "Organization" ){
+      if( fnp.repo.data.sha == fnp.parent.data.sha || fnp.repo.type == "Organization" ){
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>data</em> HEAD: ' + fnp.repo.data.sha.slice(0,7) });
         fnp.checkMasterParent();
       }else{
