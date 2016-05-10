@@ -173,7 +173,7 @@ fnp.getMasterHead = function(){
   fnp.apiCall({
     url: fnp.repo.API + "/git/refs/heads/master",
     cb: function(){
-      fnp.repo.master = fnp.repo.master != 'master' ? fnp.repo.master : this.object.sha;
+      fnp.repo.master = (fnp.repo.master != 'master') ? fnp.repo.master : this.object.sha;
       fnp.getThisRepo();
     }
   });
