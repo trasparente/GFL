@@ -53,12 +53,13 @@ fnp.setup = {
             method: 'PUT',
             data: fnp.setup.content == 'absent' ? '{"message": "setup created", "content": "' + fnp.setup.encoded + '", "branch": "data"}' : '{"message": "setup edited", "content": "' + fnp.setup.encoded + '", "branch": "data", "sha": "' + fnp.setup.sha + '"}',
             cb: function(){
+              fnp.repo.data.sha = this.commit.sha;
               var divs = document.querySelector('div[data-schemaid]');
               divs.setAttribute('hidden','');
               fnp.dom.reset.setAttribute('hidden','');
               fnp.dom.valid.setAttribute('hidden','');
               fnp.dom.submit.setAttribute('hidden','');
-              fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/setup/">proceed</a>' });
+              fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/setup/#data=' + fnp.repo.data.sha + '">proceed</a>' });
             }
           });
         });
