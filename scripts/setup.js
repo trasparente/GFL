@@ -23,7 +23,7 @@ fnp.setup = {
   },
   Edit: function(){
     fnp.dom.editor = fnp.appendi({ tag: 'div', parent: 'section', attributes: {} });
-    fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Save on data branch' });
+    fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Save data/setup.json' });
     fnp.dom.reset = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Reset default' });
     fnp.dom.valid = fnp.appendi({ tag: 'span', parent: 'section', attributes: {} });
 
@@ -45,27 +45,8 @@ fnp.setup = {
           disable_edit_json: true,
           disable_array_reorder: false
         });
-        fnp.dom.submit.addEventListener('click',function() {
-          fnp.dom.submit.setAttribute('disabled','');
-          fnp.setup.encoded = btoa( JSON.stringify(editor.getValue()) );
-          fnp.apiCall({
-            url: fnp.searchDataFile('setup.json'),
-            method: 'PUT',
-            data: fnp.setup.content == 'absent' ? '{"message": "setup created", "content": "' + fnp.setup.encoded + '", "branch": "data"}' : '{"message": "setup edited", "content": "' + fnp.setup.encoded + '", "branch": "data", "sha": "' + fnp.setup.sha + '"}',
-            cb: function(){
-              fnp.repo.data.sha = this.commit.sha;
-              var divs = document.querySelector('div[data-schemaid]');
-              divs.setAttribute('hidden','');
-              fnp.dom.reset.setAttribute('hidden','');
-              fnp.dom.valid.setAttribute('hidden','');
-              fnp.dom.submit.setAttribute('hidden','');
-              fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
-            }
-          });
-        });
-        fnp.dom.reset.addEventListener('click',function() {
-          editor.setValue(fnp.setup.default);
-        });
+        fnp.dom.submit.addEventListener('click',function() { fnp.setup.save(editor.getValue()); });
+        fnp.dom.reset.addEventListener('click',function() { editor.setValue(fnp.setup.default); });
         editor.on('change',function() {
           var errors = editor.validate();
           if(errors.length) {
@@ -77,6 +58,24 @@ fnp.setup = {
             fnp.dom.valid.textContent = "valid";
           }
         });
+      }
+    });
+  },
+  save: function(dati){
+    fnp.dom.submit.setAttribute('disabled','');
+    fnp.setup.encoded = btoa( JSON.stringify(dati) );
+    fnp.apiCall({
+      url: fnp.searchDataFile('setup.json'),
+      method: 'PUT',
+      data: fnp.setup.content == 'absent' ? '{"message": "setup created", "content": "' + fnp.setup.encoded + '", "branch": "data"}' : '{"message": "setup modified", "content": "' + fnp.setup.encoded + '", "branch": "data", "sha": "' + fnp.setup.sha + '"}',
+      cb: function(){
+        fnp.repo.data.sha = this.commit.sha;
+        var divs = document.querySelector('div[data-schemaid]');
+        divs.setAttribute('hidden','');
+        fnp.dom.reset.setAttribute('hidden','');
+        fnp.dom.valid.setAttribute('hidden','');
+        fnp.dom.submit.setAttribute('hidden','');
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
       }
     });
   }
