@@ -53,7 +53,7 @@ fnp.league = {
         // Initialize the editor
         var editor = new JSONEditor(fnp.dom.editor,{
           ajax: true,
-          schema: fnp.setup.schema.leagues,
+          schema: fnp.setup.schema.properties.leagues,
           startval: fnp.leagues.default,
           no_additional_properties: false,
           required_by_default: false,
