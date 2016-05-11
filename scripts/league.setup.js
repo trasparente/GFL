@@ -40,7 +40,7 @@ fnp.league = {
   },
   Edit: function(){
     fnp.dom.editor = fnp.appendi({ tag: 'div', parent: 'section', attributes: {} });
-    fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Save data/leagues.json' });
+    fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Save leagues' });
     fnp.dom.reset = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Reset default' });
     fnp.dom.valid = fnp.appendi({ tag: 'span', parent: 'section', attributes: {} });
 

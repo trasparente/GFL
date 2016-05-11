@@ -134,164 +134,157 @@
       "id": "leagues",
       "title": "Leagues",
       "items": {
-        "$ref": "#/definitions/league"
-      }
-    }
-  },
-  "required": [
-    "rolls",
-    "gauges"
-  ],
-  "definitions": {
-    "league": {
-      "type": "object",
-      "id": "league",
-      "title": "League",
-      "description": "Schema for a league",
-      "properties": {
-        "name": {
-          "type": "string",
-          "title": "League name",
-          "minLength": 1
-        },
-        "slug": {
-          "type": "string",
-          "title": "League slug",
-          "options": {
-            "hidden": true
-          }
-        },
-        "running": {
-          "type": "boolean",
-          "title": "League running",
-          "format": "checkbox",
-          "default": false
-        },
-        "standings": {
-          "type": "array",
-          "title": "Standings",
-          "description": "League standings",
-          "uniqueItems": true,
-          "items": {
-            "type": "object",
-            "title": "Position",
-            "description": "Standing position",
-            "properties": {
-              "name": {
-                "type": "string",
-                "title": "Team name"
-              },
-              "username": {
-                "type": "string",
-                "title": "Team username",
-                "options": {
-                  "hidden": true
-                }
-              },
-              "win": {
-                "type": "number",
-                "title": "Matches won"
-              },
-              "tie": {
-                "type": "number",
-                "title": "Matches tied"
-              },
-              "lost": {
-                "type": "number",
-                "title": "Matches lost"
-              },
-              "matches": {
-                "type": "number",
-                "title": "Matches played"
+        "league": {
+          "type": "object",
+          "id": "league",
+          "title": "League",
+          "description": "Schema for a league",
+          "properties": {
+            "name": {
+              "type": "string",
+              "title": "League name",
+              "minLength": 1
+            },
+            "slug": {
+              "type": "string",
+              "title": "League slug",
+              "options": {
+                "hidden": true
               }
-            }
-          }
-        },
-        "rounds": {
-          "type": "array",
-          "title": "Rounds",
-          "description": "Rounds of the league",
-          "uniqueItems": true,
-          "items": {
-            "type": "object",
-            "title": "Round",
-            "description": "Round",
-            "properties": {
-              "date": {
-                "type": "number",
-                "title": "Date and time",
-                "description": "Round date and time in unix-time"
-              },
-              "matches": {
-                "type": "array",
-                "title": "Matches",
-                "description": "Matches of the round",
-                "items": {
-                  "type": "object",
-                  "title": "Match",
-                  "description": "Match",
-                  "properties": {
-                    "venue": {
+            },
+            "running": {
+              "type": "boolean",
+              "title": "League running",
+              "format": "checkbox",
+              "default": false
+            },
+            "standings": {
+              "type": "array",
+              "title": "Standings",
+              "description": "League standings",
+              "uniqueItems": true,
+              "items": {
+                "type": "object",
+                "title": "Position",
+                "description": "Standing position",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "title": "Team name"
+                  },
+                  "username": {
+                    "type": "string",
+                    "title": "Team username",
+                    "options": {
+                      "hidden": true
+                    }
+                  },
+                  "win": {
+                    "type": "number",
+                    "title": "Matches won"
+                  },
+                  "tie": {
+                    "type": "number",
+                    "title": "Matches tied"
+                  },
+                  "lost": {
+                    "type": "number",
+                    "title": "Matches lost"
+                  },
+                  "matches": {
+                    "type": "number",
+                    "title": "Matches played"
+                  }
+                }
+              }
+            },
+            "rounds": {
+              "type": "array",
+              "title": "Rounds",
+              "description": "Rounds of the league",
+              "uniqueItems": true,
+              "items": {
+                "type": "object",
+                "title": "Round",
+                "description": "Round",
+                "properties": {
+                  "date": {
+                    "type": "number",
+                    "title": "Date and time",
+                    "description": "Round date and time in unix-time"
+                  },
+                  "matches": {
+                    "type": "array",
+                    "title": "Matches",
+                    "description": "Matches of the round",
+                    "items": {
                       "type": "object",
-                      "title": "Venue",
+                      "title": "Match",
+                      "description": "Match",
                       "properties": {
-                        "weather": {
-                          "type": "string",
-                          "title": "Weather"
-                        },
-                        "stadium": {
-                          "type": "string",
-                          "title": "Stadium"
-                        },
-                        "attendance": {
-                          "type": "number",
-                          "title": "Attendance"
-                        }
-                      }
-                    },
-                    "home": {
-                      "type": "object",
-                      "title": "Home",
-                      "description": "Home team",
-                      "properties": {
-                        "name": {
-                          "type": "string",
-                          "title": "Team name",
-                          "minLength": 1
-                        },
-                        "username": {
-                          "type": "string",
-                          "title": "Team username",
-                          "options": {
-                            "hidden": true
+                        "venue": {
+                          "type": "object",
+                          "title": "Venue",
+                          "properties": {
+                            "weather": {
+                              "type": "string",
+                              "title": "Weather"
+                            },
+                            "stadium": {
+                              "type": "string",
+                              "title": "Stadium"
+                            },
+                            "attendance": {
+                              "type": "number",
+                              "title": "Attendance"
+                            }
                           }
                         },
-                        "score": {
-                          "type": "number",
-                          "title": "Points scored"
-                        }
-                      }
-                    },
-                    "away": {
-                      "type": "object",
-                      "title": "Away",
-                      "description": "Away team",
-                      "properties": {
-                        "name": {
-                          "type": "string",
-                          "title": "Team name",
-                          "minLength": 1
-                        },
-                        "username": {
-                          "type": "string",
-                          "title": "Team username",
-                          "options": {
-                            "hidden": true
+                        "home": {
+                          "type": "object",
+                          "title": "Home",
+                          "description": "Home team",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "title": "Team name",
+                              "minLength": 1
+                            },
+                            "username": {
+                              "type": "string",
+                              "title": "Team username",
+                              "options": {
+                                "hidden": true
+                              }
+                            },
+                            "score": {
+                              "type": "number",
+                              "title": "Points scored"
+                            }
                           }
                         },
-                        "score": {
-                          "type": "number",
-                          "title": "Points scored"
+                        "away": {
+                          "type": "object",
+                          "title": "Away",
+                          "description": "Away team",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "title": "Team name",
+                              "minLength": 1
+                            },
+                            "username": {
+                              "type": "string",
+                              "title": "Team username",
+                              "options": {
+                                "hidden": true
+                              }
+                            },
+                            "score": {
+                              "type": "number",
+                              "title": "Points scored"
+                            }
+                          }
                         }
                       }
                     }
@@ -299,12 +292,16 @@
                 }
               }
             }
-          }
+          },
+          "required": [
+            "name"
+          ]
         }
-      },
-      "required": [
-        "name"
-      ]
+      }
     }
-  }
+  },
+  "required": [
+    "rolls",
+    "gauges"
+  ]
 }
