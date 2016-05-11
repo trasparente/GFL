@@ -121,20 +121,25 @@ fnp.checkDataParent = function(){
 };
 
 fnp.checkData = function(){
-  // Get data HEAD
-  fnp.apiCall({
-    url: fnp.repo.API + "/git/refs/heads/data",
-    cb: function(){
-      fnp.repo.data.sha = this.object.sha;
-      if( fnp.repo.data.sha == fnp.parent.data.sha || fnp.repo.type == "Organization" ){
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>data</em> HEAD: ' + fnp.repo.data.sha.slice(0,7) });
-        fnp.checkMasterParent();
-      }else{
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>data</em> HEAD: need update from ' + fnp.parent.data.sha.slice(0,7) });
-        fnp.update('data', fnp.parent.data.sha);
+  if(fnp.repo.data.sha=='data'){
+    // Get data HEAD
+    fnp.apiCall({
+      url: fnp.repo.API + "/git/refs/heads/data",
+      cb: function(){
+        fnp.repo.data.sha = this.object.sha;
+        if( fnp.repo.data.sha == fnp.parent.data.sha || fnp.repo.type == "Organization" ){
+          fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>data</em> HEAD: ' + fnp.repo.data.sha.slice(0,7) });
+          fnp.checkMasterParent();
+        }else{
+          fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>data</em> HEAD: need update from ' + fnp.parent.data.sha.slice(0,7) });
+          fnp.update('data', fnp.parent.data.sha);
+        }
       }
-    }
-  });
+    });
+  }else{
+    fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>data</em> HEAD: ' + fnp.repo.data.sha.slice(0,7) });
+    fnp.checkMasterParent();
+  }
 };
 
 fnp.checkMasterParent = function(){
