@@ -39,7 +39,7 @@ fnp.league = {
   },
   Edit: function(){
     fnp.dom.editor = fnp.appendi({ tag: 'div', parent: 'section', attributes: {} });
-    fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Save on master' });
+    fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Save data/leagues.json' });
     fnp.dom.reset = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Reset default' });
     fnp.dom.valid = fnp.appendi({ tag: 'span', parent: 'section', attributes: {} });
 
@@ -69,12 +69,13 @@ fnp.league = {
             method: 'PUT',
             data: fnp.leagues.content == 'absent' ? '{"message": "leagues created", "content": "' + fnp.leagues.encoded + '", "branch": "data"}' : '{"message": "leagues edited", "content": "' + fnp.leagues.encoded + '", "branch": "data", "sha": "' + fnp.leagues.sha + '"}',
             cb: function(){
+              fnp.repo.data.sha = this.commit.sha;
               var divs = document.querySelector('div[data-schemaid]');
               divs.setAttribute('hidden','');
               fnp.dom.reset.setAttribute('hidden','');
               fnp.dom.valid.setAttribute('hidden','');
               fnp.dom.submit.setAttribute('hidden','');
-              fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/leagues/setup/">proceed</a>' });
+              fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/leagues/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
             }
           });
         });
@@ -97,4 +98,4 @@ fnp.league = {
   }
 };
 
-fnp.setup.start();
+fnp.league.start();
