@@ -23,8 +23,8 @@ fnp.setup = {
   },
   Edit: function(){
     fnp.dom.editor = fnp.appendi({ tag: 'div', parent: 'section', attributes: {} });
+    fnp.dom.cancel = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Cancel' });
     fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Save setup' });
-    fnp.dom.reset = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Reset default' });
     fnp.dom.valid = fnp.appendi({ tag: 'span', parent: 'section', attributes: {} });
 
     // load schema
@@ -46,7 +46,7 @@ fnp.setup = {
           disable_array_reorder: false
         });
         fnp.dom.submit.addEventListener('click',function() { fnp.setup.save(editor.getValue()); });
-        fnp.dom.reset.addEventListener('click',function() { editor.setValue(fnp.setup.default); });
+        fnp.dom.cancel.addEventListener('click',function() { window.location = fnp.repo.home; });
         editor.on('change',function() {
           var errors = editor.validate();
           if(errors.length) {
