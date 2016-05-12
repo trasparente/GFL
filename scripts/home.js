@@ -70,7 +70,7 @@ fnp.home = {
   displayLeagues: function(){
     console.log(fnp.leagues.deafult);
     fnp.apiCall({
-      url: fnp.repo.API + '/readme?ref=' + (fnp.repo.master ? fnp.repo.master : 'master'),
+      url: fnp.repo.API + '/readme?ref=' + 'gh-pages',
       accept: 'application/vnd.github.v3.html+json',
       cb: function(){
         fnp.appendi({ tag: 'p', parent: fnp.dom.section, innerHTML: this });
