@@ -1,7 +1,8 @@
 // home.js
 
-fnp.leagues = {};
 fnp.setup = {};
+fnp.leagues = {};
+fnp.team = {};
 
 fnp.home = {
   start: function(){
@@ -32,11 +33,12 @@ fnp.home = {
       url: fnp.searchDataFile('leagues/leagues.json'),
       cb: function(){
         fnp.leagues.content = this;
-        fnp.leagues.obj = JSON.parse( atob(this.content) );
+        fnp.leagues.default = JSON.parse( atob(this.content) );
         if(fnp.repo.type == 'Organization' && fnp.user.type == 'owner'){
           fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'leagues: <a href="' + fnp.repo.home + '/league/setup">edit</a>' });
         }else{
           fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'leagues: found' });
+          if(fnp.repo.type == 'User' && fnp.user.type == 'owner') fnp.home.checkTeam(); else fnp.home.displayLeagues();
         }
       },
       err: function(){
@@ -47,6 +49,25 @@ fnp.home = {
         }
       }
     });
+  },
+  checkTeam: function(){
+    // User & owner
+    fnp.apiCall({
+      url: fnp.searchDataFile('teams/' + fnp.repo.owner + '.json'),
+      cb: function(){
+        fnp.team.content = this;
+        fnp.team.default = JSON.parse( atob(this.content) );
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'team: <a href="' + fnp.repo.home + '/team/setup">edit</a>' });
+        fnp.home.displayLeagues();
+      },
+      err: function(){
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'warning: no team, <a href="' + fnp.repo.home + '/team/setup/">create</a>' });
+        fnp.home.displayLeagues();
+      }
+    });
+  },
+  displayLeagues: function(){
+    console.log(fnp.leagues.deafult);
   }
 };
 
