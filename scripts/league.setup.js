@@ -87,11 +87,7 @@ fnp.league = {
       data: fnp.leagues.content == 'absent' ? '{"message": "leagues created", "content": "' + fnp.leagues.encoded + '", "branch": "data"}' : '{"message": "leagues edited", "content": "' + fnp.leagues.encoded + '", "branch": "data", "sha": "' + fnp.leagues.sha + '"}',
       cb: function(){
         fnp.repo.data.sha = this.commit.sha;
-        var divs = document.querySelector('div[data-schemaid]');
-        divs.setAttribute('hidden','');
-        fnp.dom.reset.setAttribute('hidden','');
-        fnp.dom.valid.setAttribute('hidden','');
-        fnp.dom.submit.setAttribute('hidden','');
+        fnp.dom.hide();
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/league/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
       }
     });

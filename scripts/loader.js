@@ -8,23 +8,28 @@ fnp.user = {
   get token() { if(localStorage.getItem( 'fnp.user.token')) return atob( localStorage.getItem( 'fnp.user.token' ) ); else return false; }
 };
 
-fnp.apiCall = function(obj){ // url, cb, err, methos, accept, data
+fnp.apiCall = function(obj){
   if(!obj.hasOwnProperty('cb')) obj.cb = function(){ console.log(this); };
   if(!obj.hasOwnProperty('url')) obj.url = fnp.repo.API;
   if(!obj.hasOwnProperty('method')) obj.method = 'GET';
   if(!obj.hasOwnProperty('accept')) obj.accept = 'application/vnd.github.v3.full+json';
   if(!obj.hasOwnProperty('data')) obj.data = null;
   if(!obj.hasOwnProperty('err')) obj.err = false;
+  obj.etag = 'fnp.etag.' + obj.url.replace(/\W+/g, "");
   var xhr = new XMLHttpRequest();
   xhr.open ( obj.method, obj.url, true );
   xhr.setRequestHeader( 'Accept', obj.accept );
   if(fnp.user.token) xhr.setRequestHeader( 'Authorization', 'token ' + fnp.user.token );
+  if(localStorage.getItem(obj.etag)) xhr.setRequestHeader('If-None-Match', localStorage.getItem(obj.etag));
   xhr.onreadystatechange = function() {
     if(xhr.readyState == 4){
       document.querySelector('body').style.backgroundColor = "white";
+      if(xhr.getResponseHeader('ETag')){
+        var etag = RegExp(/W\/"(.*?)"/).exec(xhr.getResponseHeader('ETag'));
+        if(etag) localStorage.setItem(obj.etag, etag[1]);
+      }
       if ( xhr.status == 200 ) {
         if (typeof obj.cb == 'function') {
-          console.log(xhr.getResponseHeader('ETag'));
           if (xhr.getResponseHeader('X-RateLimit-Remaining') < 5) fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'rate limit: exceeded' });
           if (xhr.getResponseHeader('X-RateLimit-Remaining') < 2) window.location = fnp.repo.home + '/login/';
           var xrate = document.querySelector('footer > small');
@@ -47,11 +52,19 @@ fnp.apiCall = function(obj){ // url, cb, err, methos, accept, data
 };
 
 fnp.dom = {
+  get section() {return 'main + section';},
   get ul() {return 'main > section > header > details > ul';},
   setup: function(){
     fnp.appendi({ tag: 'details', parent: 'main > section > header', attributes: { open: '' } });
     fnp.appendi({ tag: 'ul', parent: 'section > header > details', attributes: {} });
     fnp.appendi({ tag: 'summary', parent: 'section > header > details', innerHTML: 'Monitor' });
+  },
+  hide: function(){
+    var divs = document.querySelector('div[data-schemaid]');
+    divs.setAttribute('hidden','');
+    fnp.dom.reset.setAttribute('hidden','');
+    fnp.dom.valid.setAttribute('hidden','');
+    fnp.dom.submit.setAttribute('hidden','');
   }
 };
 
