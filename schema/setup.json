@@ -305,6 +305,9 @@
           "title",
           "running"
         ]
+      },
+      "options": {
+        "hidden": true
       }
     }
   },
