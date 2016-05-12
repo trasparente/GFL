@@ -83,7 +83,7 @@ fnp.getThisRepo = function(){
           fnp.checkPulls();
         }else{
           fnp.user.type = 'guest';
-          fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/' + fnp.url.script + '.js', type: 'text/javascript' } });
+          fnp.goGuest();
         }
       }
       // PLAYER
@@ -96,7 +96,7 @@ fnp.getThisRepo = function(){
             fnp.checkDataParent();
           }else{
             fnp.user.type = 'guest';
-            fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/' + fnp.url.script + '.js', type: 'text/javascript' } });
+            fnp.goGuest();
           }
           fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'joined: ' + this.created_at });
         }else{
@@ -105,6 +105,11 @@ fnp.getThisRepo = function(){
       }
     }
   });
+};
+
+fnp.goGuest = function(){
+  fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'guest: <a href="' + fnp.repo.home + '/login/"' });
+  fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/' + fnp.url.script + '.js', type: 'text/javascript' } });
 };
 
 fnp.checkPulls = function(){
