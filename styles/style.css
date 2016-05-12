@@ -1,6 +1,7 @@
 html { overflow-y: scroll; }
 body[hidden] { font-size: 1.2em; display: block; }
 [aria-hidden="true"] { visibility: hidden; }
+button { cursor: pointer; }
 body > header > h1 { margin: 0; padding: 0.67em 1em; }
 a { text-decoration: none; }
 a:visited { color: blue; }
