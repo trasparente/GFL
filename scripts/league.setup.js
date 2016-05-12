@@ -92,7 +92,7 @@ fnp.league = {
         fnp.dom.reset.setAttribute('hidden','');
         fnp.dom.valid.setAttribute('hidden','');
         fnp.dom.submit.setAttribute('hidden','');
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/leagues/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/league/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
       }
     });
   }
