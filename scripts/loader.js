@@ -62,7 +62,7 @@ fnp.dom = {
   hide: function(){
     var divs = document.querySelector('div[data-schemaid]');
     divs.setAttribute('hidden','');
-    fnp.dom.reset.setAttribute('hidden','');
+    fnp.dom.cancel.setAttribute('hidden','');
     fnp.dom.valid.setAttribute('hidden','');
     fnp.dom.submit.setAttribute('hidden','');
   }
