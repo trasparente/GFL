@@ -36,6 +36,7 @@ fnp.home = {
         fnp.leagues.default = JSON.parse( atob(this.content) );
         if(fnp.repo.type == 'Organization' && fnp.user.type == 'owner'){
           fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'leagues: <a href="' + fnp.repo.home + '/league/setup">edit</a>' });
+          fnp.home.displayLeagues();
         }else{
           fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'leagues: found' });
           if(fnp.repo.type == 'User' && fnp.user.type == 'owner') fnp.home.checkTeam(); else fnp.home.displayLeagues();
