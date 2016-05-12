@@ -28,7 +28,7 @@ fnp.apiCall = function(obj){
         var etag = RegExp(/W\/"(.*?)"/).exec(xhr.getResponseHeader('ETag'));
         if(etag) localStorage.setItem(obj.etag, etag[1]);
       }
-      if ( xhr.status == 200 ) {
+      if ( xhr.status == 200 ||  xhr.status == 201 ||  xhr.status == 204 ) {
         if (typeof obj.cb == 'function') {
           if (xhr.getResponseHeader('X-RateLimit-Remaining') < 5) fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'rate limit: exceeded' });
           if (xhr.getResponseHeader('X-RateLimit-Remaining') < 2) window.location = fnp.repo.home + '/login/';
