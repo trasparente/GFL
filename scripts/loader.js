@@ -23,16 +23,17 @@ fnp.apiCall = function(obj){ // url, cb, err, methos, accept, data
     if(xhr.readyState == 4){
       document.querySelector('body').style.backgroundColor = "white";
       if ( xhr.status == 200 ) {
-        if (typeof obj.cb == "function") {
-          if (xhr.getResponseHeader("X-RateLimit-Remaining") < 5) fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'rate limit: exceeded' });
-          if (xhr.getResponseHeader("X-RateLimit-Remaining") < 2) window.location = fnp.repo.home + '/login/';
-          var xrate = document.querySelector("footer > small");
-          xrate.innerHTML = "X-RateLimit-Remaining: " + xhr.getResponseHeader( "X-RateLimit-Remaining" );
+        if (typeof obj.cb == 'function') {
+          console.log(xhr.getResponseHeader('ETag'));
+          if (xhr.getResponseHeader('X-RateLimit-Remaining') < 5) fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'rate limit: exceeded' });
+          if (xhr.getResponseHeader('X-RateLimit-Remaining') < 2) window.location = fnp.repo.home + '/login/';
+          var xrate = document.querySelector('footer > small');
+          xrate.innerHTML = 'X-RateLimit-Remaining: ' + xhr.getResponseHeader( 'X-RateLimit-Remaining' );
           obj.cb.apply( JSON.parse(xhr.responseText) );
         }
       }
       if ( xhr.status >= 400 ) {
-        if(typeof obj.err == "function"){
+        if(typeof obj.err == 'function'){
           obj.err.apply( xhr );
         }else{
           fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'api error: ' + obj.url });
@@ -41,7 +42,7 @@ fnp.apiCall = function(obj){ // url, cb, err, methos, accept, data
       }
     }
   };
-  document.querySelector('body').style.backgroundColor = "whitesmoke";
+  document.querySelector('body').style.backgroundColor = 'whitesmoke';
   xhr.send( obj.data );
 };
 
