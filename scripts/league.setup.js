@@ -79,7 +79,7 @@ fnp.league = {
     });
   },
   save: function(dati){
-    fnp.dom.submit.setAttribute('disabled','');
+    fnp.dom.hide();
     fnp.leagues.encoded = btoa( JSON.stringify(dati) );
     fnp.apiCall({
       url: fnp.searchDataFile('leagues/leagues.json'),
@@ -87,7 +87,6 @@ fnp.league = {
       data: fnp.leagues.content == 'absent' ? '{"message": "leagues created", "content": "' + fnp.leagues.encoded + '", "branch": "data"}' : '{"message": "leagues edited", "content": "' + fnp.leagues.encoded + '", "branch": "data", "sha": "' + fnp.leagues.sha + '"}',
       cb: function(){
         fnp.repo.data.sha = this.commit.sha;
-        fnp.dom.hide();
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/league/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
       }
     });

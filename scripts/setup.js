@@ -62,7 +62,7 @@ fnp.setup = {
     });
   },
   save: function(dati){
-    fnp.dom.submit.setAttribute('disabled','');
+    fnp.dom.hide();
     fnp.setup.encoded = btoa( JSON.stringify(dati) );
     fnp.apiCall({
       url: fnp.searchDataFile('setup.json'),
@@ -70,11 +70,6 @@ fnp.setup = {
       data: fnp.setup.content == 'absent' ? '{"message": "setup created", "content": "' + fnp.setup.encoded + '", "branch": "data"}' : '{"message": "setup modified", "content": "' + fnp.setup.encoded + '", "branch": "data", "sha": "' + fnp.setup.sha + '"}',
       cb: function(){
         fnp.repo.data.sha = this.commit.sha;
-        var divs = document.querySelector('div[data-schemaid]');
-        divs.setAttribute('hidden','');
-        fnp.dom.reset.setAttribute('hidden','');
-        fnp.dom.valid.setAttribute('hidden','');
-        fnp.dom.submit.setAttribute('hidden','');
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
       }
     });

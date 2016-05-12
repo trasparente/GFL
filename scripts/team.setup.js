@@ -78,7 +78,7 @@ fnp.team = {
     });
   },
   save: function(dati){
-    fnp.dom.submit.setAttribute('disabled','');
+    fnp.dom.hide();
     fnp.team.encoded = btoa( JSON.stringify(dati) );
     fnp.apiCall({
       url: fnp.searchDataFile('teams/' + fnp.repo.owner + '.json'),
@@ -86,7 +86,6 @@ fnp.team = {
       data: fnp.team.content == 'absent' ? '{"message": "team created", "content": "' + fnp.team.encoded + '", "branch": "data"}' : '{"message": "team edited", "content": "' + fnp.team.encoded + '", "branch": "data", "sha": "' + fnp.team.sha + '"}',
       cb: function(){
         fnp.repo.data.sha = this.commit.sha;
-        fnp.dom.hide();
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/league/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
       }
     });
