@@ -52,7 +52,7 @@ fnp.apiCall = function(obj){
 };
 
 fnp.dom = {
-  get section() {return 'main + section';},
+  get section() {return 'main > section';},
   get ul() {return 'main > section > header > details > ul';},
   setup: function(){
     fnp.appendi({ tag: 'details', parent: 'main > section > header', attributes: { open: '' } });
