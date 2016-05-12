@@ -310,7 +310,6 @@
   },
   "required": [
     "rolls",
-    "gauges",
-    "leagues"
+    "gauges"
   ]
 }
