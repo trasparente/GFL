@@ -73,7 +73,7 @@ fnp.home = {
       url: fnp.repo.API + '/readme?ref=' + 'gh-pages',
       accept: 'application/vnd.github.v3.html+json',
       cb: function(){
-        fnp.appendi({ tag: 'p', parent: fnp.dom.section, innerHTML: this });
+        fnp.appendi({ tag: 'div', parent: fnp.dom.section, innerHTML: this });
       }
     });
   }
