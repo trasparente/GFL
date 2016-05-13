@@ -34,7 +34,8 @@ fnp.apiCall = function(obj){
           if (xhr.getResponseHeader('X-RateLimit-Remaining') < 2) window.location = fnp.repo.home + '/login/';
           var xrate = document.querySelector('footer > small');
           xrate.innerHTML = 'X-RateLimit-Remaining: ' + xhr.getResponseHeader( 'X-RateLimit-Remaining' );
-          if(obj.accept == 'application/vnd.github.v3.html+json') obj.cb.apply(xhr.responseText); else obj.cb.apply( JSON.parse(xhr.responseText) );
+          var response = (obj.accept.indexOf('json') > -1) ? JSON.parse(xhr.responseText) : xhr.responseText;
+          obj.cb.apply(response);
         }
       }
       if ( xhr.status >= 400 ) {
