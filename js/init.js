@@ -1,6 +1,6 @@
 // init.js
 
-// define fork-n-play
+// fork-n-play
 
 var fnp = {
   url: {
@@ -28,9 +28,6 @@ var fnp = {
     fnp.repo.data.sha = fnp.url.dataHash;
     fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/loader.js', type: 'text/javascript' } });
     fnp.appendi({ tag: 'link', parent: 'head', attributes: { href: fnp.repo.rawgit + '/styles/style.css', rel: 'stylesheet' } });
-    // if((fnp.url.page && fnp.url.page == 'setup') || (fnp.url.page && fnp.url.setup)){
-    //   fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/jsoneditor.js', type: 'text/javascript' } });
-    // }
   },
   appendi: function(obj){
     var element = document.createElement(obj.tag);
