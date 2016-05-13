@@ -12,8 +12,7 @@ fnp.league = {
       url: fnp.searchDataFile('setup.json'),
       accept: 'application/vnd.github.v3.raw',
       cb: function(){
-        fnp.setup.content = this;
-        fnp.setup.default = JSON.parse( atob(this.content) );
+        fnp.setup.default = JSON.parse( this );
         fnp.setup.sha = this.sha;
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'setup: <a href="' + fnp.repo.home + '/setup/">edit</a>' });
         fnp.league.checkLeagues();
@@ -28,8 +27,7 @@ fnp.league = {
       url: fnp.searchDataFile('leagues/leagues.json'),
       accept: 'application/vnd.github.v3.raw',
       cb: function(){
-        fnp.leagues.content = this;
-        fnp.leagues.default = JSON.parse( atob(this.content) );
+        fnp.leagues.default = JSON.parse( this );
         fnp.leagues.sha = this.sha;
         fnp.league.Edit();
       },
@@ -52,8 +50,7 @@ fnp.league = {
       url: fnp.searchMasterFile('schema/setup.json'),
       accept: 'application/vnd.github.v3.raw',
       cb: function(){
-        fnp.setup.schemaBlob = this;
-        fnp.setup.schema = JSON.parse( atob(this.content) );
+        fnp.setup.schema = JSON.parse( this );
         // Initialize the editor
         var editor = new JSONEditor(fnp.dom.editor,{
           ajax: true,
