@@ -20,9 +20,9 @@ fnp.dom = {
     fnp.dom.submit.setAttribute('hidden','');
   },
   showLeagues: function(leaguesArray){
-    var divLeagues = fnp.appendi({ tag: 'div', parent: fnp.dom.section, attributes: { class: 'leagues' } });
+    fnp.appendi({ tag: 'div', parent: fnp.dom.section, attributes: { class: 'leagues' } });
     for( i=0; i < leaguesArray.length; i++ ){
-      fnp.appendi({ tag: 'a', parent: divLeagues, innerHTML: fnp.leagues.default[i].title, attributes: { href: fnp.repo.home + '/league/#league=' + fnp.leagues.default[i].slug } });
+      fnp.appendi({ tag: 'a', parent: document.querySelector('div.leagues'), innerHTML: fnp.leagues.default[i].title, attributes: { href: fnp.repo.home + '/league/#league=' + fnp.leagues.default[i].slug } });
     }
   }
 };
