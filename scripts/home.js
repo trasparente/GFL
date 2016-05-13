@@ -68,7 +68,7 @@ fnp.home = {
     });
   },
   displayLeagues: function(){
-    for( i=0; i < fnp.leagues.default.length; i++ ){ console.log(fnp.leagues.default[i]); }
+    fnp.dom.showLeagues(fnp.leagues.default);
     fnp.apiCall({
       url: fnp.repo.API + '/readme?ref=' + 'gh-pages',
       accept: 'application/vnd.github.v3.html+json',

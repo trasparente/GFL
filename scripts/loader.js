@@ -65,6 +65,12 @@ fnp.dom = {
     fnp.dom.cancel.setAttribute('hidden','');
     fnp.dom.valid.setAttribute('hidden','');
     fnp.dom.submit.setAttribute('hidden','');
+  },
+  showLeagues: function(leaguesArray){
+    fnp.appendi({ tag: 'div', parent: fnp.dom.section, class: 'leagues' });
+    for( i=0; i < leaguesArray.length; i++ ){
+      fnp.appendi({ tag: 'a', parent: document.querySelector('div.leagues'), innerHTML: fnp.leagues.default[i].title, attributes: { href: fnp.repo.home + '/league/#league=' + fnp.leagues.default[i].slug } });
+    }
   }
 };
 
@@ -108,7 +114,7 @@ fnp.getThisRepo = function(){
 };
 
 fnp.goGuest = function(){
-  fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'guest: <a href="' + fnp.repo.home + '/login/"' });
+  fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'guest: <a href="' + fnp.repo.home + '/login/">login</a>' });
   fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/' + fnp.url.script + '.js', type: 'text/javascript' } });
 };
 
