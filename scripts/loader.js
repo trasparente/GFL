@@ -24,7 +24,7 @@ fnp.apiCall = function(obj){
   xhr.onreadystatechange = function() {
     if(xhr.readyState == 4){
       document.querySelector('body').style.backgroundColor = "white";
-      if(xhr.getResponseHeader('ETag')){
+      if(xhr.getResponseHeader('ETag') && obj.url.indexOf('ref=') == -1 ){
         var etag = RegExp(/W\/"(.*?)"/).exec(xhr.getResponseHeader('ETag'));
         if(etag) localStorage.setItem(obj.etag, etag[1]);
       }
