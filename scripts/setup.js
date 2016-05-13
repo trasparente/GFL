@@ -10,7 +10,7 @@ fnp.setup = {
       accept: 'application/vnd.github.v3.raw',
       cb: function(){
         fnp.setup.content = this;
-        fnp.setup.default = JSON.parse( atob(this.content) );
+        fnp.setup.default = JSON.parse( this.content );
         fnp.setup.sha = this.sha;
         fnp.setup.Edit();
       },
@@ -34,7 +34,7 @@ fnp.setup = {
       accept: 'application/vnd.github.v3.raw',
       cb: function(){
         fnp.setup.schemaBlob = this;
-        fnp.setup.schema = JSON.parse( atob(this.content) );
+        fnp.setup.schema = JSON.parse( this.content );
         // Initialize the editor
         var editor = new JSONEditor(fnp.dom.editor,{
           ajax: true,
