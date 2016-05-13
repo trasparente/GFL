@@ -14,6 +14,7 @@ fnp.league = {
         fnp.setup.content = this;
         fnp.setup.default = JSON.parse( atob(this.content) );
         fnp.setup.sha = this.sha;
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'setup: <a href="' + fnp.repo.home + '/setup/">edit</a>' });
         fnp.league.checkLeagues();
       },
       err: function(){
@@ -61,6 +62,14 @@ fnp.league = {
           disable_properties: true,
           disable_edit_json: true,
           disable_array_reorder: false
+        });
+        var previous_leagues = JSON.stringify(fnp.leagues.default);
+        editor.on('change',function() {
+          var arr = editor.getValue();
+          if(arr.toString() != previous_leagues) {
+            console.log(arr);
+          }
+          previous_leagues = JSON.stringify(arr);
         });
         fnp.dom.submit.addEventListener('click',function() { fnp.league.save(editor.getValue()); });
         fnp.dom.cancel.addEventListener('click',function() { window.location = fnp.repo.home; });
