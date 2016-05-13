@@ -9,6 +9,7 @@ fnp.team = {
   checkSetup: function(){
     fnp.apiCall({
       url: fnp.searchDataFile('setup.json'),
+      accept: 'application/vnd.github.v3.raw',
       cb: function(){
         fnp.setup.content = this;
         fnp.setup.default = JSON.parse( atob(this.content) );
@@ -23,6 +24,7 @@ fnp.team = {
   checkTeam: function(){
     fnp.apiCall({
       url: fnp.searchDataFile('teams/' + fnp.repo.owner + '.json'),
+      accept: 'application/vnd.github.v3.raw',
       cb: function(){
         fnp.team.content = this;
         fnp.team.default = JSON.parse( atob(this.content) );
@@ -46,6 +48,7 @@ fnp.team = {
     // load schema
     fnp.apiCall({
       url: fnp.searchMasterFile('schema/setup.json'),
+      accept: 'application/vnd.github.v3.raw',
       cb: function(){
         fnp.setup.schemaBlob = this;
         fnp.setup.schema = JSON.parse( atob(this.content) );

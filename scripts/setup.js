@@ -7,6 +7,7 @@ fnp.setup = {
   checkSetup: function(){
     fnp.apiCall({
       url: fnp.searchDataFile('setup.json'),
+      accept: 'application/vnd.github.v3.raw',
       cb: function(){
         fnp.setup.content = this;
         fnp.setup.default = JSON.parse( atob(this.content) );
@@ -30,6 +31,7 @@ fnp.setup = {
     // load schema
     fnp.apiCall({
       url: fnp.searchMasterFile('schema/setup.json'),
+      accept: 'application/vnd.github.v3.raw',
       cb: function(){
         fnp.setup.schemaBlob = this;
         fnp.setup.schema = JSON.parse( atob(this.content) );

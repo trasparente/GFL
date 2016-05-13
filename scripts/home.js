@@ -8,6 +8,7 @@ fnp.home = {
   start: function(){
     fnp.apiCall({
       url: fnp.searchDataFile('setup.json'),
+      accept: 'application/vnd.github.v3.raw',
       cb: function(){
         fnp.setup.content = this;
         fnp.setup.default = JSON.parse( atob(this.content) );
@@ -31,6 +32,7 @@ fnp.home = {
   checkLeagues: function(){
     fnp.apiCall({
       url: fnp.searchDataFile('leagues/leagues.json'),
+      accept: 'application/vnd.github.v3.raw',
       cb: function(){
         fnp.leagues.content = this;
         fnp.leagues.default = JSON.parse( atob(this.content) );
@@ -55,6 +57,7 @@ fnp.home = {
     // User & owner
     fnp.apiCall({
       url: fnp.searchDataFile('teams/' + fnp.repo.owner + '.json'),
+      accept: 'application/vnd.github.v3.raw',
       cb: function(){
         fnp.team.content = this;
         fnp.team.default = JSON.parse( atob(this.content) );
