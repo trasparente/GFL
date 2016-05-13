@@ -11,7 +11,7 @@ fnp.home = {
       accept: 'application/vnd.github.v3.raw',
       cb: function(){
         fnp.setup.content = this;
-        fnp.setup.default = JSON.parse( atob(this.content) );
+        fnp.setup.default = JSON.parse( this.content );
         fnp.setup.sha = this.sha;
         if(fnp.repo.type == 'Organization' && fnp.user.type == 'owner') {
           fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'setup: <a href="' + fnp.repo.home + '/setup">edit</a>' });
@@ -35,7 +35,7 @@ fnp.home = {
       accept: 'application/vnd.github.v3.raw',
       cb: function(){
         fnp.leagues.content = this;
-        fnp.leagues.default = JSON.parse( atob(this.content) );
+        fnp.leagues.default = JSON.parse( this.content );
         if(fnp.repo.type == 'Organization' && fnp.user.type == 'owner'){
           fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'leagues: <a href="' + fnp.repo.home + '/league/setup">edit</a>' });
           fnp.home.displayLeagues();
@@ -60,7 +60,7 @@ fnp.home = {
       accept: 'application/vnd.github.v3.raw',
       cb: function(){
         fnp.team.content = this;
-        fnp.team.default = JSON.parse( atob(this.content) );
+        fnp.team.default = JSON.parse( this.content );
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'team: <a href="' + fnp.repo.home + '/team/setup">edit</a>' });
         fnp.home.displayLeagues();
       },
