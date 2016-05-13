@@ -8,7 +8,7 @@ document.getElementById( 'submitLogin' ).addEventListener('click', function(e) {
       url: 'https://api.github.com',
       cb: function(){
         localStorage.setItem('fnp.user.token', btoa(fnp.user.token));
-        window.location = fnp.repo.home;
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'logged: <a href="' + fnp.repo.home + '">proceed</a>' });
       },
       err: function(){
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'error: wrong token, try again' });
