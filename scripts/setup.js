@@ -9,8 +9,8 @@ fnp.setup = {
       url: fnp.searchDataFile('setup.json'),
       accept: 'application/vnd.github.v3.raw',
       cb: function(){
-        fnp.setup.content = this;
-        fnp.setup.default = JSON.parse( this.content );
+        fnp.setup.content = 'present';
+        fnp.setup.default = JSON.parse( this );
         fnp.setup.sha = this.sha;
         fnp.setup.Edit();
       },
@@ -33,8 +33,7 @@ fnp.setup = {
       url: fnp.searchMasterFile('schema/setup.json'),
       accept: 'application/vnd.github.v3.raw',
       cb: function(){
-        fnp.setup.schemaBlob = this;
-        fnp.setup.schema = JSON.parse( this.content );
+        fnp.setup.schema = JSON.parse( this );
         // Initialize the editor
         var editor = new JSONEditor(fnp.dom.editor,{
           ajax: true,
