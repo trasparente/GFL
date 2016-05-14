@@ -71,7 +71,7 @@ fnp.home = {
     fnp.dom.showLeagues(fnp.leagues.default);
     fnp.apiCall({
       url: fnp.repo.API + '/readme?ref=' + 'gh-pages',
-      accept: 'application/vnd.github.v3.html+json',
+      accept: 'application/vnd.github.v3.html',
       cb: function(){
         fnp.appendi({ tag: 'div', parent: fnp.dom.section, innerHTML: this });
       }
