@@ -7,10 +7,9 @@ fnp.setup = {
   checkSetup: function(){
     fnp.apiCall({
       url: fnp.searchDataFile('setup.json'),
-      accept: 'application/vnd.github.v3.raw',
       cb: function(){
         fnp.setup.content = 'present';
-        fnp.setup.default = JSON.parse( this );
+        fnp.setup.default = JSON.parse( this.content );
         fnp.setup.sha = this.sha;
         fnp.setup.Edit();
       },
@@ -31,9 +30,8 @@ fnp.setup = {
     // load schema
     fnp.apiCall({
       url: fnp.searchMasterFile('schema/setup.json'),
-      accept: 'application/vnd.github.v3.raw',
       cb: function(){
-        fnp.setup.schema = JSON.parse( this );
+        fnp.setup.schema = JSON.parse( this.content );
         // Initialize the editor
         var editor = new JSONEditor(fnp.dom.editor,{
           ajax: true,
@@ -64,7 +62,7 @@ fnp.setup = {
   },
   save: function(dati){
     fnp.dom.hide();
-    fnp.setup.encoded = btoa( JSON.stringify(dati) );
+    fnp.setup.encoded = JSON.stringify(dati);
     fnp.apiCall({
       url: fnp.searchDataFile('setup.json'),
       method: 'PUT',
