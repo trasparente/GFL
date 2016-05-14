@@ -86,7 +86,10 @@ fnp.league = {
   },
   save: function(dati){
     fnp.dom.hide();
-    fnp.leagues.encoded = JSON.stringify(dati);
+    for (var i = 0; i < dati.length; i++) {
+      if ( !dati[i].slug ) dati[i].slug = (fnp.leagues.sha) ? fnp.leagues.sha : fnp.repo.master;
+    }
+    fnp.leagues.encoded = btoa(JSON.stringify(dati));
     fnp.apiCall({
       url: fnp.searchDataFile('leagues/leagues.json'),
       method: 'PUT',
