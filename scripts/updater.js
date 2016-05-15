@@ -29,7 +29,6 @@ fnp.dom = {
     var divLeagues = fnp.appendi({ tag: 'div', parent: fnp.dom.section, attributes: { class: 'leagues' } });
     for( i=0; i < leaguesArray.length; i++ ){
       fnp.appendi({ tag: 'a', parent: fnp.dom.ul, innerHTML: fnp.leagues.default[i].title, attributes: { href: fnp.repo.home + '/league/#league=' + fnp.leagues.default[i].slug } });
-			console.log(divLeagues);
     }
   }
 };
