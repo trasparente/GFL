@@ -90,7 +90,7 @@ fnp.league = {
     for (var i = 0; i < dati.length; i++) {
       if ( !dati[i].slug ) dati[i].slug = (fnp.leagues.sha) ? fnp.leagues.sha : fnp.repo.master;
     }
-    fnp.leagues.encoded = JSON.stringify(dati);
+    fnp.leagues.encoded = btoa(escape(encodeURIComponent(JSON.stringify(dati))));
     console.log("dati",dati,"string",fnp.leagues.encoded);
     fnp.apiCall({
       url: fnp.repo.API + '/contents/leagues/leagues.json',
