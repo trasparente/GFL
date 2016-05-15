@@ -11,7 +11,7 @@ fnp.league = {
     fnp.apiCall({
       url: fnp.searchDataFile('setup.json'),
       cb: function(){
-        fnp.setup.default = JSON.parse( decodeURIComponent(unescape(atob(this.content))) );
+        fnp.setup.default = JSON.parse( atob(this.content) );
         fnp.setup.sha = this.sha;
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'setup: <a href="' + fnp.repo.home + '/setup/">edit</a>' });
         fnp.league.checkLeagues();
@@ -26,7 +26,7 @@ fnp.league = {
       url: fnp.searchDataFile('leagues/leagues.json'),
       cb: function(){
         fnp.leagues.content = this;
-        fnp.leagues.default = JSON.parse( atob(this.content) );
+        fnp.leagues.default = JSON.parse( decodeURIComponent(unescape(atob(this.content))) );
         fnp.leagues.sha = this.sha;
         fnp.league.Edit();
       },
