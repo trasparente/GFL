@@ -199,7 +199,7 @@ fnp.update = function(branch, sha){
 };
 
 fnp.searchDataFile = function(file){
-  return fnp.repo.API + '/contents/' + file + '?ref=' + (fnp.repo.data.sha ? fnp.repo.data.sha : 'data');
+  return fnp.repo.API + '/contents/' + file + (arguments[1]) ? '' : '?ref=' + (fnp.repo.data.sha ? fnp.repo.data.sha : 'data');
 };
 
 fnp.searchMasterFile = function(file){
