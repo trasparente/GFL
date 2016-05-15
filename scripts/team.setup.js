@@ -9,9 +9,8 @@ fnp.team = {
   checkSetup: function(){
     fnp.apiCall({
       url: fnp.searchDataFile('setup.json'),
-      accept: 'application/vnd.github.v3.raw',
       cb: function(){
-        fnp.setup.default = JSON.parse( this );
+        fnp.setup.default = JSON.parse( toutf8(this.content) );
         fnp.setup.sha = this.sha;
         fnp.league.checkTeam();
       },
@@ -23,9 +22,8 @@ fnp.team = {
   checkTeam: function(){
     fnp.apiCall({
       url: fnp.searchDataFile('teams/' + fnp.repo.owner + '.json'),
-      accept: 'application/vnd.github.v3.raw',
       cb: function(){
-        fnp.team.default = JSON.parse( this );
+        fnp.team.default = JSON.parse( toutf8(this.content) );
         fnp.team.sha = this.sha;
         fnp.team.Edit();
       },
@@ -38,17 +36,13 @@ fnp.team = {
     });
   },
   Edit: function(){
-    fnp.dom.editor = fnp.appendi({ tag: 'div', parent: 'section', attributes: {} });
-    fnp.dom.cancel = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Cancel' });
-    fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Save leagues' });
-    fnp.dom.valid = fnp.appendi({ tag: 'span', parent: 'section', attributes: {} });
+    fnp.dom.setup();
 
     // load schema
     fnp.apiCall({
       url: fnp.searchMasterFile('schema/setup.json'),
-      accept: 'application/vnd.github.v3.raw',
       cb: function(){
-        fnp.setup.schema = JSON.parse( this );
+        fnp.setup.schema = JSON.parse( toutf8(this.content) );
         // Initialize the editor
         var editor = new JSONEditor(fnp.dom.editor,{
           ajax: true,
@@ -66,7 +60,6 @@ fnp.team = {
         editor.on('change',function() {
           var errors = editor.validate();
           if(errors.length) {
-            console.log(errors);
             fnp.dom.valid.style.color = 'red';
             fnp.dom.valid.textContent = "not valid";
           } else {
@@ -79,9 +72,9 @@ fnp.team = {
   },
   save: function(dati){
     fnp.dom.hide();
-    fnp.team.encoded = btoa( JSON.stringify(dati) );
+    fnp.team.encoded = tob64( JSON.stringify(dati) );
     fnp.apiCall({
-      url: fnp.searchDataFile('teams/' + fnp.repo.owner + '.json'),
+      url: fnp.repo.API + '/contents/teams/' + fnp.repo.owner + '.json',
       method: 'PUT',
       data: fnp.team.content == 'absent' ? '{"message": "team created", "content": "' + fnp.team.encoded + '", "branch": "data"}' : '{"message": "team edited", "content": "' + fnp.team.encoded + '", "branch": "data", "sha": "' + fnp.team.sha + '"}',
       cb: function(){

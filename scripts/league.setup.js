@@ -11,7 +11,7 @@ fnp.league = {
     fnp.apiCall({
       url: fnp.searchDataFile('setup.json'),
       cb: function(){
-        fnp.setup.default = JSON.parse( atob(this.content) );
+        fnp.setup.default = JSON.parse( toutf8(this.content) );
         fnp.setup.sha = this.sha;
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'setup: <a href="' + fnp.repo.home + '/setup/">edit</a>' });
         fnp.league.checkLeagues();
@@ -25,8 +25,8 @@ fnp.league = {
     fnp.apiCall({
       url: fnp.searchDataFile('leagues/leagues.json'),
       cb: function(){
-        fnp.leagues.content = this;
-        fnp.leagues.default = JSON.parse( decodeURIComponent(unescape(atob(this.content))) );
+        fnp.leagues.content = 'present';
+        fnp.leagues.default = JSON.parse( toutf8(this.content) );
         fnp.leagues.sha = this.sha;
         fnp.league.Edit();
       },
@@ -39,16 +39,13 @@ fnp.league = {
     });
   },
   Edit: function(){
-    fnp.dom.editor = fnp.appendi({ tag: 'div', parent: 'section', attributes: {} });
-    fnp.dom.cancel = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Cancel' });
-    fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Save leagues' });
-    fnp.dom.valid = fnp.appendi({ tag: 'span', parent: 'section', attributes: {} });
+    fnp.dom.setup();
 
     // load schema
     fnp.apiCall({
       url: fnp.searchMasterFile('schema/setup.json'),
       cb: function(){
-        fnp.setup.schema = JSON.parse( atob(this.content) );
+        fnp.setup.schema = JSON.parse( toutf8(this.content) );
         // Initialize the editor
         var editor = new JSONEditor(fnp.dom.editor,{
           ajax: true,
@@ -60,14 +57,6 @@ fnp.league = {
           disable_properties: true,
           disable_edit_json: true,
           disable_array_reorder: false
-        });
-        var previous_leagues = JSON.stringify(fnp.leagues.default);
-        editor.on('change',function() {
-          var arr = editor.getValue();
-          if(arr.toString() != previous_leagues) {
-            console.log(arr);
-          }
-          previous_leagues = JSON.stringify(arr);
         });
         fnp.dom.submit.addEventListener('click',function() { fnp.league.save(editor.getValue()); });
         fnp.dom.cancel.addEventListener('click',function() { window.location = fnp.repo.home; });
@@ -90,12 +79,11 @@ fnp.league = {
     for (var i = 0; i < dati.length; i++) {
       if ( !dati[i].slug ) dati[i].slug = (fnp.leagues.sha) ? fnp.leagues.sha : fnp.repo.master;
     }
-    fnp.leagues.encoded = btoa(escape(encodeURIComponent(JSON.stringify(dati))));
-    console.log("dati",dati,"string",fnp.leagues.encoded);
+    fnp.leagues.encoded = tob64(JSON.stringify(dati));
     fnp.apiCall({
       url: fnp.repo.API + '/contents/leagues/leagues.json',
       method: 'PUT',
-      data: fnp.leagues.content == 'absent' ? JSON.stringify({"message": "leagues created", "content": fnp.leagues.encoded, "branch": "data"}) : JSON.stringify({"message": "leagues edited", "content": fnp.leagues.encoded, "branch": "data", "sha": fnp.leagues.sha}),
+      data: fnp.leagues.content == 'absent' ? '({"message": "leagues created", "content": "' + fnp.leagues.encoded + '", "branch": "data"})' : '({"message": "leagues edited", "content": "' + fnp.leagues.encoded + '", "branch": "data", "sha": "' + fnp.leagues.sha + '" })',
       cb: function(){
         fnp.repo.data.sha = this.commit.sha;
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/league/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });

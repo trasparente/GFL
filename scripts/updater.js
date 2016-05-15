@@ -7,10 +7,16 @@ fnp.parent = {
 fnp.dom = {
   get section() {return 'main > section';},
   get ul() {return 'main > section > header > details > ul';},
-  setup: function(){
+  monitor: function(){
     fnp.appendi({ tag: 'details', parent: 'main > section > header', attributes: { open: '' } });
     fnp.appendi({ tag: 'ul', parent: 'section > header > details', attributes: {} });
     fnp.appendi({ tag: 'summary', parent: 'section > header > details', innerHTML: 'Monitor' });
+  },
+  setup: function(){
+    fnp.dom.editor = fnp.appendi({ tag: 'div', parent: 'section', attributes: {} });
+    fnp.dom.cancel = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Cancel' });
+    fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Save leagues' });
+    fnp.dom.valid = fnp.appendi({ tag: 'span', parent: 'section', attributes: {} });
   },
   hide: function(){
     var divs = document.querySelector('div[data-schemaid]');
@@ -39,7 +45,6 @@ fnp.apiCall = function(obj){
   var xhr = new XMLHttpRequest();
   xhr.open ( obj.method, obj.url, true );
   xhr.setRequestHeader( 'Accept', obj.accept );
-  if(obj.method == 'PUT') xhr.setRequestHeader('Content-Type', 'application/json');
   if(fnp.user.token) xhr.setRequestHeader( 'Authorization', 'token ' + fnp.user.token );
   if(localStorage.getItem(obj.etag)) xhr.setRequestHeader('If-None-Match', localStorage.getItem(obj.etag));
   xhr.onreadystatechange = function() {
@@ -206,8 +211,16 @@ fnp.searchMasterFile = function(file){
   return fnp.repo.API + '/contents/' + file + '?ref=' + (fnp.repo.master ? fnp.repo.master : 'master');
 };
 
+fnp.tob64 = function(str) {
+    return window.btoa(escape(encodeURIComponent(str)));
+};
+
+fnp.toutf8 = function(str) {
+    return decodeURIComponent(unescape(window.atob(str)));
+};
+
 fnp.updater = function(){
-	fnp.dom.setup();
+	fnp.dom.monitor();
   fnp.getThisRepo();
 };
 

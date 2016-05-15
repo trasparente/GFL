@@ -9,7 +9,7 @@ fnp.setup = {
       url: fnp.searchDataFile('setup.json'),
       cb: function(){
         fnp.setup.content = 'present';
-        fnp.setup.default = JSON.parse( atob(this.content) );
+        fnp.setup.default = JSON.parse( toutf8(this.content) );
         fnp.setup.sha = this.sha;
         fnp.setup.Edit();
       },
@@ -22,16 +22,13 @@ fnp.setup = {
     });
   },
   Edit: function(){
-    fnp.dom.editor = fnp.appendi({ tag: 'div', parent: 'section', attributes: {} });
-    fnp.dom.cancel = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Cancel' });
-    fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Save setup' });
-    fnp.dom.valid = fnp.appendi({ tag: 'span', parent: 'section', attributes: {} });
+    fnp.dom.setup();
 
     // load schema
     fnp.apiCall({
       url: fnp.searchMasterFile('schema/setup.json'),
       cb: function(){
-        fnp.setup.schema = JSON.parse( atob(this.content) );
+        fnp.setup.schema = JSON.parse( toutf8(this.content) );
         // Initialize the editor
         var editor = new JSONEditor(fnp.dom.editor,{
           ajax: true,
@@ -62,9 +59,9 @@ fnp.setup = {
   },
   save: function(dati){
     fnp.dom.hide();
-    fnp.setup.encoded = btoa(JSON.stringify(dati));
+    fnp.setup.encoded = tob64(JSON.stringify(dati));
     fnp.apiCall({
-      url: fnp.searchDataFile('setup.json'),
+      url: fnp.repo.API + '/contents/setup.json',
       method: 'PUT',
       data: fnp.setup.content == 'absent' ? '{"message": "setup created", "content": "' + fnp.setup.encoded + '", "branch": "data"}' : '{"message": "setup modified", "content": "' + fnp.setup.encoded + '", "branch": "data", "sha": "' + fnp.setup.sha + '"}',
       cb: function(){
