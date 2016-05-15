@@ -24,7 +24,9 @@ fnp.league = {
   checkLeagues: function(){
     fnp.apiCall({
       url: fnp.searchDataFile('leagues/leagues.json'),
+      accept: 'application/vnd.github.v3.raw+json',
       cb: function(){
+        fnp.leagues.content = this;
         fnp.leagues.default = JSON.parse( atob(this.content) );
         fnp.leagues.sha = this.sha;
         fnp.league.Edit();
@@ -89,8 +91,8 @@ fnp.league = {
     for (var i = 0; i < dati.length; i++) {
       if ( !dati[i].slug ) dati[i].slug = (fnp.leagues.sha) ? fnp.leagues.sha : fnp.repo.master;
     }
-    console.log(dati);
     fnp.leagues.encoded = btoa(JSON.stringify(dati));
+    console.log("dati",dati,"encoded",fnp.leagues.encoded);
     fnp.apiCall({
       url: fnp.searchDataFile('leagues/leagues.json'),
       method: 'PUT',
