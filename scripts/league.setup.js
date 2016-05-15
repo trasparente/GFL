@@ -93,9 +93,9 @@ fnp.league = {
     fnp.leagues.encoded = btoa(JSON.stringify(dati));
     console.log("dati",dati,"encoded",fnp.leagues.encoded);
     fnp.apiCall({
-      url: fnp.searchDataFile('leagues/leagues.json'),
+      url: fnp.searchDataFile('leagues/leagues.json',true),
       method: 'PUT',
-      data: fnp.leagues.content == 'absent' ? '{"message": "leagues created", "content": "' + fnp.leagues.encoded + '", "branch": "data"}' : '{"message": "leagues edited", "content": "' + fnp.leagues.encoded + '", "branch": "data", "sha": "' + fnp.leagues.sha + '"}',
+      data: fnp.leagues.content == 'absent' ? JSON.stringify({"message": "leagues created", "content": fnp.leagues.encoded, "branch": "data"}) : JSON.stringify({"message": "leagues edited", "content": fnp.leagues.encoded, "branch": "data", "sha": fnp.leagues.sha}),
       cb: function(){
         fnp.repo.data.sha = this.commit.sha;
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/league/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
