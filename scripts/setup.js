@@ -65,7 +65,6 @@ fnp.setup = {
     fnp.setup.encoded = btoa(JSON.stringify(dati));
     fnp.apiCall({
       url: fnp.searchDataFile('setup.json'),
-      accept: 'application/vnd.github.v3.raw',
       method: 'PUT',
       data: fnp.setup.content == 'absent' ? '{"message": "setup created", "content": "' + fnp.setup.encoded + '", "branch": "data"}' : '{"message": "setup modified", "content": "' + fnp.setup.encoded + '", "branch": "data", "sha": "' + fnp.setup.sha + '"}',
       cb: function(){

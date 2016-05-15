@@ -94,7 +94,6 @@ fnp.league = {
     console.log("dati",dati,"encoded",fnp.leagues.encoded);
     fnp.apiCall({
       url: fnp.searchDataFile('leagues/leagues.json'),
-      accept: 'application/vnd.github.v3.raw',
       method: 'PUT',
       data: fnp.leagues.content == 'absent' ? '{"message": "leagues created", "content": "' + fnp.leagues.encoded + '", "branch": "data"}' : '{"message": "leagues edited", "content": "' + fnp.leagues.encoded + '", "branch": "data", "sha": "' + fnp.leagues.sha + '"}',
       cb: function(){

@@ -39,6 +39,7 @@ fnp.apiCall = function(obj){
   var xhr = new XMLHttpRequest();
   xhr.open ( obj.method, obj.url, true );
   xhr.setRequestHeader( 'Accept', obj.accept );
+  if(obj.method == 'PUT') xhr.setRequestHeader('Content-Type', 'application/json');
   if(fnp.user.token) xhr.setRequestHeader( 'Authorization', 'token ' + fnp.user.token );
   if(localStorage.getItem(obj.etag)) xhr.setRequestHeader('If-None-Match', localStorage.getItem(obj.etag));
   xhr.onreadystatechange = function() {
