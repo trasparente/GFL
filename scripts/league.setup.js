@@ -83,7 +83,7 @@ fnp.league = {
     fnp.apiCall({
       url: fnp.repo.API + '/contents/leagues/leagues.json',
       method: 'PUT',
-      data: fnp.leagues.content == 'absent' ? '({"message": "leagues created", "content": "' + fnp.leagues.encoded + '", "branch": "data"})' : '({"message": "leagues edited", "content": "' + fnp.leagues.encoded + '", "branch": "data", "sha": "' + fnp.leagues.sha + '" })',
+      data: fnp.leagues.content == 'absent' ? '{"message": "leagues created", "content": "' + fnp.leagues.encoded + '", "branch": "data"}' : '{"message": "leagues edited", "content": "' + fnp.leagues.encoded + '", "branch": "data", "sha": "' + fnp.leagues.sha + '"}',
       cb: function(){
         fnp.repo.data.sha = this.commit.sha;
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/league/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
