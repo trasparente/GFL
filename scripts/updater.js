@@ -52,7 +52,7 @@ fnp.apiCall = function(obj){
       if ( xhr.status == 200 ||  xhr.status == 201 ||  xhr.status == 204 ) {
         if (typeof obj.cb == 'function') {
           if (xhr.getResponseHeader('X-RateLimit-Remaining') < 5) fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'rate limit: ' + xhr.getResponseHeader('X-RateLimit-Remaining') });
-          // if (xhr.getResponseHeader('X-RateLimit-Remaining') < 2) window.location = fnp.repo.home + '/login/';
+          if (xhr.getResponseHeader('X-RateLimit-Remaining') < 2) window.location = fnp.repo.home + '/login/';
           var xrate = document.querySelector('footer > small');
           xrate.innerHTML = 'X-RateLimit-Remaining: ' + xhr.getResponseHeader( 'X-RateLimit-Remaining' );
           var response = (obj.accept.indexOf('json') > -1) ? JSON.parse(xhr.responseText) : xhr.responseText;
@@ -199,7 +199,7 @@ fnp.update = function(branch, sha){
 };
 
 fnp.searchDataFile = function(file){
-  return fnp.repo.API + '/contents/' + file + (arguments[1]) ? '' : '?ref=' + (fnp.repo.data.sha ? fnp.repo.data.sha : 'data');
+  return fnp.repo.API + '/contents/' + file + '?ref=' + (fnp.repo.data.sha ? fnp.repo.data.sha : 'data');
 };
 
 fnp.searchMasterFile = function(file){

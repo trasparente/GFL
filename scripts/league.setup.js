@@ -93,7 +93,7 @@ fnp.league = {
     fnp.leagues.encoded = btoa(JSON.stringify(dati));
     console.log("dati",dati,"encoded",fnp.leagues.encoded);
     fnp.apiCall({
-      url: fnp.searchDataFile('leagues/leagues.json',true),
+      url: fnp.searchDataFile('leagues/leagues.json'),
       method: 'PUT',
       data: fnp.leagues.content == 'absent' ? JSON.stringify({"message": "leagues created", "content": fnp.leagues.encoded, "branch": "data"}) : JSON.stringify({"message": "leagues edited", "content": fnp.leagues.encoded, "branch": "data", "sha": fnp.leagues.sha}),
       cb: function(){
