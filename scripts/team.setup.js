@@ -10,7 +10,7 @@ fnp.team = {
     fnp.apiCall({
       url: fnp.searchDataFile('setup.json'),
       cb: function(){
-        fnp.setup.default = JSON.parse( toutf8(this.content) );
+        fnp.setup.default = JSON.parse( fnp.toutf8(this.content) );
         fnp.setup.sha = this.sha;
         fnp.league.checkTeam();
       },
@@ -23,7 +23,7 @@ fnp.team = {
     fnp.apiCall({
       url: fnp.searchDataFile('teams/' + fnp.repo.owner + '.json'),
       cb: function(){
-        fnp.team.default = JSON.parse( toutf8(this.content) );
+        fnp.team.default = JSON.parse( fnp.toutf8(this.content) );
         fnp.team.sha = this.sha;
         fnp.team.Edit();
       },
@@ -42,7 +42,7 @@ fnp.team = {
     fnp.apiCall({
       url: fnp.searchMasterFile('schema/setup.json'),
       cb: function(){
-        fnp.setup.schema = JSON.parse( toutf8(this.content) );
+        fnp.setup.schema = JSON.parse( fnp.toutf8(this.content) );
         // Initialize the editor
         var editor = new JSONEditor(fnp.dom.editor,{
           ajax: true,
@@ -72,7 +72,7 @@ fnp.team = {
   },
   save: function(dati){
     fnp.dom.hide();
-    fnp.team.encoded = tob64( JSON.stringify(dati) );
+    fnp.team.encoded = fnp.tob64( JSON.stringify(dati) );
     fnp.apiCall({
       url: fnp.repo.API + '/contents/teams/' + fnp.repo.owner + '.json',
       method: 'PUT',

@@ -10,7 +10,7 @@ fnp.home = {
       url: fnp.searchDataFile('setup.json'),
       cb: function(){
         fnp.setup.content = this;
-        fnp.setup.default = JSON.parse( toutf8(this.content) );
+        fnp.setup.default = JSON.parse( fnp.toutf8(this.content) );
         fnp.setup.sha = this.sha;
         if(fnp.repo.type == 'Organization' && fnp.user.type == 'owner') {
           fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'setup: <a href="' + fnp.repo.home + '/setup">edit</a>' });
@@ -33,7 +33,7 @@ fnp.home = {
       url: fnp.searchDataFile('leagues/leagues.json'),
       cb: function(){
         fnp.leagues.content = this;
-        fnp.leagues.default = JSON.parse( toutf8(this.content) );
+        fnp.leagues.default = JSON.parse( fnp.toutf8(this.content) );
         if(fnp.repo.type == 'Organization' && fnp.user.type == 'owner'){
           fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'leagues: <a href="' + fnp.repo.home + '/league/setup">edit</a>' });
           fnp.home.displayLeagues();
@@ -56,7 +56,7 @@ fnp.home = {
     fnp.apiCall({
       url: fnp.searchDataFile('teams/' + fnp.repo.owner + '.json'),
       cb: function(){
-        fnp.team.default = JSON.parse( toutf8(this.content) );
+        fnp.team.default = JSON.parse( fnp.toutf8(this.content) );
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'team: <a href="' + fnp.repo.home + '/team/setup">edit</a>' });
         fnp.home.displayLeagues();
       },
