@@ -8,8 +8,8 @@ fnp.dom = {
   get section() {return 'main > section';},
   get ul() {return 'main > section > header > details > ul';},
   monitor: function(){
-    fnp.appendi({ tag: 'details', parent: 'main > section > header', attributes: { open: '', class: 'details' } });
-    fnp.appendi({ tag: 'summary', parent: 'section > header > details', innerHTML: 'Monitor', attributes: { class: 'summary'} });
+    fnp.appendi({ tag: 'div', parent: 'main > section > header', attributes: { open: '', class: 'details' } });
+    fnp.appendi({ tag: 'p', parent: 'section > header > details', innerHTML: 'Monitor', attributes: { class: 'summary'} });
     fnp.appendi({ tag: 'ul', parent: 'section > header > details' });
     return true;
   },
@@ -24,7 +24,7 @@ fnp.dom = {
     for (var i = 0; i < details.length; i++) {
       var detail = details[i];
       var summary = detail.querySelector('.summary');
-      summary.addEventListener('click', fnp.dom.callback(e) );
+      summary.addEventListener('click', fnp.dom.callback );
     }
   },
   callback: function(e){
