@@ -226,6 +226,18 @@ fnp.searchMasterFile = function(file){
   return fnp.repo.API + '/contents/' + file + '?ref=' + (fnp.repo.master ? fnp.repo.master : 'master');
 };
 
+fnp.b64e = function(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+        return String.fromCharCode('0x' + p1);
+    }));
+};
+
+fnp.b64d = function(str) {
+    return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) {
+        return '%' + c.charCodeAt(0).toString(16);
+    }).join(''));
+};
+
 fnp.updater = function(){
   if(fnp.dom.monitor()) fnp.dom.details();
   fnp.getThisRepo();
