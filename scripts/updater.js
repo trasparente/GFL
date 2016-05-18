@@ -8,15 +8,31 @@ fnp.dom = {
   get section() {return 'main > section';},
   get ul() {return 'main > section > header > details > ul';},
   monitor: function(){
-    fnp.appendi({ tag: 'details', parent: 'main > section > header', attributes: { open: '' } });
-    fnp.appendi({ tag: 'ul', parent: 'section > header > details', attributes: {} });
-    fnp.appendi({ tag: 'summary', parent: 'section > header > details', innerHTML: 'Monitor' });
+    fnp.appendi({ tag: 'details', parent: 'main > section > header', attributes: { open: '', class: 'details' } });
+    fnp.appendi({ tag: 'summary', parent: 'section > header > details', innerHTML: 'Monitor', attributes: { class: 'summary'} });
+    fnp.appendi({ tag: 'ul', parent: 'section > header > details' });
+    return true;
   },
   setup: function(){
     fnp.dom.editor = fnp.appendi({ tag: 'div', parent: 'section', attributes: {} });
     fnp.dom.cancel = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Cancel' });
     fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Save leagues' });
     fnp.dom.valid = fnp.appendi({ tag: 'span', parent: 'section', attributes: {} });
+  },
+  details: function(){
+    var details = document.querySelectorAll('.details');
+    for (var i = 0; i < details.length; i++) {
+      var detail = details[i];
+      var summary = detail.querySelector('.summary');
+      summary.addEventListener('click', fnp.dom.callback(e) );
+    }
+  },
+  callback: function(e){
+    e.preventDefault();
+    var target = e.target.parentNode;
+    if (target.getAttribute('close')) { target.removeAttribute('close'); target.setAttribute('open', 'open'); }
+      else if (target.getAttribute('open')) { target.removeAttribute('open'); target.setAttribute('close', 'close'); }
+      else target.setAttribute('open', 'open');
   },
   hide: function(){
     var divs = document.querySelector('div[data-schemaid]');
@@ -210,16 +226,8 @@ fnp.searchMasterFile = function(file){
   return fnp.repo.API + '/contents/' + file + '?ref=' + (fnp.repo.master ? fnp.repo.master : 'master');
 };
 
-fnp.tob64 = function(str) {
-    return window.btoa(escape(encodeURIComponent(str)));
-};
-
-fnp.toutf8 = function(str) {
-    return decodeURIComponent(unescape(window.atob(str)));
-};
-
 fnp.updater = function(){
-	fnp.dom.monitor();
+  if(fnp.dom.monitor()) fnp.dom.details();
   fnp.getThisRepo();
 };
 

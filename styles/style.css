@@ -1,3 +1,4 @@
+@charset "UTF-8";
 html { overflow-y: scroll; }
 body[hidden] { font-size: 1.2em; display: block; }
 [aria-hidden="true"] { visibility: hidden; }
@@ -12,3 +13,20 @@ main { padding: 1em 2em; }
 footer { padding: 1em; }
 summary { cursor: pointer; }
 summary:focus { outline: none; }
+/*Details*/
+.details { border-bottom: 1px dotted silver; }
+.details > .summary {
+  cursor: pointer;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none; }
+.details > .summary:before {
+  display: inline-block;
+  width: 1.3em;
+  font-size: small;
+  content: "►"; }
+.details > *:not(.summary) { display: none; }
+.details[open] > .summary:before { content: "▼"; }
+.details[open] > * { display: block; }
