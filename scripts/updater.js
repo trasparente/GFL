@@ -9,8 +9,8 @@ fnp.dom = {
   get ul() {return 'main > section > header > details > ul';},
   monitor: function(){
     fnp.appendi({ tag: 'div', parent: 'main > section > header', attributes: { open: '', class: 'details' } });
-    fnp.appendi({ tag: 'p', parent: 'section > header > details', innerHTML: 'Monitor', attributes: { class: 'summary'} });
-    fnp.appendi({ tag: 'ul', parent: 'section > header > details' });
+    fnp.appendi({ tag: 'p', parent: 'section > header > div.details', innerHTML: 'Monitor', attributes: { class: 'summary'} });
+    fnp.appendi({ tag: 'ul', parent: 'section > header > div.details' });
     return true;
   },
   setup: function(){
