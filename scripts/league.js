@@ -11,7 +11,7 @@ fnp.league = {
     fnp.apiCall({
       url: fnp.searchDataFile('setup.json'),
       cb: function(){
-        fnp.setup.default = JSON.parse( fnp.toutf8(this.content) );
+        fnp.setup.default = JSON.parse( Base64.decode(this.content) );
         fnp.setup.sha = this.sha;
         fnp.league.checkLeagues();
       },
@@ -25,7 +25,7 @@ fnp.league = {
       url: fnp.searchDataFile('leagues/leagues.json'),
       cb: function(){
         fnp.leagues.content = 'present';
-        fnp.leagues.default = JSON.parse( fnp.toutf8(this.content) );
+        fnp.leagues.default = JSON.parse( Base64.decode(this.content) );
         fnp.leagues.sha = this.sha;
         fnp.league.showDetails();
       },
