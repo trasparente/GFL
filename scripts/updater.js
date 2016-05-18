@@ -6,7 +6,7 @@ fnp.parent = {
 
 fnp.dom = {
   get section() {return 'main > section';},
-  get ul() {return 'main > section > header > details > ul';},
+  get ul() {return 'main > section > header > div.details > ul';},
   monitor: function(){
     fnp.appendi({ tag: 'div', parent: 'main > section > header', attributes: { open: '', class: 'details' } });
     fnp.appendi({ tag: 'p', parent: 'section > header > div.details', innerHTML: 'Monitor', attributes: { class: 'summary'} });
