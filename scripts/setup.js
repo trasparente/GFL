@@ -9,7 +9,7 @@ fnp.setup = {
       url: fnp.searchDataFile('setup.json'),
       cb: function(){
         fnp.setup.content = 'present';
-        fnp.setup.default = JSON.parse( fnp.toutf8(this.content) );
+        fnp.setup.default = JSON.parse( Base64.decode(this.content) );
         fnp.setup.sha = this.sha;
         fnp.setup.Edit();
       },
@@ -28,7 +28,7 @@ fnp.setup = {
     fnp.apiCall({
       url: fnp.searchMasterFile('schema/setup.json'),
       cb: function(){
-        fnp.setup.schema = JSON.parse( fnp.toutf8(this.content) );
+        fnp.setup.schema = JSON.parse( Base64.decode(this.content) );
         // Initialize the editor
         var editor = new JSONEditor(fnp.dom.editor,{
           ajax: true,
@@ -59,7 +59,7 @@ fnp.setup = {
   },
   save: function(dati){
     fnp.dom.hide();
-    fnp.setup.encoded = fnp.tob64(JSON.stringify(dati));
+    fnp.setup.encoded = Base64.encode(JSON.stringify(dati));
     fnp.apiCall({
       url: fnp.repo.API + '/contents/setup.json',
       method: 'PUT',

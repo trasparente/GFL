@@ -11,7 +11,7 @@ fnp.league = {
     fnp.apiCall({
       url: fnp.searchDataFile('setup.json'),
       cb: function(){
-        fnp.setup.default = JSON.parse( fnp.toutf8(this.content) );
+        fnp.setup.default = JSON.parse( Base64.decode(this.content) );
         fnp.setup.sha = this.sha;
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'setup: <a href="' + fnp.repo.home + '/setup/">edit</a>' });
         fnp.league.checkLeagues();
@@ -26,7 +26,7 @@ fnp.league = {
       url: fnp.searchDataFile('leagues/leagues.json'),
       cb: function(){
         fnp.leagues.content = 'present';
-        fnp.leagues.default = JSON.parse( fnp.toutf8(this.content) );
+        fnp.leagues.default = JSON.parse( Base64.decode(this.content) );
         fnp.leagues.sha = this.sha;
         fnp.league.Edit();
       },
@@ -45,7 +45,7 @@ fnp.league = {
     fnp.apiCall({
       url: fnp.searchMasterFile('schema/setup.json'),
       cb: function(){
-        fnp.setup.schema = JSON.parse( fnp.toutf8(this.content) );
+        fnp.setup.schema = JSON.parse( Base64.decode(this.content) );
         // Initialize the editor
         var editor = new JSONEditor(fnp.dom.editor,{
           ajax: true,
@@ -79,7 +79,7 @@ fnp.league = {
     for (var i = 0; i < dati.length; i++) {
       if ( !dati[i].slug ) dati[i].slug = (fnp.leagues.sha) ? fnp.leagues.sha : fnp.repo.master;
     }
-    fnp.leagues.encoded = fnp.tob64(JSON.stringify(dati));
+    fnp.leagues.encoded = Base64.encode(JSON.stringify(dati));
     fnp.apiCall({
       url: fnp.repo.API + '/contents/leagues/leagues.json',
       method: 'PUT',
