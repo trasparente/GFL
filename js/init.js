@@ -26,8 +26,8 @@ var fnp = {
   load: function(){
     fnp.repo.master = fnp.url.masterHash;
     fnp.repo.data.sha = fnp.url.dataHash;
-    fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/loader.js', type: 'text/javascript' } });
     fnp.appendi({ tag: 'link', parent: 'head', attributes: { href: fnp.repo.rawgit + '/styles/style.css', rel: 'stylesheet' } });
+    fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/loader.js', type: 'text/javascript' } });
   },
   appendi: function(obj){
     var element = document.createElement(obj.tag);
