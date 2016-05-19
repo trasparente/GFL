@@ -30,9 +30,7 @@ fnp.dom = {
   callback: function(e){
     e.preventDefault();
     var target = e.target.parentNode;
-    if (target.getAttribute('close')) { target.removeAttribute('close'); target.setAttribute('open', ''); }
-      else if (target.getAttribute('open')) { target.removeAttribute('open'); target.setAttribute('close', ''); }
-      else target.setAttribute('open', '');
+    if (target.hasAttribute('close')) { target.removeAttribute('close'); target.setAttribute('open', ''); } else if (target.hasAttribute('open')) { target.removeAttribute('open'); target.setAttribute('close', ''); } else target.setAttribute('open', '');
   },
   hide: function(){
     var divs = document.querySelector('div[data-schemaid]');
