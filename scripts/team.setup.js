@@ -42,7 +42,7 @@ fnp.team = {
     fnp.apiCall({
       url: fnp.searchMasterFile('schema/setup.json'),
       cb: function(){
-        fnp.setup.schema = JSON.parse( fnp.b64d(this.content) );
+        fnp.setup.schema = JSON.parse( atob(this.content) );
         // Initialize the editor
         var editor = new JSONEditor(fnp.dom.editor,{
           ajax: true,
