@@ -23,7 +23,7 @@ fnp.league = {
   },
   checkLeagues: function(){
     fnp.apiCall({
-      url: fnp.searchDataFile('leagues/leagues.json'),
+      url: fnp.searchDataFile('leagues.json'),
       cb: function(){
         fnp.leagues.content = 'present';
         fnp.leagues.default = JSON.parse( fnp.b64d(this.content) );
@@ -81,7 +81,7 @@ fnp.league = {
     }
     fnp.leagues.encoded = fnp.b64e(JSON.stringify(dati));
     fnp.apiCall({
-      url: fnp.repo.API + '/contents/leagues/leagues.json',
+      url: fnp.repo.API + '/contents/leagues.json',
       method: 'PUT',
       data: fnp.leagues.content == 'absent' ? '{"message": "leagues created", "content": "' + fnp.leagues.encoded + '", "branch": "data"}' : '{"message": "leagues edited", "content": "' + fnp.leagues.encoded + '", "branch": "data", "sha": "' + fnp.leagues.sha + '"}',
       cb: function(){
