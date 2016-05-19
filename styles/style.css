@@ -30,3 +30,17 @@ summary:focus { outline: none; }
 .details > *:not(.summary) { display: none; }
 .details[open] > .summary:before { content: "▼"; }
 .details[open] > * { display: block; }
+/*Jsoneditor*/
+#editor_holder .IndentedPanel {
+  padding-left: 10px;
+  margin-left: 10px;
+  border-left: 1px solid #ccc;
+}
+#editor_holder .FormInputDescription {
+  font-size: .8em;
+  margin: 0;
+  display: inline-block;
+  font-styl: italic;
+}
+#editor_holder .markTabActive { color: blue; }
+#editor_holder .markTabInactive { opacity: 0.5; }
