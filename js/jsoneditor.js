@@ -6189,10 +6189,6 @@ JSONEditor.AbstractTheme = Class.extend({
   },
   getIndentedPanel: function() {
     var el = document.createElement('div');
-    // el.style = el.style || {};
-    // el.style.paddingLeft = '10px';
-    // el.style.marginLeft = '10px';
-    // el.style.borderLeft = '1px solid #ccc';
     el.classList.add("IndentedPanel");
     return el;
   },
@@ -6946,10 +6942,6 @@ JSONEditor.defaults.themes.html = JSONEditor.AbstractTheme.extend({
   },
   getFormInputDescription: function(text) {
     var el = this._super(text);
-    // el.style.fontSize = '.8em';
-    // el.style.margin = 0;
-    // el.style.display = 'inline-block';
-    // el.style.fontStyle = 'italic';
     el.classList.add('FormInputDescription');
     return el;
   },
