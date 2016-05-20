@@ -214,9 +214,10 @@ fnp.update = function(branch, sha){
     accept: 'application/vnd.github.v3.patch',
     method: 'PATCH',
     cb: function(){
+      fnp.repo.master = this.object.sha;
       fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>' + branch + '</em> updated: <a href="' + window.location.href + '#' + branch + '=' + sha + '" onclick="window.location.reload()">proceed</a>' });
       if(branch=='data') fnp.checkMasterParent();
-      if(branch=='master') fnp.getMasterHead();
+      if(branch=='master') fnp.getThisRepo();
     }
   });
 };
