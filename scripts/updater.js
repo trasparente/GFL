@@ -212,6 +212,8 @@ fnp.update = function(branch, sha){
     method: 'PATCH',
     cb: function(){
       fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>' + branch + '</em> updated: <a href="' + window.location.href + '#' + branch + '=' + sha + '" onclick="window.location.reload()">proceed</a>' });
+      if(branch=='data') fnp.checkMasterParent();
+      if(branch=='master') fnp.getMasterHead();
     }
   });
 };
