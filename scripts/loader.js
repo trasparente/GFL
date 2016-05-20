@@ -1,7 +1,7 @@
 // loader.js
 
 fnp.user = {
-  get token() { return (localStorage.getItem( 'fnp.user.token')) ? atob( localStorage.getItem( 'fnp.user.token' ) ) : false; }
+  get token() { return localStorage.getItem('fnp.user.token') ? localStorage.getItem('fnp.user.token') : false; }
 };
 
 fnp.apiFirstCall = function(obj){
@@ -10,7 +10,7 @@ fnp.apiFirstCall = function(obj){
   var xhr = new XMLHttpRequest();
   xhr.open ( obj.method, obj.url, true );
   xhr.setRequestHeader( 'Accept', obj.accept );
-  if(fnp.user.token) xhr.setRequestHeader( 'Authorization', 'token ' + fnp.user.token );
+  if(fnp.user.token && atob(fnp.user.token)) xhr.setRequestHeader( 'Authorization', 'token ' + atob(fnp.user.token) );
   xhr.onreadystatechange = function() {
     if(xhr.readyState == 4){
       document.querySelector('body').style.backgroundColor = "white";
