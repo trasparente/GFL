@@ -22,7 +22,7 @@ fnp.league = {
   },
   checkLeagues: function(){
     fnp.apiCall({
-      url: fnp.searchDataFile('leagues/leagues.json'),
+      url: fnp.searchDataFile('leagues.json'),
       cb: function(){
         fnp.leagues.content = 'present';
         fnp.leagues.default = JSON.parse( fnp.b64d(this.content) );
