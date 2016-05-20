@@ -44,7 +44,7 @@ fnp.dom = {
     for( i=0; i < leaguesArray.length; i++ ){
       var row = document.createElement('tr');
       row.innerHTML = '<td><a href="' + fnp.repo.home + '/league/#league=' + item.slug + '">' + item.title + '</a></td>';
-      divLeagues.appendChild(row);
+      document.querySelector('.leagues').appendChild(row);
     }
   }
 };
