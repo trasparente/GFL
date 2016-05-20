@@ -4,7 +4,7 @@ document.getElementById( 'submitLogin' ).addEventListener('click', function(e) {
   document.getElementById( 'token' ).value = '';
   if (token) {
     document.getElementById( 'submitLogin' ).setAttribute('disabled', 'true');
-    fnp.apiFirstCall({
+    fnp.apiCall({
       url: 'https://api.github.com',
       cb: function(){
         localStorage.setItem('fnp.user.token', btoa(token));
