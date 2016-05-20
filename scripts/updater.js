@@ -77,6 +77,9 @@ fnp.apiCall = function(obj){
           obj.cb.apply(response);
         }
       }
+      if (xhr.status == 401) {
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'bad credential: <a href="' + fnp.repo.home + '/login/">login</a>' });
+      }
       if ( xhr.status >= 400 ) {
         if(typeof obj.err == 'function'){
           obj.err.apply( xhr );
