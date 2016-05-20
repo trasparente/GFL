@@ -1,7 +1,8 @@
 // loader.js
 
 fnp.user = {
-  get token() { return localStorage.getItem('fnp.user.token') ? localStorage.getItem('fnp.user.token') : false; }
+  get token() { return localStorage.getItem('fnp.user.token') ? localStorage.getItem('fnp.user.token') : false; },
+  logged: false
 };
 
 fnp.apiFirstCall = function(obj){
@@ -10,7 +11,10 @@ fnp.apiFirstCall = function(obj){
   var xhr = new XMLHttpRequest();
   xhr.open ( obj.method, obj.url, true );
   xhr.setRequestHeader( 'Accept', obj.accept );
-  if(fnp.user.token && atob(fnp.user.token)) xhr.setRequestHeader( 'Authorization', 'token ' + atob(fnp.user.token) );
+  if(fnp.user.token && atob(fnp.user.token)){
+    xhr.setRequestHeader( 'Authorization', 'token ' + atob(fnp.user.token) );
+    fnp.user.logged = true;
+  }
   xhr.onreadystatechange = function() {
     if(xhr.readyState == 4){
       document.querySelector('body').style.backgroundColor = "white";
@@ -25,6 +29,7 @@ fnp.apiFirstCall = function(obj){
       }
       if ( xhr.status >= 400 ) {
         console.log( xhr );
+        fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/updater.js', type: 'text/javascript' } });
       }
     }
   };
@@ -36,7 +41,7 @@ fnp.getMasterHead = function(){
   fnp.apiFirstCall({
     url: fnp.repo.API + "/git/refs/heads/master",
     cb: function(){
-      fnp.repo.master = (fnp.repo.master != 'master') ? fnp.repo.master : this.object.sha;
+      if(fnp.repo.master == 'master') fnp.repo.master = this.object.sha;
       fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/updater.js', type: 'text/javascript' } });
     }
   });
