@@ -40,10 +40,15 @@ fnp.dom = {
     fnp.dom.submit.setAttribute('hidden','');
   },
   showLeagues: function(leaguesArray){
-    var divLeagues = fnp.appendi({ tag: 'div', parent: fnp.dom.section, attributes: { class: 'leagues' } });
+    var divLeagues = fnp.appendi({ tag: 'table', parent: fnp.dom.section, attributes: { class: 'leagues' } });
     for( i=0; i < leaguesArray.length; i++ ){
-      fnp.appendi({ tag: 'a', parent: fnp.dom.ul, innerHTML: fnp.leagues.default[i].title, attributes: { href: fnp.repo.home + '/league/#league=' + fnp.leagues.default[i].slug } });
+      fnp.dom.table(divLeagues,fnp.leagues.default[i]);
     }
+  },
+  table: function(parent, item){
+    var row = document.createElement('tr');
+    row.innerHTML = '<td><a href="' + fnp.repo.home + '/league/#league=' + item.slug + '">' + item.title + '</a></td>';
+    return document.querySelector(parent).appendChild(row);
   }
 };
 
