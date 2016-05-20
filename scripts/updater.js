@@ -42,13 +42,10 @@ fnp.dom = {
   showLeagues: function(leaguesArray){
     var divLeagues = fnp.appendi({ tag: 'table', parent: fnp.dom.section, attributes: { class: 'leagues' } });
     for( i=0; i < leaguesArray.length; i++ ){
-      fnp.dom.table(divLeagues,fnp.leagues.default[i]);
+      var row = document.createElement('tr');
+      row.innerHTML = '<td><a href="' + fnp.repo.home + '/league/#league=' + item.slug + '">' + item.title + '</a></td>';
+      divLeagues.appendChild(row);
     }
-  },
-  table: function(parent, item){
-    var row = document.createElement('tr');
-    row.innerHTML = '<td><a href="' + fnp.repo.home + '/league/#league=' + item.slug + '">' + item.title + '</a></td>';
-    return document.querySelector(parent).appendChild(row);
   }
 };
 
