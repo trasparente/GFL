@@ -24,7 +24,6 @@ fnp.apiFirstCall = function(obj){
         }
       }
       if ( xhr.status >= 400 ) {
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'api error: ' + obj.url });
         console.log( xhr );
       }
     }
