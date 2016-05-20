@@ -43,7 +43,7 @@ fnp.dom = {
     var divLeagues = fnp.appendi({ tag: 'table', parent: fnp.dom.section, attributes: { class: 'leagues' } });
     for( i=0; i < leaguesArray.length; i++ ){
       var row = document.createElement('tr');
-      row.innerHTML = '<td><a href="' + fnp.repo.home + '/league/#league=' + item.slug + '">' + item.title + '</a></td>';
+      row.innerHTML = '<td><a href="' + fnp.repo.home + '/league/#league=' + leaguesArray[i].slug + '">' + leaguesArray[i].title + '</a></td>';
       document.querySelector('.leagues').appendChild(row);
     }
   }
