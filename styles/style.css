@@ -16,7 +16,7 @@ summary:focus { outline: none; }
 /*Details*/
 .details {
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  width: 30%; font-size: smaller; }
+  font-size: smaller; }
 .details > .summary {
   cursor: pointer;
   margin: 0; padding: .5em;
