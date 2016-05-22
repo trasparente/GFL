@@ -220,6 +220,11 @@ fnp.update = function(branch, sha){
       fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>' + branch + '</em> updated: <a href="' + window.location.href + '#' + branch + '=' + sha + '" onclick="window.location.reload()">proceed</a>' });
       if(branch=='data') fnp.checkMasterParent();
       if(branch=='master') fnp.getThisRepo();
+    },
+    err: function(){
+      fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>' + branch + '</em> update error: ' + this.status + ' ' + this.statusText });
+      if(branch=='data') fnp.checkMasterParent();
+      if(branch=='master') fnp.getThisRepo();
     }
   });
 };
