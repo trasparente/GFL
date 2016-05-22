@@ -115,9 +115,9 @@
       "title": "Team",
       "description": "Schema for a team",
       "properties": {
-        "name": {
+        "title": {
           "type": "string",
-          "title": "Team name",
+          "title": "Team title",
           "minLength": 1
         },
         "username": {
@@ -127,7 +127,10 @@
             "hidden": true
           }
         }
-      }
+      },
+      "required": [
+        "title"
+      ]
     },
     "leagues": {
       "type": "array",
