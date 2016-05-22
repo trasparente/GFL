@@ -14,9 +14,13 @@ footer { padding: 1em; }
 summary { cursor: pointer; }
 summary:focus { outline: none; }
 /*Details*/
-.details { border-bottom: 1px dotted silver; }
+.details {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  width: 30%; font-size: smaller; }
 .details > .summary {
   cursor: pointer;
+  margin: 0; padding: .5em;
+  background: #f7ca88;
   user-select: none;
   -moz-user-select: none;
   -khtml-user-select: none;
@@ -32,15 +36,12 @@ summary:focus { outline: none; }
 .details[open] > * { display: block; }
 /*Jsoneditor*/
 #editor_holder .IndentedPanel {
-  padding-left: 10px;
-  margin-left: 10px;
-  border-left: 1px solid #ccc;
-}
+  padding-left: 10px; margin-left: 10px;
+  border-left: 1px solid #ccc; }
 #editor_holder .FormInputDescription {
   font-size: .8em;
   margin: 0;
   display: inline-block;
-  font-styl: italic;
-}
+  font-style: italic; }
 #editor_holder .markTabActive { color: blue; }
 #editor_holder .markTabInactive { opacity: 0.5; }
