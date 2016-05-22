@@ -85,4 +85,4 @@ fnp.team = {
   }
 };
 
-fnp.league.start();
+fnp.team.start();
