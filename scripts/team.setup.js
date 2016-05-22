@@ -79,7 +79,19 @@ fnp.team = {
       data: fnp.team.content == 'absent' ? '{"message": "team created", "content": "' + fnp.team.encoded + '", "branch": "data"}' : '{"message": "team edited", "content": "' + fnp.team.encoded + '", "branch": "data", "sha": "' + fnp.team.sha + '"}',
       cb: function(){
         fnp.repo.data.sha = this.commit.sha;
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/league/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: creating pull request' });
+        fnp.team.pull();
+      }
+    });
+  },
+  pull: function(){
+    fnp.apiCall({
+      url: "https://api.github.com/repos/" + fnp.repo.content.parent.full_name + '/pulls',
+      method: 'POST',
+      data: '{"title": "team changed", "head": "' + fnp.repo.owner + ':data", "base": "data", "body": "Please pull this in!" }',
+      cb: function(){
+        fnp.pull = this;
+        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'pull requested #' + fnp.pull.number + ': <a href="' + fnp.repo.home + '/team/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
       }
     });
   }
