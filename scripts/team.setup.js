@@ -4,7 +4,7 @@ fnp.setup = {};
 
 fnp.team = {
   start: function(){
-    if (fnp.user.type == 'owner' && fnp.repo.type == 'User') fnp.league.checkSetup(); else window.location = fnp.repo.home;
+    if (fnp.user.type == 'owner' && fnp.repo.type == 'User') fnp.team.checkSetup(); else window.location = fnp.repo.home;
   },
   checkSetup: function(){
     fnp.apiCall({
@@ -12,7 +12,7 @@ fnp.team = {
       cb: function(){
         fnp.setup.default = JSON.parse( fnp.b64d(this.content) );
         fnp.setup.sha = this.sha;
-        fnp.league.checkTeam();
+        fnp.team.checkTeam();
       },
       err: function(){
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'error: no setup' });
