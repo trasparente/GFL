@@ -75,7 +75,7 @@ fnp.apiCall = function(obj){
           if (xhr.getResponseHeader('X-RateLimit-Remaining') < 2) window.location = fnp.repo.home + '/login/';
           var xrate = document.querySelector('footer > small');
           xrate.innerHTML = 'X-RateLimit-Remaining: ' + xhr.getResponseHeader( 'X-RateLimit-Remaining' );
-          var response = (obj.accept.indexOf('json') > -1 || obj.accept.indexOf('patch') > -1) ? JSON.parse(xhr.responseText) : xhr.responseText;
+          var response = (obj.accept.indexOf('html') > -1) ? xhr.responseText : JSON.parse(xhr.responseText);
           obj.cb.apply(response);
         }
       }
@@ -147,6 +147,7 @@ fnp.checkPulls = function(){
       fnp.repo.pulls = this;
       if( fnp.repo.pulls.length !== 0 ){
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'pending pulls: <a href="' + fnp.repo.content.html_url + '/pulls">' + fnp.repo.pulls.length + ' pulls</a>' });
+        fnp.checkData();
       }else{
         fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'pending pulls: no' });
         fnp.checkData();
@@ -236,7 +237,8 @@ fnp.mergePull = function(pullNumber){
     accept: 'application/vnd.github.polaris-preview',
     data: '{"squash": true,"commit_title": "Never tell me the odds"}',
     cb: function(){
-      console.log(this);
+      fnp.merge = this;
+      fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'merged: ' + fnp.merge.merged + ' <a href="' + window.location.href + '#data=' + fnp.merge.sha + '" onclick="window.location.reload()">proceed</a>' });
     },
     err: function(){
       console.log(this);
