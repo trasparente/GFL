@@ -229,6 +229,19 @@ fnp.update = function(branch, sha){
   });
 };
 
+fnp.mergePull = function(pullNumber){
+  fnp.apiCall({
+    url: fnp.repo.API + '/pulls/' + pullNumber + '/merge',
+    method: 'PUT',
+    cb: function(){
+      console.log(this);
+    },
+    err: function(){
+      console.log(this);
+    }
+  });
+};
+
 fnp.searchDataFile = function(file){
   return fnp.repo.API + '/contents/' + file + '?ref=' + (fnp.repo.data.sha ? fnp.repo.data.sha : 'data');
 };
