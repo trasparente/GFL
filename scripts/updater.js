@@ -213,7 +213,7 @@ fnp.checkMasterParent = function(){
 fnp.update = function(branch, sha){
   fnp.apiCall({
     url: fnp.repo.API + "/git/refs/heads/" + branch,
-    data: '{"sha":"' + sha + '"}',
+    data: '{"sha":"' + sha + '","force":true}',
     accept: 'application/vnd.github.v3.patch',
     method: 'PATCH',
     cb: function(){
