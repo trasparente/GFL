@@ -233,6 +233,8 @@ fnp.mergePull = function(pullNumber){
   fnp.apiCall({
     url: fnp.repo.API + '/pulls/' + pullNumber + '/merge',
     method: 'PUT',
+    accept: 'application/vnd.github.polaris-preview',
+    data: '{"squash": true,"commit_title": "Never tell me the odds"}',
     cb: function(){
       console.log(this);
     },
