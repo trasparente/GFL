@@ -1,53 +1,41 @@
 // init.js
 
-// fork-n-play
+var urlSlash = window.location.pathname.split('/'),
+    urlArray = window.location.host.split('.'),
+    repoName = urlSlash[1],
+    repoOwner = urlArray[0],
+    repoFullname = repoOwner + '/' + repoName,
+    repoAPI = 'https://api.github.com/repos/' + repoFullname,
+    repoHome = 'http://' + repoOwner + '.github.io/' + repoName,
+    rawStatic = 'https://rawgit.com/' + repoFullname,
+    rawCdn = 'https://cdn.rawgit.com/' + repoFullname;
 
-var fnp = {
-  url: {
-    get array() {return window.location.host.split( '.' );},
-    get slash() {return window.location.pathname.split( '/' );},
-    get hash() {return window.location.hash.substring( 1 );},
-    get page() {return this.slash[2] ? this.slash[2]: false;},
-    get setup() {return this.slash[3] ? this.slash[3]: false;},
-    get script() {return this.page ? (this.setup ? this.page + '.' + this.setup : this.page) : 'home';},
-    get masterHash() {return this.hash && this.hash.slice(0,7) === 'master=' ? this.hash.slice(7) : 'master';},
-    get dataHash() {return this.hash && this.hash.slice(0,5) === 'data=' ? this.hash.slice(5) : 'data';}
-  },
-  repo: {
-    get owner() {return fnp.url.array[0];},
-    get name() {return fnp.url.slash[1];},
-    get home() {return 'http://' + this.owner + '.github.io/' + this.name;},
-    get API() {return 'https://api.github.com/repos/' + this.owner + '/' + this.name;},
-    get static() {return 'https://rawgit.com/' + this.owner + '/' + this.name;},
-    get cdn() {return 'https://cdn.rawgit.com/' + this.owner + '/' + this.name;},
-    get rawgit() {return this.master == 'master' ? this.static + '/master' : this.cdn + '/' + this.master;},
-    data: {}
-  },
-  load: function(){
-    fnp.repo.master = fnp.url.masterHash;
-    fnp.repo.data.sha = fnp.url.dataHash;
-    fnp.appendi({ tag: 'link', parent: 'head', attributes: { href: fnp.repo.rawgit + '/styles/style.css', rel: 'stylesheet' } });
-    fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/loader.js', type: 'text/javascript' } });
-  },
-  appendi: function(obj){
-    var element = document.createElement(obj.tag);
+function rawgitUrl(branch){
+  if(sessionStorage[ branch + 'Ref' ]) return rawCdn + '/' + sessionStorage[ branch + 'Ref' ]; else return rawStatic + '/' + branch;
+}
+
+function loadAssets(){
+  domAppend({ tag: 'link', parent: 'head', attributes: { href: rawgitUrl('master') + '/styles/style.css', rel: 'stylesheet' } });
+  domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/loader.js', type: 'text/javascript' } });
+}
+
+function domAppend(obj){
+  var element = document.createElement(obj.tag);
+  if(obj.hasOwnProperty('attributes')){
     for (var key in obj.attributes) {
       if (obj.attributes.hasOwnProperty(key)) {
         element.setAttribute(key, obj.attributes[key]);
       }
     }
-    if(obj.hasOwnProperty('innerHTML')) element.innerHTML = obj.innerHTML;
-    return document.querySelector(obj.parent).appendChild(element);
-  },
-  init: function(){
-    if (window.addEventListener)
-      window.addEventListener('load', this.load, false);
-    else if (window.attachEvent)
-      window.attachEvent('onload', this.load);
-    else window.onload = this.load;
   }
-};
+  if(obj.hasOwnProperty('innerHTML')) element.innerHTML = obj.innerHTML;
+  if(obj.hasOwnProperty('class')) element.classList.add(obj.class);
+  if(obj.hasOwnProperty('parent')) return document.querySelector(obj.parent).appendChild(element); else return element;
+}
 
 // init
-
-fnp.init();
+if (window.addEventListener)
+  window.addEventListener('load', loadAssets, false);
+else if (window.attachEvent)
+  window.attachEvent('onload', loadAssets);
+else window.onload = loadAssets;
