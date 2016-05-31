@@ -19,11 +19,11 @@ var domSection = document.querySelector('main > section'),
     mergeArray = [];
 
 // functions
-function appendChilds(elementArray){
+Element.prototype.appendChilds = function (elementArray) {
   for (var i = 0; i < elementArray.length; i++) {
     this.appendChild(elementArray[i]);
   }
-}
+};
 
 // Details Handlers
 function detailsInit(){
