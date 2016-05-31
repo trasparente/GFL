@@ -1,52 +1,51 @@
 // loader.js
 
-fnp.user = {
-  get token() { return localStorage.getItem('fnp.user.token') ? localStorage.getItem('fnp.user.token') : false; },
-  logged: false
-};
+var userLogged = false,
+userToken = false;
 
-fnp.apiFirstCall = function(obj){
+if (localStorage.getItem('userToken')) userToken = localStorage.getItem('userToken');
+
+function apiFirstCall(obj){
   obj.method = 'GET';
   obj.accept = 'application/vnd.github.v3.full+json';
   var xhr = new XMLHttpRequest();
   xhr.open ( obj.method, obj.url, true );
   xhr.setRequestHeader( 'Accept', obj.accept );
-  if(fnp.user.token && atob(fnp.user.token)){
-    xhr.setRequestHeader( 'Authorization', 'token ' + atob(fnp.user.token) );
-    fnp.user.logged = true;
-  }
+  if(userToken && atob(userToken)){
+    xhr.setRequestHeader( 'Authorization', 'token ' + atob(userToken) );
+    userLogged = true;
+  }else userLogged = false;
   xhr.onreadystatechange = function() {
     if(xhr.readyState == 4){
-      document.querySelector('body').style.backgroundColor = "white";
+      document.body.classList.remove('request');
       if ( xhr.status == 200 ||  xhr.status == 201 ||  xhr.status == 204 ) {
         if (typeof obj.cb == 'function') {
-          if (xhr.getResponseHeader('X-RateLimit-Remaining') < 5) fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'rate limit: exceeded' });
-          if (xhr.getResponseHeader('X-RateLimit-Remaining') < 2) window.location = fnp.repo.home + '/login/';
-          var xrate = document.querySelector('footer > small');
-          xrate.innerHTML = 'X-RateLimit-Remaining: ' + xhr.getResponseHeader( 'X-RateLimit-Remaining' );
           obj.cb.apply(JSON.parse(xhr.responseText));
         }
       }
       if ( xhr.status >= 400 ) {
         console.log( xhr );
-        fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/updater.js', type: 'text/javascript' } });
+        if(xhr.status == 401) fnp.userLogged = false;
+        domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/updater.js', type: 'text/javascript' } });
       }
     }
   };
-  document.querySelector('body').style.backgroundColor = 'whitesmoke';
+  document.body.classList.add('request');
   xhr.send();
-};
+}
 
-fnp.getMasterHead = function(){
-  fnp.apiFirstCall({
-    url: fnp.repo.API + "/git/refs/heads/master",
+function headMaster(){
+  apiFirstCall({
+    url: repoAPI + "/git/refs/heads/master",
     cb: function(){
-      if(fnp.repo.master == 'master') fnp.repo.master = this.object.sha;
-      fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/updater.js', type: 'text/javascript' } });
+      sessionStorage.setItem('masterRef', this.object.sha);
+      domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/updater.js', type: 'text/javascript' } });
+    },
+    err: function(){
+      sessionStorage.setItem('masterRef', 'master');
     }
   });
-};
+}
 
 // loader
-
-fnp.getMasterHead();
+headMaster();

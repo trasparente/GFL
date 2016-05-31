@@ -1,95 +1,57 @@
 // league.setup.js
 
-fnp.leagues = {};
-fnp.setup = {};
+var setupSchema = {};
 
-fnp.league = {
-  start: function(){
-    if (fnp.user.type == 'owner' && fnp.repo.type == 'Organization') fnp.league.checkSetup(); else window.location = fnp.repo.home;
-  },
-  checkSetup: function(){
-    fnp.apiCall({
-      url: fnp.searchDataFile('setup.json'),
-      cb: function(){
-        fnp.setup.default = JSON.parse( fnp.b64d(this.content) );
-        fnp.setup.sha = this.sha;
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'setup: <a href="' + fnp.repo.home + '/setup/">edit</a>' });
-        fnp.league.checkLeagues();
-      },
-      err: function(){
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'warning: no setup, <a href="' + fnp.repo.home + '/setup/">create</a>' });
-      }
-    });
-  },
-  checkLeagues: function(){
-    fnp.apiCall({
-      url: fnp.searchDataFile('leagues.json'),
-      cb: function(){
-        fnp.leagues.content = 'present';
-        fnp.leagues.default = JSON.parse( fnp.b64d(this.content) );
-        fnp.leagues.sha = this.sha;
-        fnp.league.Edit();
-      },
-      err: function(){
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'warning: no leagues' });
-        fnp.leagues.default = {};
-        fnp.leagues.content = 'absent';
-        fnp.league.Edit();
-      }
-    });
-  },
-  Edit: function(){
-    fnp.dom.setup();
+if (userType != 'owner' || repoType != 'Organization') window.location = repoHome;
 
-    // load schema
-    fnp.apiCall({
-      url: fnp.searchMasterFile('schema/setup.json'),
-      cb: function(){
-        fnp.setup.schema = JSON.parse( atob(this.content) );
-        // Initialize the editor
-        var editor = new JSONEditor(fnp.dom.editor,{
-          ajax: true,
-          schema: fnp.setup.schema.properties.leagues,
-          startval: fnp.leagues.default,
-          no_additional_properties: false,
-          required_by_default: false,
-          // Special
-          disable_properties: true,
-          disable_edit_json: true,
-          disable_array_reorder: false
-        });
-        fnp.dom.submit.addEventListener('click',function() { fnp.league.save(editor.getValue()); });
-        fnp.dom.cancel.addEventListener('click',function() { window.location = fnp.repo.home; });
-        editor.on('change',function() {
-          var errors = editor.validate();
-          if(errors.length) {
-            console.log(errors);
-            fnp.dom.valid.style.color = 'red';
-            fnp.dom.valid.textContent = "not valid";
-          } else {
-            fnp.dom.valid.style.color = 'green';
-            fnp.dom.valid.textContent = "valid";
-          }
-        });
+setupEditor();
+
+apiCall({
+  url: fileUrl('master', 'schema/setup.json'),
+  cb: function(){
+    setupSchema = JSON.parse( atob(this.content) );
+    // Initialize the editor
+    var editor = new JSONEditor(domEditor,{
+      ajax: true,
+      schema: setupSchema.properties.leagues,
+      startval: jsonLeagues,
+      no_additional_properties: false,
+      required_by_default: false,
+      // Special
+      disable_properties: true,
+      disable_edit_json: true,
+      disable_array_reorder: false
+    });
+    domSubmit.addEventListener('click',function() { saveLeagues(editor.getValue()); });
+    domCancel.addEventListener('click',function() { window.location = repoHome; });
+    editor.on('change',function() {
+      var errors = editor.validate();
+      if(errors.length) {
+        console.log(errors);
+        domValid.style.color = 'red';
+        domValid.textContent = "not valid";
+      } else {
+        domValid.style.color = 'green';
+        domValid.textContent = "valid";
       }
     });
-  },
-  save: function(dati){
-    fnp.dom.hide();
+  }
+});
+
+function saveLeagues(dati){
+    hideEditor();
     for (var i = 0; i < dati.length; i++) {
-      if ( !dati[i].slug ) dati[i].slug = (fnp.leagues.sha) ? fnp.leagues.sha : fnp.repo.master;
+      if ( !dati[i].slug ) dati[i].slug = (shaLeagues) ? shaLeagues : sessionStorage.masterRef;
     }
-    fnp.leagues.encoded = fnp.b64e(JSON.stringify(dati));
+    var encodedLeagues = b64e(JSON.stringify(dati));
     fnp.apiCall({
-      url: fnp.repo.API + '/contents/leagues.json',
+      url: repoAPI + '/contents/leagues.json',
       method: 'PUT',
-      data: fnp.leagues.content == 'absent' ? '{"message": "leagues created", "content": "' + fnp.leagues.encoded + '", "branch": "data"}' : '{"message": "leagues edited", "content": "' + fnp.leagues.encoded + '", "branch": "data", "sha": "' + fnp.leagues.sha + '"}',
+      data: jsonLeagues ? '{"message": "leagues created", "content": "' + encodedLeagues + '", "branch": "data"}' : '{"message": "leagues edited", "content": "' + encodedLeagues + '", "branch": "data", "sha": "' + shaLeagues + '"}',
       cb: function(){
-        fnp.repo.data.sha = this.commit.sha;
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: <a href="' + fnp.repo.home + '/league/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
+        sessionStorage.setItem('dataRef', this.commit.sha);
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'saved: <a href="' + repoHome + '">proceed</a>' });
       }
     });
   }
 };
-
-fnp.league.start();

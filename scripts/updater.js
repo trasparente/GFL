@@ -1,226 +1,296 @@
 // updater.js
 
-fnp.parent = {
-  data: {}
-};
+var domSection = document.querySelector('main > section'),
+    domHeader = document.querySelector('body > header'),
+    domMonitor = domAppend({ tag: 'div', attributes: { open: '' }, class: 'details' }),
+    monitorString = 'main > section > header > div.details > ul',
+    domUl = domAppend({ tag: 'ul' }),
+    domSummary = domAppend({ tag: 'p', innerHTML: 'Monitor', class: 'summary' }),
+    domEditor = document.createElement('div'),
+    domCancel = domAppend({ tag: 'button', innerHTML: 'Cancel' }),
+    domSubmit = domAppend({ tag: 'button', innerHTML: 'Save leagues' }),
+    domValid = document.createElement('span'),
+    domTable = domAppend({ tag: 'table', class: 'leagues' }),
+    domXrate = document.querySelector('footer > small'),
+    repoContent = {},
+    repoType = '',
+    repoPulls = {},
+    userType = '',
+    mergeArray = [];
 
-fnp.dom = {
-  get section() {return 'main > section';},
-  get ul() {return 'main > section > header > div.details > ul';},
-  monitor: function(){
-    fnp.appendi({ tag: 'div', parent: 'main > section > header', attributes: { open: '', class: 'details' } });
-    fnp.appendi({ tag: 'p', parent: 'section > header > div.details', innerHTML: 'Monitor', attributes: { class: 'summary'} });
-    fnp.appendi({ tag: 'ul', parent: 'section > header > div.details' });
-    return true;
-  },
-  setup: function(){
-    fnp.dom.editor = fnp.appendi({ tag: 'div', parent: 'section', attributes: {} });
-    fnp.dom.cancel = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Cancel' });
-    fnp.dom.submit = fnp.appendi({ tag: 'button', parent: 'section', innerHTML: 'Save leagues' });
-    fnp.dom.valid = fnp.appendi({ tag: 'span', parent: 'section', attributes: {} });
-  },
-  details: function(){
-    var details = document.querySelectorAll('.details');
-    for (var i = 0; i < details.length; i++) {
-      var detail = details[i];
-      var summary = detail.querySelector('.summary');
-      summary.addEventListener('click', fnp.dom.callback );
-    }
-  },
-  callback: function(e){
-    e.preventDefault();
-    var target = e.target.parentNode;
-    if (target.hasAttribute('close')) { target.removeAttribute('close'); target.setAttribute('open', ''); } else if (target.hasAttribute('open')) { target.removeAttribute('open'); target.setAttribute('close', ''); } else target.setAttribute('open', '');
-  },
-  hide: function(){
-    var divs = document.querySelector('div[data-schemaid]');
-    divs.setAttribute('hidden','');
-    fnp.dom.cancel.setAttribute('hidden','');
-    fnp.dom.valid.setAttribute('hidden','');
-    fnp.dom.submit.setAttribute('hidden','');
-  },
-  showLeagues: function(leaguesArray){
-    var divLeagues = fnp.appendi({ tag: 'table', parent: fnp.dom.section, attributes: { class: 'leagues' } });
-    for( i=0; i < leaguesArray.length; i++ ){
-      var row = document.createElement('tr');
-      row.innerHTML = '<td><a href="' + fnp.repo.home + '/league/#league=' + leaguesArray[i].slug + '">' + leaguesArray[i].title + '</a></td>';
-      document.querySelector('.leagues').appendChild(row);
+// functions
+function appendChilds(elementArray){
+  for (var i = 0; i < elementArray.length; i++) {
+    this.appendChild(elementArray[i]);
+  }
+}
+
+// Details Handlers
+function detailsInit(){
+  var details = document.querySelectorAll('.details');
+  for (var i = 0; i < details.length; i++) {
+    var detail = details[i];
+    var summary = detail.querySelector('.summary');
+    summary.addEventListener('click', detailsCallback );
+  }
+}
+
+function detailsCallback(e){
+  e.preventDefault();
+  var target = e.target.parentNode;
+  if (target.hasAttribute('close')) { target.removeAttribute('close'); target.setAttribute('open', ''); } else if (target.hasAttribute('open')) { target.removeAttribute('open'); target.setAttribute('close', ''); } else target.setAttribute('open', '');
+}
+
+// Setup Editor form and buttons
+function setupEditor(){
+  domSection.appendChilds(domEditor, domCancel, domSubmit, domValid);
+}
+
+function hideEditor(){
+  var divs = document.querySelector('div[data-schemaid]');
+  divs.setAttribute('hidden','');
+  domCancel.setAttribute('hidden','');
+  domValid.setAttribute('hidden','');
+  domSubmit.setAttribute('hidden','');
+}
+
+// functions
+function urlScript(){
+  var url = 'home';
+  if(urlSlash[2]){
+    url = urlSlash[2];
+    if(urlSlash[3]){
+      url += '-' + urlSlash[3];
     }
   }
-};
+  return url;
+}
 
-fnp.apiCall = function(obj){
+function apiCall(obj){
   if(!obj.hasOwnProperty('cb')) obj.cb = function(){ console.log(this); };
-  if(!obj.hasOwnProperty('url')) obj.url = fnp.repo.API;
+  if(!obj.hasOwnProperty('url')) obj.url = repoAPI;
   if(!obj.hasOwnProperty('method')) obj.method = 'GET';
   if(!obj.hasOwnProperty('accept')) obj.accept = 'application/vnd.github.v3.full+json';
   if(!obj.hasOwnProperty('data')) obj.data = null;
   if(!obj.hasOwnProperty('err')) obj.err = false;
-  obj.etag = 'fnp.etag.' + obj.url.replace(/\W+/g, "");
+  obj.etag = 'etag.' + obj.url.replace(/\W+/g, "");
   var xhr = new XMLHttpRequest();
   xhr.open ( obj.method, obj.url, true );
   xhr.setRequestHeader( 'Accept', obj.accept );
-  if(fnp.user.token && atob(fnp.user.token)) xhr.setRequestHeader( 'Authorization', 'token ' + atob(fnp.user.token) );
+  if(userToken && atob(userToken)){
+    xhr.setRequestHeader( 'Authorization', 'token ' + atob(userToken) );
+    userLogged = true;
+  }
   if(localStorage.getItem(obj.etag)) xhr.setRequestHeader('If-None-Match', localStorage.getItem(obj.etag));
   xhr.onreadystatechange = function() {
     if(xhr.readyState == 4){
-      document.querySelector('body').style.backgroundColor = "white";
+      document.body.classList.remove('request');
       if(xhr.getResponseHeader('ETag') && obj.url.indexOf('ref=') == -1 ){
         var etag = RegExp(/W\/"(.*?)"/).exec(xhr.getResponseHeader('ETag'));
         if(etag) localStorage.setItem(obj.etag, etag[1]);
       }
       if ( xhr.status == 200 ||  xhr.status == 201 ||  xhr.status == 204 ) {
         if (typeof obj.cb == 'function') {
-          if (xhr.getResponseHeader('X-RateLimit-Remaining') < 5) fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'rate limit: ' + xhr.getResponseHeader('X-RateLimit-Remaining') });
-          if (xhr.getResponseHeader('X-RateLimit-Remaining') < 2) window.location = fnp.repo.home + '/login/';
-          var xrate = document.querySelector('footer > small');
-          xrate.innerHTML = 'X-RateLimit-Remaining: ' + xhr.getResponseHeader( 'X-RateLimit-Remaining' );
+          if (xhr.getResponseHeader('X-RateLimit-Remaining') < 5) domAppend({ tag: 'li', parent: monitorString, innerHTML: 'rate limit: ' + xhr.getResponseHeader('X-RateLimit-Remaining') });
+          if (xhr.getResponseHeader('X-RateLimit-Remaining') < 2) window.location = repoHome + '/login/';
+          domXrate.innerHTML = 'X-RateLimit-Remaining: ' + xhr.getResponseHeader( 'X-RateLimit-Remaining' );
           var response = (obj.accept.indexOf('html') > -1) ? xhr.responseText : JSON.parse(xhr.responseText);
           obj.cb.apply(response);
         }
       }
       if (xhr.status == 401) {
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'bad credential: <a href="' + fnp.repo.home + '/login/">login</a>' });
+        userLogged = false;
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'bad credential: <a href="' + repoHome + '/login/">login</a>' });
       }
       if ( xhr.status >= 400 ) {
         if(typeof obj.err == 'function'){
           obj.err.apply( xhr );
         }else{
-          fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'api error: ' + obj.url });
+          domAppend({ tag: 'li', parent: monitorString, innerHTML: 'api error: ' + obj.url });
           console.log( xhr );
         }
       }
     }
   };
-  document.querySelector('body').style.backgroundColor = 'whitesmoke';
+  document.body.classList.add('request');
   xhr.send( obj.data );
-};
+}
 
-fnp.getThisRepo = function(){
-  fnp.apiCall({
+function repoGet(){
+  apiCall({
     cb: function(){
-      fnp.repo.content = this;
-      fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'repository: <a href="https://github.com/' + this.full_name + '">' + this.full_name + '</a> ' + fnp.repo.master.slice(0,7) });
-      fnp.repo.type = this.owner.type;
+      repoContent = this;
+      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'repository: <a href="https://github.com/' + this.full_name + '">' + this.full_name + '</a> ' + sessionStorage.getItem('masterRef').slice(0,7) });
+      repoType = this.owner.type;
       // ORGANIZATION
-      if( this.owner.type == "Organization" ){
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'game started: ' + this.created_at });
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'players: ' + this.forks });
+      if( this.owner.type == 'Organization' ){
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'game started: ' + this.created_at });
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'players: ' + this.forks });
         if(this.permissions && this.permissions.admin === true){
-          fnp.user.type = 'owner';
-          fnp.checkPulls();
+          userType = 'owner';
+          pullRequests();
         }else{
-          fnp.user.type = 'guest';
-          fnp.goGuest();
+          userType = 'guest';
+          goGuest();
         }
       }
       // PLAYER
-      if( this.owner.type == "User" ){
+      if( this.owner.type == 'User' ){
         if(this.fork){
-          fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'game started: ' + this.parent.created_at });
-          fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'players: ' + this.parent.forks });
+          domAppend({ tag: 'li', parent: monitorString, innerHTML: 'game started: ' + this.parent.created_at });
+          domAppend({ tag: 'li', parent: monitorString, innerHTML: 'players: ' + this.parent.forks });
           if( this.permissions && this.permissions.admin === true ){
-            fnp.user.type = 'owner';
-            fnp.checkDataParent();
+            userType = 'owner';
+            pullsMade();
           }else{
-            fnp.user.type = 'guest';
-            fnp.goGuest();
+            userType = 'guest';
+            goGuest();
           }
-          fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'joined: ' + this.created_at });
+          domAppend({ tag: 'li', parent: monitorString, innerHTML: 'joined: ' + this.created_at });
         }else{
-          fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'error: user repo is not a fork' });
+          domAppend({ tag: 'li', parent: monitorString, innerHTML: 'error: user repo is not a fork' });
         }
       }
+      // MENÙ
+      setupMenu();
     }
   });
-};
+}
 
-fnp.goGuest = function(){
-  fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'guest: <a href="' + fnp.repo.home + '/login/">login</a>' });
-  fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/' + fnp.url.script + '.js', type: 'text/javascript' } });
-};
+function pullsMade(){
+  apiCall({
+    url: repoAPI + '/pulls',
 
-fnp.checkPulls = function(){
-  fnp.apiCall({
-    url: fnp.repo.API + "/pulls",
+  });
+}
+
+function setupMenu(){
+  var leagues = domAppend({ tag: 'a', innerHTML: 'LEAGUES', href: repoHome }),
+      teams = domAppend({ tag: 'a', innerHTML: 'TEAMS', href: repoHome + '/teams' }),
+      rounds = domAppend({ tag: 'a', innerHTML: 'ROUNDS', href: repoHome + '/rounds' }),
+      login = domAppend({ tag: 'a', innerHTML: 'Login', href: repoHome + '/login' }),
+      team = '', setup = '', leagueSetup = '', teamSetup = '';
+  if(repoType == 'User'){
+    team = domAppend({ tag: 'a', innerHTML: 'TEAM', href: repoHome + '/team' });
+    if(userType == 'owner'){
+      teamSetup = domAppend({ tag: 'a', innerHTML: 'TEAM SETUP', href: repoHome + '/setup/team' });
+    }
+  }
+  if(repoType == 'Organization'){
+    setup = domAppend({ tag: 'a', innerHTML: 'SETUP', href: repoHome + '/setup' });
+    if(userType == 'owner'){
+      leagueSetup = domAppend({ tag: 'a', innerHTML: 'LEAGUE SETUP', href: repoHome + '/league/team' });
+    }
+  }
+  if(userLogged) login = domAppend({ tag: 'a', innerHTML: 'Logout', href: repoHome + '/logout' });
+  domHeader.appendChilds(leagues, setup, leagueSetup, team, teamSetup, teams, rounds, login);
+}
+
+function goGuest(){
+  domAppend({ tag: 'li', parent: monitorString, innerHTML: 'guest: <a href="' + repoHome + '/login/">login</a>' });
+  domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript + '.js', type: 'text/javascript' } });
+}
+
+function pullRequests(){
+  apiCall({
+    url: repoAPI + "/pulls",
+    data: '{"base":"teams"}',
     cb: function(){
-      fnp.repo.pulls = this;
-      if( fnp.repo.pulls.length !== 0 ){
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'pending pulls: <a href="' + fnp.repo.content.html_url + '/pulls">' + fnp.repo.pulls.length + ' pulls</a>' });
-        fnp.checkData();
+      repoPulls = this;
+      if( repoPulls.length !== 0 ){
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'pending pulls: <a href="' + repoContent.html_url + '/pulls">' + repoPulls.length + ' pulls</a>' });
+        mergePulls();
       }else{
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'pending pulls: no' });
-        fnp.checkData();
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'pending pulls: no' });
+        checkData();
       }
     }
   });
-};
+}
 
-fnp.checkDataParent = function(){
-  // Get data parent HEAD
-  fnp.apiCall({
+function mergePulls(){
+  for (var i = 0; i < repoPulls.length; i++) {
+    apiCall({
+      url: repoAPI + '/pulls/' + repoPulls[i].number + '/merge',
+      method: 'PUT',
+      accept: 'application/vnd.github.polaris-preview',
+      data: '{"squash": true,"commit_title": "Merge #' + i + '"}',
+      cb: mergeCallback(this),
+      err: domAppend({ tag: 'li', parent: monitorString, innerHTML: 'merged: ' + result.merged + ' error on Merge #' + i })
+    });
+  }
+  headMasterParent();
+}
+
+function mergeCallback(result){
+  mergeArray.push(result);
+  sessionStorage.setItem('dataRef', result.merge.sha);
+  domAppend({ tag: 'li', parent: monitorString, innerHTML: 'merged: ' + result.merged + ' <a href="#" onclick="window.location.reload()">proceed</a>' });
+}
+
+function checkDataParent(){
+  apiCall({
     url: "https://api.github.com/repos/" + fnp.repo.content.parent.full_name + "/git/refs/heads/data",
     cb: function(){
-      fnp.parent.data.sha = this.object.sha;
-      fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'parent <em>data</em> HEAD: ' + fnp.parent.data.sha.slice(0,7) });
-      fnp.checkData();
+      sessionStorage.setItem('dataParentRef', this.object.sha);
+      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'parent <em>data</em> HEAD: ' + this.object.sha.slice(0,7) });
+      checkData();
     }
   });
-};
+}
 
-fnp.checkData = function(){
-  if(fnp.repo.data.sha=='data'){
-    // Get data HEAD
+function checkData(){
+  if(!localStorage.dataRef){
     fnp.apiCall({
-      url: fnp.repo.API + "/git/refs/heads/data",
+      url: repoAPI + "/git/refs/heads/data",
       cb: function(){
-        fnp.repo.data.sha = this.object.sha;
-        if( fnp.repo.data.sha == fnp.parent.data.sha || fnp.repo.type == "Organization" ){
-          fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>data</em> HEAD: ' + fnp.repo.data.sha.slice(0,7) });
-          fnp.checkMasterParent();
+        localStorage.setItem('dataRef', this.object.sha);
+        if( this.object.sha == sessionStorage.dataParentRef || repoType == "Organization" ){
+          domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>data</em> HEAD: ' + sessionStorage.dataRef.slice(0,7) });
+          headMasterParent();
         }else{
-          fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>data</em> HEAD: need update from ' + fnp.parent.data.sha.slice(0,7) });
-          fnp.update('data', fnp.parent.data.sha);
+          domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>data</em> HEAD: starting update from ' + sessionStorage.dataParentRef.slice(0,7) });
+          update('data', sessionStorage.dataParentRef);
         }
       }
     });
   }else{
-    fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>data</em> HEAD: ' + fnp.repo.data.sha.slice(0,7) });
-    fnp.checkMasterParent();
+    domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>data</em> HEAD: ' + sessionStorage.dataRef.slice(0,7) });
+    headMasterParent();
   }
-};
+}
 
-fnp.checkMasterParent = function(){
-  if(fnp.repo.content.fork){
+function headMasterParent(){
+  if(repoContent.fork){
     fnp.apiCall({
-      url: "https://api.github.com/repos/" + fnp.repo.content.parent.full_name + "/git/refs/heads/master",
+      url: "https://api.github.com/repos/" + repoContent.parent.full_name + "/git/refs/heads/master",
       cb: function(){
-        fnp.parent.master = this.object.sha;
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'parent repository: <a href="http://' + fnp.repo.content.parent.owner.login + '.github.io/' + fnp.repo.content.parent.name + '">' + fnp.repo.content.parent.full_name + '</a> ' + fnp.parent.master.slice(0,7) });
-        if( fnp.repo.master == fnp.parent.master ){
-          fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/' + fnp.url.script + '.js', type: 'text/javascript' } });
+        sessionStorage.setItem('masterParentRef', this.object.sha);
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'parent repository: <a href="http://' + repoContent.parent.owner.login + '.github.io/' + repoContent.parent.name + '">' + repoContent.parent.full_name + '</a> ' + sessionStorage.masterParentRef.slice(0,7) });
+        if( sessionStorage.masterRef == sessionStorage.masterParentRef ){
+          domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript + '.js', type: 'text/javascript' } });
         }else{
-          fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>master</em> HEAD: need update from ' + fnp.parent.master.slice(0,7) });
-          fnp.update('master', fnp.parent.master);
+          domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>master</em> HEAD: starting update from ' + sessionStorage.masterParentRef.slice(0,7) });
+          update('master', sessionStorage.masterParentRef);
         }
       }
     });
   }else{
-    fnp.appendi({ tag: 'script', parent: 'body', attributes: { src: fnp.repo.rawgit + '/scripts/' + fnp.url.script + '.js', type: 'text/javascript' } });
+    domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript + '.js', type: 'text/javascript' } });
   }
-};
+}
 
-fnp.update = function(branch, sha){
+function update(branch, sha){
   fnp.apiCall({
-    url: fnp.repo.API + "/git/refs/heads/" + branch,
+    url: repoAPI + "/git/refs/heads/" + branch,
     data: '{"sha":"' + sha + '","force":true}',
     accept: 'application/vnd.github.v3.patch',
     method: 'PATCH',
     cb: function(){
-      fnp.repo.master = this.object.sha;
-      fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>' + branch + '</em> updated: <a href="' + window.location.href + '#' + branch + '=' + sha + '" onclick="window.location.reload()">proceed</a>' });
-      if(branch=='data') fnp.checkMasterParent();
-      if(branch=='master') fnp.getThisRepo();
+      sessionStorage.setItem(branch + 'Ref', this.object.sha);
+      domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>' + branch + '</em> updated: <a href="#" onclick="window.location.reload()">proceed</a>' });
+      if(branch=='data') headMasterParent();
+      if(branch=='master') repoGet();
     },
     err: function(){
       fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>' + branch + '</em> update error: ' + this.status + ' ' + this.statusText });
@@ -228,47 +298,25 @@ fnp.update = function(branch, sha){
       if(branch=='master') fnp.getThisRepo();
     }
   });
-};
+}
 
-fnp.mergePull = function(pullNumber){
-  fnp.apiCall({
-    url: fnp.repo.API + '/pulls/' + pullNumber + '/merge',
-    method: 'PUT',
-    accept: 'application/vnd.github.polaris-preview',
-    data: '{"squash": true,"commit_title": "Never tell me the odds"}',
-    cb: function(){
-      fnp.merge = this;
-      fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'merged: ' + fnp.merge.merged + ' <a href="' + window.location.href + '#data=' + fnp.merge.sha + '" onclick="window.location.reload()">proceed</a>' });
-    },
-    err: function(){
-      console.log(this);
-    }
-  });
-};
+function fileUrl(file, branch){
+  return repoAPI + '/contents/' + file + '?ref=' + (sessionStorage.getItem(branch + 'Ref') ? sessionStorage.getItem(branch + 'Ref') : branch);
+}
 
-fnp.searchDataFile = function(file){
-  return fnp.repo.API + '/contents/' + file + '?ref=' + (fnp.repo.data.sha ? fnp.repo.data.sha : 'data');
-};
-
-fnp.searchMasterFile = function(file){
-  return fnp.repo.API + '/contents/' + file + '?ref=' + (fnp.repo.master ? fnp.repo.master : 'master');
-};
-
-fnp.b64e = function(str) {
+function b64e(str) {
   return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
     return String.fromCharCode('0x' + p1);
   }));
-};
+}
 
-fnp.b64d = function(str) {
+function b64d(str) {
   return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) {
     return '%' + c.charCodeAt(0).toString(16);
   }).join(''));
-};
+}
 
-fnp.updater = function(){
-  if(fnp.dom.monitor()) fnp.dom.details();
-  fnp.getThisRepo();
-};
-
-fnp.updater();
+// Details setup
+domMonitor.appendChilds(domSummary, domUl);
+document.querySelector('main > section > header').appendChild(domMonitor);
+if(userLogged) repoGet(); else goGuest();

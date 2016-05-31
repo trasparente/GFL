@@ -1,100 +1,78 @@
 // team.setup.js
 
-fnp.setup = {};
+var setupSchema = {}, pullResponse;
 
-fnp.team = {
-  start: function(){
-    if (fnp.user.type == 'owner' && fnp.repo.type == 'User') fnp.team.checkSetup(); else window.location = fnp.repo.home;
-  },
-  checkSetup: function(){
-    fnp.apiCall({
-      url: fnp.searchDataFile('setup.json'),
-      cb: function(){
-        fnp.setup.default = JSON.parse( fnp.b64d(this.content) );
-        fnp.setup.sha = this.sha;
-        fnp.team.checkTeam();
-      },
-      err: function(){
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'error: no setup' });
-      }
-    });
-  },
-  checkTeam: function(){
-    fnp.apiCall({
-      url: fnp.searchDataFile('teams/' + fnp.repo.owner + '.json'),
-      cb: function(){
-        fnp.team.default = JSON.parse( fnp.b64d(this.content) );
-        fnp.team.sha = this.sha;
-        fnp.team.Edit();
-      },
-      err: function(){
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'warning: no team' });
-        fnp.team.default = {};
-        fnp.team.content = 'absent';
-        fnp.team.Edit();
-      }
-    });
-  },
-  Edit: function(){
-    fnp.dom.setup();
+if (userType != 'owner' || repoType != 'Organization') window.location = repoHome;
 
-    // load schema
-    fnp.apiCall({
-      url: fnp.searchMasterFile('schema/setup.json'),
-      cb: function(){
-        fnp.setup.schema = JSON.parse( atob(this.content) );
-        // Initialize the editor
-        var editor = new JSONEditor(fnp.dom.editor,{
-          ajax: true,
-          schema: fnp.setup.schema.properties.team,
-          startval: fnp.team.default,
-          no_additional_properties: false,
-          required_by_default: false,
-          // Special
-          disable_properties: true,
-          disable_edit_json: true,
-          disable_array_reorder: false
-        });
-        fnp.dom.submit.addEventListener('click',function() { fnp.team.save(editor.getValue()); });
-        fnp.dom.cancel.addEventListener('click',function() { window.location = fnp.repo.home; });
-        editor.on('change',function() {
-          var errors = editor.validate();
-          if(errors.length) {
-            fnp.dom.valid.style.color = 'red';
-            fnp.dom.valid.textContent = "not valid";
-          } else {
-            fnp.dom.valid.style.color = 'green';
-            fnp.dom.valid.textContent = "valid";
-          }
-        });
-      }
-    });
-  },
-  save: function(dati){
-    fnp.dom.hide();
-    fnp.team.encoded = fnp.b64e( JSON.stringify(dati) );
-    fnp.apiCall({
-      url: fnp.repo.API + '/contents/teams/' + fnp.repo.owner + '.json',
-      method: 'PUT',
-      data: fnp.team.content == 'absent' ? '{"message": "team created", "content": "' + fnp.team.encoded + '", "branch": "data"}' : '{"message": "team edited", "content": "' + fnp.team.encoded + '", "branch": "data", "sha": "' + fnp.team.sha + '"}',
-      cb: function(){
-        fnp.repo.data.sha = this.commit.sha;
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'saved: creating pull request' });
-        fnp.team.pull();
-      }
-    });
-  },
-  pull: function(){
-    fnp.apiCall({
-      url: "https://api.github.com/repos/" + fnp.repo.content.parent.full_name + '/pulls',
-      method: 'POST',
-      data: '{"title": "team changed", "head": "' + fnp.repo.owner + ':data", "base": "data", "body": "Please pull this in!" }',
-      cb: function(){
-        fnp.pull = this;
-        fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: 'pull requested #' + fnp.pull.number + ': <a href="' + fnp.repo.home + '/team/setup/#data=' + fnp.repo.data.sha + '" onclick="window.location.reload()">proceed</a>' });
-      }
-    });
+setupEditor();
+
+apiCall({
+  url: fileUrl('teams', 'teams/' + repoOwner + '.json'),
+  cb: function(){
+    jsonTeam = JSON.parse( b64d(this.content) );
+    domAppend({ tag: 'li', parent: monitorString, innerHTML: 'team: found' });
+    loadSetup();
   }
-};
+});
 
-fnp.team.start();
+function loadSetup(){
+  apiCall({
+    url: fileUrl('master', 'schema/setup.json'),
+    cb: function(){
+      setupSchema = JSON.parse( atob(this.content) );
+      // Initialize the editor
+      var editor = new JSONEditor(domEditor,{
+        ajax: true,
+        schema: setupSchema.properties.team,
+        startval: jsonTeam,
+        no_additional_properties: false,
+        required_by_default: false,
+        // Special
+        disable_properties: true,
+        disable_edit_json: true,
+        disable_array_reorder: false
+      });
+      domSubmit.addEventListener('click',function() { saveTeam(editor.getValue()); });
+      domCancel.addEventListener('click',function() { window.location = repoHome; });
+      editor.on('change',function() {
+        var errors = editor.validate();
+        if(errors.length) {
+          console.log(errors);
+          domValid.style.color = 'red';
+          domValid.textContent = "not valid";
+        } else {
+          domValid.style.color = 'green';
+          domValid.textContent = "valid";
+        }
+      });
+    }
+  });
+}
+
+function saveTeam(dati){
+  hideEditor();
+  var encodedTeam = b64e( JSON.stringify(dati) );
+  apiCall({
+    url: repoAPI + '/contents/teams/' + repoOwner + '.json',
+    method: 'PUT',
+    data: jsonTeam ? '{"message": "team created", "content": "' + encodedTeam + '", "branch": "data"}' : '{"message": "team edited", "content": "' + encodedTeam + '", "branch": "data", "sha": "' + shaTeam + '"}',
+    cb: function(){
+      // sessionStorage.setItem('teamsRef', this.commit.sha);
+      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'saved: creating pull request' });
+      pullTeam();
+    }
+  });
+}
+
+function pullTeam(){
+  apiCall({
+    url: "https://api.github.com/repos/" + repoContent.parent.full_name + '/pulls',
+    method: 'POST',
+    data: '{"title": "team changed", "head": "' + repoOwner + ':teams", "base": "teams", "body": "Please pull this in!" }',
+    cb: function(){
+      pullResponse = this;
+      sessionStorage.setItem('teamsRef', this.commit.sha);
+      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'pull requested #' + pullResponse + ': <a href="#" onclick="window.location.reload()">proceed</a>' });
+    }
+  });
+}

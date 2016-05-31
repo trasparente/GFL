@@ -1,6 +1,7 @@
 @charset "UTF-8";
-html { overflow-y: scroll; }
+html { overflow-y: scroll; font-family: serif; }
 body, body[hidden] { font-size: 1.2em; display: block; }
+body.request { background-color: lightblue; }
 [aria-hidden="true"] { visibility: hidden; }
 button { cursor: pointer; }
 body > header > h1 { margin: 0; padding: 0.67em 1em; }
@@ -8,19 +9,20 @@ a { text-decoration: none; }
 a:visited { color: blue; }
 a:active { color: white; }
 a:hover { text-decoration: underline; }
-h1 a, h1 a:visited { color: inherit; }
 main { padding: 1em 2em; }
 footer { padding: 1em; }
 summary { cursor: pointer; }
 summary:focus { outline: none; }
 /*Details*/
 .details {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  background: #E6E6FF;
+  border-bottom: 1px solid white;
   font-size: smaller; }
 .details > .summary {
   cursor: pointer;
   margin: 0; padding: .5em;
-  background: #f7ca88;
+  background: #00f;
+  color: white;
   user-select: none;
   -moz-user-select: none;
   -khtml-user-select: none;
