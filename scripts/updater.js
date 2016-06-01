@@ -191,7 +191,7 @@ function setupMenu(){
 
 function goGuest(){
   domAppend({ tag: 'li', parent: monitorString, innerHTML: 'guest: <a href="' + repoHome + '/login/">login</a>' });
-  domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript + '.js', type: 'text/javascript' } });
+  domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript() + '.js', type: 'text/javascript' } });
 }
 
 function pullRequests(){
@@ -271,7 +271,7 @@ function headMasterParent(){
         sessionStorage.setItem('masterParentRef', this.object.sha);
         domAppend({ tag: 'li', parent: monitorString, innerHTML: 'parent repository: <a href="http://' + repoContent.parent.owner.login + '.github.io/' + repoContent.parent.name + '">' + repoContent.parent.full_name + '</a> ' + sessionStorage.masterParentRef.slice(0,7) });
         if( sessionStorage.masterRef == sessionStorage.masterParentRef ){
-          domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript + '.js', type: 'text/javascript' } });
+          domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript() + '.js', type: 'text/javascript' } });
         }else{
           domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>master</em> HEAD: starting update from ' + sessionStorage.masterParentRef.slice(0,7) });
           update('master', sessionStorage.masterParentRef);
@@ -279,7 +279,7 @@ function headMasterParent(){
       }
     });
   }else{
-    domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript + '.js', type: 'text/javascript' } });
+    domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript() + '.js', type: 'text/javascript' } });
   }
 }
 
