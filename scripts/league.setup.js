@@ -44,7 +44,7 @@ function saveLeagues(dati){
       if ( !dati[i].slug ) dati[i].slug = (shaLeagues) ? shaLeagues : sessionStorage.masterRef;
     }
     var encodedLeagues = b64e(JSON.stringify(dati));
-    fnp.apiCall({
+    apiCall({
       url: repoAPI + '/contents/leagues.json',
       method: 'PUT',
       data: jsonLeagues ? '{"message": "leagues created", "content": "' + encodedLeagues + '", "branch": "data"}' : '{"message": "leagues edited", "content": "' + encodedLeagues + '", "branch": "data", "sha": "' + shaLeagues + '"}',

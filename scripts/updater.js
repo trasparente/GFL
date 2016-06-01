@@ -235,7 +235,7 @@ function mergeCallback(result){
 
 function checkDataParent(){
   apiCall({
-    url: "https://api.github.com/repos/" + fnp.repo.content.parent.full_name + "/git/refs/heads/data",
+    url: "https://api.github.com/repos/" + repoContent.parent.full_name + "/git/refs/heads/data",
     cb: function(){
       sessionStorage.setItem('dataParentRef', this.object.sha);
       domAppend({ tag: 'li', parent: monitorString, innerHTML: 'parent <em>data</em> HEAD: ' + this.object.sha.slice(0,7) });
@@ -246,7 +246,7 @@ function checkDataParent(){
 
 function checkData(){
   if(!localStorage.dataRef){
-    fnp.apiCall({
+    apiCall({
       url: repoAPI + "/git/refs/heads/data",
       cb: function(){
         localStorage.setItem('dataRef', this.object.sha);
@@ -267,7 +267,7 @@ function checkData(){
 
 function headMasterParent(){
   if(repoContent.fork){
-    fnp.apiCall({
+    apiCall({
       url: "https://api.github.com/repos/" + repoContent.parent.full_name + "/git/refs/heads/master",
       cb: function(){
         sessionStorage.setItem('masterParentRef', this.object.sha);
@@ -286,7 +286,7 @@ function headMasterParent(){
 }
 
 function update(branch, sha){
-  fnp.apiCall({
+  apiCall({
     url: repoAPI + "/git/refs/heads/" + branch,
     data: '{"sha":"' + sha + '","force":true}',
     accept: 'application/vnd.github.v3.patch',
@@ -298,9 +298,9 @@ function update(branch, sha){
       if(branch=='master') repoGet();
     },
     err: function(){
-      fnp.appendi({ tag: 'li', parent: fnp.dom.ul, innerHTML: '<em>' + branch + '</em> update error: ' + this.status + ' ' + this.statusText });
-      if(branch=='data') fnp.checkMasterParent();
-      if(branch=='master') fnp.getThisRepo();
+      domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>' + branch + '</em> update error: ' + this.status + ' ' + this.statusText });
+      if(branch=='data') headMasterParent();
+      if(branch=='master') repoGet();
     }
   });
 }

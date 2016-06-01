@@ -28,11 +28,11 @@ apiCall({
       var errors = editor.validate();
       if(errors.length) {
         console.log(errors);
-        fnp.dom.valid.style.color = 'red';
-        fnp.dom.valid.textContent = "not valid";
+        domValid.style.color = 'red';
+        domValid.textContent = "not valid";
       } else {
-        fnp.dom.valid.style.color = 'green';
-        fnp.dom.valid.textContent = "valid";
+        domValid.style.color = 'green';
+        domValid.textContent = "valid";
       }
     });
   }

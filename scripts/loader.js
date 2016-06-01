@@ -25,7 +25,7 @@ function apiFirstCall(obj){
       }
       if ( xhr.status >= 400 ) {
         console.log( xhr );
-        if(xhr.status == 401) fnp.userLogged = false;
+        if(xhr.status == 401) userLogged = false;
         domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/updater.js', type: 'text/javascript' } });
       }
     }
