@@ -12,18 +12,18 @@ a:visited { color: blue; }
 a:active { color: white; }
 a:hover { text-decoration: underline; }
 main { padding: 1em 2em; }
-footer { padding: 1em; }
+footer { padding: 1em; color: #888; }
 summary { cursor: pointer; }
 summary:focus { outline: none; }
 /*Details*/
 .details {
-  background: #E6E6FF;
+  background: #E6E6E6;
   border-bottom: 1px solid white;
   font-size: smaller; }
 .details > .summary {
   cursor: pointer;
   margin: 0; padding: .5em;
-  background: #00f;
+  background: #888;
   color: white;
   user-select: none;
   -moz-user-select: none;
