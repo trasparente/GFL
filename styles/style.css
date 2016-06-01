@@ -1,7 +1,7 @@
 @charset "UTF-8";
 html { overflow-y: scroll; font-family: serif; }
-body, body[hidden] { font-size: 1.2em; display: block; }
-body.request { background-color: lightblue; }
+body { font-size: 1.2em; display: block; }
+body.request { background-color: #E6E6E6; }
 [aria-hidden="true"] { visibility: hidden; }
 button { cursor: pointer; }
 body > header { padding: 1em 2em; }
