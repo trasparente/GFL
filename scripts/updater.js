@@ -22,7 +22,7 @@ var domSection = document.querySelector('main > section'),
 // functions
 Element.prototype.appendChilds = function (elementArray) {
   for (var i = 0; i < elementArray.length; i++) {
-    this.appendChild(elementArray[i]);
+    if(elementArray[i]) this.appendChild(elementArray[i]);
   }
   return true;
 };
@@ -174,7 +174,7 @@ function setupMenu(){
       teams = domAppend({ tag: 'a', innerHTML: 'TEAMS', attributes: { href: repoHome + '/teams' } }),
       rounds = domAppend({ tag: 'a', innerHTML: 'ROUNDS', attributes: { href: repoHome + '/rounds' } }),
       login = domAppend({ tag: 'a', innerHTML: 'Login', attributes: { href: repoHome + '/login' } }),
-      team = '', setup = '', leagueSetup = '', teamSetup = '';
+      team, setup, leagueSetup, teamSetup;
   if(repoType == 'User'){
     team = domAppend({ tag: 'a', innerHTML: 'TEAM', attributes: { href: repoHome + '/team' } });
     if(userType == 'owner'){
@@ -245,11 +245,11 @@ function checkDataParent(){
 }
 
 function checkData(){
-  if(!localStorage.dataRef){
+  if(!sessionStorage.dataRef){
     apiCall({
       url: repoAPI + "/git/refs/heads/data",
       cb: function(){
-        localStorage.setItem('dataRef', this.object.sha);
+        sessionStorage.setItem('dataRef', this.object.sha);
         if( this.object.sha == sessionStorage.dataParentRef || repoType == "Organization" ){
           domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>data</em> HEAD: ' + sessionStorage.dataRef.slice(0,7) });
           headMasterParent();
