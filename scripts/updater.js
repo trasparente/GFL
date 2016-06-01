@@ -2,6 +2,7 @@
 
 var domSection = document.querySelector('main > section'),
     domHeader = document.querySelector('body > header'),
+    domNav = document.createElement('nav'),
     domMonitor = domAppend({ tag: 'div', attributes: { open: '' }, class: 'details' }),
     monitorString = 'main > section > header > div.details > ul',
     domUl = domAppend({ tag: 'ul' }),
@@ -168,6 +169,7 @@ function pullsMade(){
 }
 
 function setupMenu(){
+  domHeader.appendChild(domNav);
   var leagues = domAppend({ tag: 'a', innerHTML: 'LEAGUES', attributes: { href: repoHome } }),
       teams = domAppend({ tag: 'a', innerHTML: 'TEAMS', attributes: { href: repoHome + '/teams' } }),
       rounds = domAppend({ tag: 'a', innerHTML: 'ROUNDS', attributes: { href: repoHome + '/rounds' } }),
@@ -186,7 +188,7 @@ function setupMenu(){
     }
   }
   if(userLogged) login = domAppend({ tag: 'a', innerHTML: 'Logout', attributes: { href: repoHome + '/logout' } });
-  domHeader.appendChilds([leagues, setup, leagueSetup, team, teamSetup, teams, rounds, login]);
+  domNav.appendChilds([leagues, setup, leagueSetup, team, teamSetup, teams, rounds, login]);
 }
 
 function goGuest(){
