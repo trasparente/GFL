@@ -30,7 +30,9 @@ function domAppend(obj){
   }
   if(obj.hasOwnProperty('innerHTML')) element.innerHTML = obj.innerHTML;
   if(obj.hasOwnProperty('class')) element.classList.add(obj.class);
-  if(obj.hasOwnProperty('parent')) return document.querySelector(obj.parent).appendChild(element); else return element;
+  if(obj.hasOwnProperty('parent')){
+    if(typeof obj.parent == 'string') return document.querySelector(obj.parent).appendChild(element); else return obj.parent.appendChild(element);
+  }else return element;
 }
 
 // init
