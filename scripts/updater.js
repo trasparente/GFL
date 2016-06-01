@@ -320,5 +320,8 @@ function b64d(str) {
 }
 
 // Details setup
-if (domMonitor.appendChilds([domSummary, domUl])) document.querySelector('main > section > header').appendChild(domMonitor);
+if (domMonitor.appendChilds([domSummary, domUl])) {
+  var addMonitor = document.querySelector('main > section > header').appendChild(domMonitor);
+  if(addMonitor) detailsInit();
+}
 if(userLogged) repoGet(); else goGuest();
