@@ -305,7 +305,7 @@ function update(branch, sha){
   });
 }
 
-function fileUrl(file, branch){
+function fileUrl(branch, file){
   return repoAPI + '/contents/' + file + '?ref=' + (sessionStorage.getItem(branch + 'Ref') ? sessionStorage.getItem(branch + 'Ref') : branch);
 }
 
