@@ -44,7 +44,7 @@ function detailsCallback(e){
 
 // Setup Editor form and buttons
 function setupEditor(){
-  domSection.appendChilds(domEditor, domCancel, domSubmit, domValid);
+  domSection.appendChilds([domEditor, domCancel, domSubmit, domValid]);
 }
 
 function hideEditor(){
@@ -186,7 +186,7 @@ function setupMenu(){
     }
   }
   if(userLogged) login = domAppend({ tag: 'a', innerHTML: 'Logout', href: repoHome + '/logout' });
-  domHeader.appendChilds(leagues, setup, leagueSetup, team, teamSetup, teams, rounds, login);
+  domHeader.appendChilds([leagues, setup, leagueSetup, team, teamSetup, teams, rounds, login]);
 }
 
 function goGuest(){
@@ -320,5 +320,5 @@ function b64d(str) {
 }
 
 // Details setup
-if (domMonitor.appendChilds(domSummary, domUl)) document.querySelector('main > section > header').appendChild(domMonitor);
+if (domMonitor.appendChilds([domSummary, domUl])) document.querySelector('main > section > header').appendChild(domMonitor);
 if(userLogged) repoGet(); else goGuest();
