@@ -23,6 +23,7 @@ Element.prototype.appendChilds = function (elementArray) {
   for (var i = 0; i < elementArray.length; i++) {
     this.appendChild(elementArray[i]);
   }
+  return true;
 };
 
 // Details Handlers
@@ -160,7 +161,9 @@ function repoGet(){
 function pullsMade(){
   apiCall({
     url: repoAPI + '/pulls',
+    cb: function(){
 
+    }
   });
 }
 
@@ -317,6 +320,5 @@ function b64d(str) {
 }
 
 // Details setup
-domMonitor.appendChilds(domSummary, domUl);
-document.querySelector('main > section > header').appendChild(domMonitor);
+if (domMonitor.appendChilds(domSummary, domUl)) document.querySelector('main > section > header').appendChild(domMonitor);
 if(userLogged) repoGet(); else goGuest();
