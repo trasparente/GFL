@@ -168,24 +168,24 @@ function pullsMade(){
 }
 
 function setupMenu(){
-  var leagues = domAppend({ tag: 'a', innerHTML: 'LEAGUES', href: repoHome }),
-      teams = domAppend({ tag: 'a', innerHTML: 'TEAMS', href: repoHome + '/teams' }),
-      rounds = domAppend({ tag: 'a', innerHTML: 'ROUNDS', href: repoHome + '/rounds' }),
-      login = domAppend({ tag: 'a', innerHTML: 'Login', href: repoHome + '/login' }),
+  var leagues = domAppend({ tag: 'a', innerHTML: 'LEAGUES', attributes: { href: repoHome } }),
+      teams = domAppend({ tag: 'a', innerHTML: 'TEAMS', attributes: { href: repoHome + '/teams' } }),
+      rounds = domAppend({ tag: 'a', innerHTML: 'ROUNDS', attributes: { href: repoHome + '/rounds' } }),
+      login = domAppend({ tag: 'a', innerHTML: 'Login', attributes: { href: repoHome + '/login' } }),
       team = '', setup = '', leagueSetup = '', teamSetup = '';
   if(repoType == 'User'){
-    team = domAppend({ tag: 'a', innerHTML: 'TEAM', href: repoHome + '/team' });
+    team = domAppend({ tag: 'a', innerHTML: 'TEAM', attributes: { href: repoHome + '/team' } });
     if(userType == 'owner'){
-      teamSetup = domAppend({ tag: 'a', innerHTML: 'TEAM SETUP', href: repoHome + '/setup/team' });
+      teamSetup = domAppend({ tag: 'a', innerHTML: 'TEAM SETUP', attributes: { href: repoHome + '/setup/team' } });
     }
   }
   if(repoType == 'Organization'){
-    setup = domAppend({ tag: 'a', innerHTML: 'SETUP', href: repoHome + '/setup' });
+    setup = domAppend({ tag: 'a', innerHTML: 'SETUP', attributes: { href: repoHome + '/setup' } });
     if(userType == 'owner'){
-      leagueSetup = domAppend({ tag: 'a', innerHTML: 'LEAGUE SETUP', href: repoHome + '/league/team' });
+      leagueSetup = domAppend({ tag: 'a', innerHTML: 'LEAGUE SETUP', attributes: { href: repoHome + '/league/team' } });
     }
   }
-  if(userLogged) login = domAppend({ tag: 'a', innerHTML: 'Logout', href: repoHome + '/logout' });
+  if(userLogged) login = domAppend({ tag: 'a', innerHTML: 'Logout', attributes: { href: repoHome + '/logout' } });
   domHeader.appendChilds([leagues, setup, leagueSetup, team, teamSetup, teams, rounds, login]);
 }
 
