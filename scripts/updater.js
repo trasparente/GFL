@@ -184,7 +184,7 @@ function setupMenu(){
   if(repoType == 'Organization'){
     setup = domAppend({ tag: 'a', innerHTML: 'SETUP', attributes: { href: repoHome + '/setup' } });
     if(userType == 'owner'){
-      leagueSetup = domAppend({ tag: 'a', innerHTML: 'LEAGUE SETUP', attributes: { href: repoHome + '/league/team' } });
+      leagueSetup = domAppend({ tag: 'a', innerHTML: 'LEAGUE SETUP', attributes: { href: repoHome + '/league/setup' } });
     }
   }
   if(userLogged) login = domAppend({ tag: 'a', innerHTML: 'Logout', attributes: { href: repoHome + '/logout' } });
