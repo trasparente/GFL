@@ -199,7 +199,7 @@ function setupMenu(){
 
 function goGuest(){
   domAppend({ tag: 'li', parent: monitorString, innerHTML: 'guest: <a href="' + repoHome + '/login/">login</a>' });
-  domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript() + '.js', type: 'text/javascript' } });
+  loadSetup();
 }
 
 function pullRequests(){
