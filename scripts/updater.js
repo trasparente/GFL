@@ -17,7 +17,13 @@ var domSection = document.querySelector('main > section'),
     repoType = '',
     repoPulls = {},
     userType = '',
-    mergeArray = [];
+    mergeArray = [],
+    jsonSetup = {},
+    shaSetup,
+    jsonLeagues = {},
+    shaLeagues,
+    jsonTeam = {},
+    shaTeam;
 
 // functions
 Element.prototype.appendChilds = function (elementArray) {
@@ -273,7 +279,7 @@ function headMasterParent(){
         sessionStorage.setItem('masterParentRef', this.object.sha);
         domAppend({ tag: 'li', parent: monitorString, innerHTML: 'parent repository: <a href="http://' + repoContent.parent.owner.login + '.github.io/' + repoContent.parent.name + '">' + repoContent.parent.full_name + '</a> ' + sessionStorage.masterParentRef.slice(0,7) });
         if( sessionStorage.masterRef == sessionStorage.masterParentRef ){
-          domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript() + '.js', type: 'text/javascript' } });
+          loadSetup();
         }else{
           domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>master</em> HEAD: starting update from ' + sessionStorage.masterParentRef.slice(0,7) });
           update('master', sessionStorage.masterParentRef);
@@ -281,8 +287,75 @@ function headMasterParent(){
       }
     });
   }else{
-    domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript() + '.js', type: 'text/javascript' } });
+    loadSetup();
   }
+}
+
+function loadSetup(){
+  apiCall({
+    url: fileUrl('master', 'setup.json'),
+    cb: function(){
+      jsonSetup = JSON.parse( b64d(this.content) );
+      shaSetup = this.sha;
+      if(repoType == 'Organization' && userType == 'owner') {
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'setup: <a href="' + repoHome + '/setup/">edit</a>' });
+      }else{
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'setup: found' });
+      }
+      loadLeagues();
+    },
+    err: function(){
+      if(repoType == 'Organization' && userType == 'owner'){
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'warning: no setup, <a href="' + repoHome + '/setup/">create</a>' });
+      }else{
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'error: no setup' });
+      }
+    }
+  });
+}
+
+function loadLeagues(){
+  apiCall({
+    url: fileUrl('master', 'leagues.json'),
+    cb: function(){
+      jsonLeagues = JSON.parse( b64d(this.content) );
+      shaLeagues = this.sha;
+      if(repoType == 'Organization' && userType == 'owner'){
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'leagues: <a href="' + repoHome + '/league/setup/">edit</a>' });
+        showLeagues();
+      }else{
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'leagues: found' });
+        if(repoType == 'User' && userType == 'owner') leadTeam(); else loadPagescript();
+      }
+    },
+    err: function(){
+      if(repoType == 'Organization' && userType == 'owner'){
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'warning: no leagues, <a href="' + repoHome + '/league/setup/">create</a>' });
+      }else{
+        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'error: no leagues' });
+      }
+    }
+  });
+}
+
+function loadTeam(){
+  apiCall({
+    url: fileUrl('teams', 'teams/' + repoOwner + '.json'),
+    cb: function(){
+      jsonTeam = JSON.parse( b64d(this.content) );
+      shaTeam = this.sha;
+      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'team: <a href="' + repoHome + '/team/setup/">edit</a>' });
+      loadPagescript();
+    },
+    err: function(){
+      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'warning: no team, <a href="' + repoHome + '/team/setup/">create</a>' });
+      loadPagescript();
+    }
+  });
+}
+
+function loadPagescript(){
+  domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript() + '.js', type: 'text/javascript' } });
 }
 
 function update(branch, sha){
