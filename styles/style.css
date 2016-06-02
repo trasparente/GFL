@@ -15,10 +15,10 @@ main { padding: 1em 2em; }
 footer { padding: 1em; color: #888; }
 summary { cursor: pointer; }
 summary:focus { outline: none; }
+ul { margin: 0; padding: 1em 2em; }
 /*Details*/
 .details {
   background: #E6E6E6;
-  border-bottom: 1px solid white;
   font-size: smaller; }
 .details > .summary {
   cursor: pointer;
