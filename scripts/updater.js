@@ -310,6 +310,7 @@ function loadSetup(){
       }else{
         domAppend({ tag: 'li', parent: monitorString, innerHTML: 'error: no setup' });
       }
+      loadPagescript();
     }
   });
 }
@@ -334,6 +335,7 @@ function loadLeagues(){
       }else{
         domAppend({ tag: 'li', parent: monitorString, innerHTML: 'error: no leagues' });
       }
+      loadPagescript();
     }
   });
 }
