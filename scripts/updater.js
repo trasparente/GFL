@@ -306,7 +306,7 @@ function headMasterParent(){
 
 function loadSetup(){
   apiCall({
-    url: fileUrl('master', 'setup.json'),
+    url: fileUrl('data', 'setup.json'),
     cb: function(){
       jsonSetup = JSON.parse( b64d(this.content) );
       shaSetup = this.sha;
@@ -330,7 +330,7 @@ function loadSetup(){
 
 function loadLeagues(){
   apiCall({
-    url: fileUrl('master', 'leagues.json'),
+    url: fileUrl('data', 'leagues.json'),
     cb: function(){
       jsonLeagues = JSON.parse( b64d(this.content) );
       shaLeagues = this.sha;

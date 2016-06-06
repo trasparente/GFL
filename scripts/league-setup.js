@@ -7,7 +7,7 @@ if (userType != 'owner' || repoType != 'Organization') window.location = repoHom
 setupEditor();
 
 apiCall({
-  url: fileUrl('master', 'schema/setup.json'),
+  url: fileUrl('data', 'schema/setup.json'),
   cb: function(){
     setupSchema = JSON.parse( atob(this.content) );
     // Initialize the editor
