@@ -47,5 +47,6 @@ ul { margin: 0; padding: 1em 2em; }
   margin: 0;
   display: inline-block;
   font-style: italic; }
-#editor_holder .markTabActive { color: blue; }
-#editor_holder .markTabInactive { opacity: 0.5; }
+.tabs { color: blue; width: auto; }
+.markTabInactive { opacity: 0.5; }
+.content { margin-left: 250px; }
