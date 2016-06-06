@@ -55,10 +55,10 @@ function saveTeam(dati){
   apiCall({
     url: repoAPI + '/contents/teams/' + repoOwner + '.json',
     method: 'PUT',
-    data: jsonTeam ? '{"message": "team created", "content": "' + encodedTeam + '", "branch": "data"}' : '{"message": "team edited", "content": "' + encodedTeam + '", "branch": "data", "sha": "' + shaTeam + '"}',
+    data: shaTeam ? '{"message": "team created", "content": "' + encodedTeam + '", "branch": "data"}' : '{"message": "team edited", "content": "' + encodedTeam + '", "branch": "data", "sha": "' + shaTeam + '"}',
     cb: function(){
       // sessionStorage.setItem('teamsRef', this.commit.sha);
-      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'saved: creating pull request' });
+      domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'saved: creating pull request' });
       pullTeam();
     }
   });
@@ -72,7 +72,7 @@ function pullTeam(){
     cb: function(){
       pullResponse = this;
       sessionStorage.setItem('teamsRef', this.commit.sha);
-      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'pull requested #' + pullResponse + ': <a href="' + repoHome + '">proceed</a>' });
+      domAlert('pull requested #' + pullResponse + ': <a href="' + repoHome + '">proceed</a>');
     }
   });
 }

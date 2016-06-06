@@ -47,10 +47,10 @@ function saveLeagues(dati){
     apiCall({
       url: repoAPI + '/contents/leagues.json',
       method: 'PUT',
-      data: jsonLeagues ? '{"message": "leagues created", "content": "' + encodedLeagues + '", "branch": "data"}' : '{"message": "leagues edited", "content": "' + encodedLeagues + '", "branch": "data", "sha": "' + shaLeagues + '"}',
+      data: shaLeagues ? '{"message": "leagues created", "content": "' + encodedLeagues + '", "branch": "data"}' : '{"message": "leagues edited", "content": "' + encodedLeagues + '", "branch": "data", "sha": "' + shaLeagues + '"}',
       cb: function(){
         sessionStorage.setItem('dataRef', this.commit.sha);
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'saved: <a href="' + repoHome + '">proceed</a>' });
+        domAlert('saved: <a href="' + repoHome + '">proceed</a>');
       }
     });
   }
