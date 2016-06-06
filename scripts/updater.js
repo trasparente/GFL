@@ -306,9 +306,9 @@ function loadSetup(){
     },
     err: function(){
       if(repoType == 'Organization' && userType == 'owner'){
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'warning: no setup, <a href="' + repoHome + '/setup/">create</a>' });
+        domAppend({ tag: 'p', parent: domSection, innerHTML: 'warning: no setup, <a href="' + repoHome + '/setup/">create</a>' });
       }else{
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'error: no setup' });
+        domAppend({ tag: 'p', parent: domSection, innerHTML: 'error: no setup' });
       }
       loadPagescript();
     }
@@ -331,9 +331,9 @@ function loadLeagues(){
     },
     err: function(){
       if(repoType == 'Organization' && userType == 'owner'){
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'warning: no leagues, <a href="' + repoHome + '/league/setup/">create</a>' });
+        domAppend({ tag: 'p', parent: domSection, innerHTML: 'warning: no leagues, <a href="' + repoHome + '/league/setup/">create</a>' });
       }else{
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'error: no leagues' });
+        domAppend({ tag: 'p', parent: domSection, innerHTML: 'error: no leagues' });
       }
       loadPagescript();
     }

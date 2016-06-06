@@ -1,4 +1,4 @@
-// league.setup.js
+// league-setup.js
 
 var setupSchema = {};
 

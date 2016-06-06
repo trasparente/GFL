@@ -1,4 +1,4 @@
-// team.setup.js
+// team-setup.js
 
 var setupSchema = {}, pullResponse;
 
