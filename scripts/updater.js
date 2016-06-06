@@ -8,8 +8,10 @@ var domSection = document.querySelector('main > section'),
     domUl = domAppend({ tag: 'ul' }),
     domUlRepo = domAppend({ tag: 'ul' }),
     domUlParent = domAppend({ tag: 'ul' }),
+    domUlGame = domAppend({ tag: 'ul' }),
     domLiRepo = domAppend({ tag: 'li', innerHTML: 'This repository' }),
     domLiParent = domAppend({ tag: 'li', innerHTML: 'Parent repository' }),
+    domLiGame = domAppend({ tag: 'li', innerHTML: 'Game' }),
     domSummary = domAppend({ tag: 'p', innerHTML: 'Monitor', class: 'summary' }),
     domEditor = document.createElement('div'),
     domCancel = domAppend({ tag: 'button', innerHTML: 'Cancel' }),
@@ -108,7 +110,7 @@ function apiCall(obj){
       }
       if ( xhr.status == 200 ||  xhr.status == 201 ||  xhr.status == 204 ) {
         if (typeof obj.cb == 'function') {
-          if (xhr.getResponseHeader('X-RateLimit-Remaining') < 5) domAppend({ tag: 'li', parent: monitorString, innerHTML: 'rate limit: ' + xhr.getResponseHeader('X-RateLimit-Remaining') });
+          if (xhr.getResponseHeader('X-RateLimit-Remaining') < 5) domAlert('rate limit: ' + xhr.getResponseHeader('X-RateLimit-Remaining'));
           if (xhr.getResponseHeader('X-RateLimit-Remaining') < 2) window.location = repoHome + '/login/';
           domXrate.innerHTML = 'X-RateLimit-Remaining: ' + xhr.getResponseHeader( 'X-RateLimit-Remaining' );
           var response = (obj.accept.indexOf('html') > -1) ? xhr.responseText : JSON.parse(xhr.responseText);
@@ -142,8 +144,8 @@ function repoGet(){
       repoType = this.owner.type;
       // ORGANIZATION
       if( this.owner.type == 'Organization' ){
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'game started: ' + this.created_at });
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'players: ' + this.forks });
+        domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'game started: ' + this.created_at });
+        domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'players: ' + this.forks });
         if(this.permissions && this.permissions.admin === true){
           userType = 'owner';
           pullRequests();
@@ -155,8 +157,8 @@ function repoGet(){
       // PLAYER
       if( this.owner.type == 'User' ){
         if(this.fork){
-          domAppend({ tag: 'li', parent: monitorString, innerHTML: 'game started: ' + this.parent.created_at });
-          domAppend({ tag: 'li', parent: monitorString, innerHTML: 'players: ' + this.parent.forks });
+          domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'game started: ' + this.parent.created_at });
+          domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'players: ' + this.parent.forks });
           if( this.permissions && this.permissions.admin === true ){
             userType = 'owner';
             pullsMade();
@@ -164,9 +166,9 @@ function repoGet(){
             userType = 'guest';
             goGuest();
           }
-          domAppend({ tag: 'li', parent: monitorString, innerHTML: 'joined: ' + this.created_at });
+          domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'joined: ' + this.created_at });
         }else{
-          domAppend({ tag: 'p', parent: domSubmit, innerHTML: 'error: user repo is not a fork' });
+          domAlert('error: user repo is not a fork');
         }
       }
       // MENÙ
@@ -219,10 +221,10 @@ function pullRequests(){
     cb: function(){
       repoPulls = this;
       if( repoPulls.length !== 0 ){
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'pending pulls: <a href="' + repoContent.html_url + '/pulls">' + repoPulls.length + ' pulls</a>' });
+        domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'pending pulls: <a href="' + repoContent.html_url + '/pulls">' + repoPulls.length + ' pulls</a>' });
         mergePulls();
       }else{
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'pending pulls: no' });
+        domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'pending pulls: no' });
         checkData();
       }
     }
@@ -276,7 +278,7 @@ function checkData(){
       }
     });
   }else{
-    domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>data</em> HEAD: ' + sessionStorage.dataRef.slice(0,7) });
+    domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>data</em> HEAD: ' + sessionStorage.dataRef.slice(0,7) });
     headMasterParent();
   }
 }
@@ -309,16 +311,16 @@ function loadSetup(){
       jsonSetup = JSON.parse( b64d(this.content) );
       shaSetup = this.sha;
       if(repoType == 'Organization' && userType == 'owner') {
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'setup: <a href="' + repoHome + '/setup/">edit</a>' });
+        domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'setup: <a href="' + repoHome + '/setup/">edit</a>' });
       }else{
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'setup: found' });
+        domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'setup: found' });
       }
       loadLeagues();
     },
     err: function(){
       if(repoType == 'Organization' && userType == 'owner' && urlSlash[2]!='setup'){
-        domlert('warning: no setup, <a href="' + repoHome + '/setup/">create</a>');
-      }else{
+        domAlert('warning: no setup, <a href="' + repoHome + '/setup/">create</a>');
+      }else if(urlSlash[2]!='setup'){
         domAlert('error: no setup');
       }
       loadPagescript();
@@ -333,10 +335,10 @@ function loadLeagues(){
       jsonLeagues = JSON.parse( b64d(this.content) );
       shaLeagues = this.sha;
       if(repoType == 'Organization' && userType == 'owner'){
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'leagues: <a href="' + repoHome + '/league/setup/">edit</a>' });
+        domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'leagues: <a href="' + repoHome + '/league/setup/">edit</a>' });
         showLeagues();
       }else{
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'leagues: found' });
+        domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'leagues: found' });
         if(repoType == 'User' && userType == 'owner') leadTeam(); else loadPagescript();
       }
     },
@@ -357,7 +359,7 @@ function loadTeam(){
     cb: function(){
       jsonTeam = JSON.parse( b64d(this.content) );
       shaTeam = this.sha;
-      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'team: <a href="' + repoHome + '/team/setup/">edit</a>' });
+      domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'team: <a href="' + repoHome + '/team/setup/">edit</a>' });
       loadPagescript();
     },
     err: function(){
@@ -379,12 +381,12 @@ function update(branch, sha){
     method: 'PATCH',
     cb: function(){
       sessionStorage.setItem(branch + 'Ref', this.object.sha);
-      domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>' + branch + '</em> updated: <a href="." onclick="window.location.reload()">proceed</a>' });
+      domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>' + branch + '</em> updated: <a href="." onclick="window.location.reload()">proceed</a>' });
       if(branch=='data') headMasterParent();
       if(branch=='master') repoGet();
     },
     err: function(){
-      domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>' + branch + '</em> update error: ' + this.status + ' ' + this.statusText });
+      domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>' + branch + '</em> update error: ' + this.status + ' ' + this.statusText });
       if(branch=='data') headMasterParent();
       if(branch=='master') repoGet();
     }
@@ -410,7 +412,8 @@ function b64d(str) {
 // Details setup
 domLiRepo.appendChild(domUlRepo);
 domLiParent.appendChild(domUlParent);
-domUl.appendChilds([domLiRepo, domLiParent]);
+domLiGame.appendChild(domUlGame);
+domUl.appendChilds([domLiRepo, domLiParent, domUlGame]);
 if (domMonitor.appendChilds([domSummary, domUl])) {
   var addMonitor = document.querySelector('main > section > header').appendChild(domMonitor);
   if(addMonitor) detailsInit();
