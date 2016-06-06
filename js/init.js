@@ -2,6 +2,7 @@
 
 var urlSlash = window.location.pathname.split('/'),
     urlArray = window.location.host.split('.'),
+    urlHash = window.location.hash.substring(1),
     repoName = urlSlash[1],
     repoOwner = urlArray[0],
     repoFullname = repoOwner + '/' + repoName,
