@@ -47,7 +47,7 @@ function saveSetup(dati){
     data: jsonSetup ? '{"message": "setup created", "content": "' + encodedSetup + '", "branch": "data"}' : '{"message": "setup modified", "content": "' + encodedSetup + '", "branch": "data", "sha": "' + shaSetup + '"}',
     cb: function(){
       sessionStorage.setItem('masterRef', this.commit.sha);
-      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'saved: <a href="#" onclick="window.location.reload()">proceed</a>' });
+      domAppend({ tag: 'p', parent: domSection, innerHTML: 'saved: <a href="#" onclick="window.location.reload()">proceed</a>', attributes: {'role': 'alert'} });
     }
   });
 }
