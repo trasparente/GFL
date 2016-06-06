@@ -160,7 +160,7 @@ function repoGet(){
         }
       }
       // MENÙ
-      setupMenu();
+      if(!domHeader.querySelector('nav')) setupMenu();
     }
   });
 }
