@@ -6,6 +6,10 @@ var domSection = document.querySelector('main > section'),
     domMonitor = domAppend({ tag: 'div', attributes: { open: '' }, class: 'details' }),
     monitorString = 'main > section > header > div.details > ul',
     domUl = domAppend({ tag: 'ul' }),
+    domUlRepo = domAppend({ tag: 'ul' }),
+    domUlParent = domAppend({ tag: 'ul' }),
+    domLiRepo = domAppend({ tag: 'li', innerHTML: 'This repository' }),
+    domLiParent = domAppend({ tag: 'li', innerHTML: 'Parent repository' }),
     domSummary = domAppend({ tag: 'p', innerHTML: 'Monitor', class: 'summary' }),
     domEditor = document.createElement('div'),
     domCancel = domAppend({ tag: 'button', innerHTML: 'Cancel' }),
@@ -49,6 +53,11 @@ function detailsCallback(e){
   if (target.hasAttribute('close')) { target.removeAttribute('close'); target.setAttribute('open', ''); } else if (target.hasAttribute('open')) { target.removeAttribute('open'); target.setAttribute('close', ''); } else target.setAttribute('open', '');
 }
 
+// Dom alert
+function domAlert(content){
+  domAppend({ tag: 'p', parent: domSection, innerHTML: content, attributes: {'role': 'alert'} });
+}
+
 // Setup Editor form and buttons
 function setupEditor(){
   domSection.appendChilds([domEditor, domCancel, domSubmit, domValid]);
@@ -65,7 +74,7 @@ function hideEditor(){
 // functions
 function urlScript(){
   var url = 'home';
-  if(urlSlash[2]){
+  if(urlSlash[2] && urlSlash[2]!=='index.html'){
     url = urlSlash[2];
     if(urlSlash[3]){
       url += '-' + urlSlash[3];
@@ -108,13 +117,13 @@ function apiCall(obj){
       }
       if (xhr.status == 401) {
         userLogged = false;
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'bad credential: <a href="' + repoHome + '/login/">login</a>' });
+        domAlert('bad credential: <a href="' + repoHome + '/login/">login</a>');
       }
       if ( xhr.status >= 400 ) {
         if(typeof obj.err == 'function'){
           obj.err.apply( xhr );
         }else{
-          domAppend({ tag: 'li', parent: monitorString, innerHTML: 'api error: ' + obj.url });
+          domAlert('api error: ' + obj.url);
           console.log( xhr );
         }
       }
@@ -128,7 +137,8 @@ function repoGet(){
   apiCall({
     cb: function(){
       repoContent = this;
-      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'repository: <a href="https://github.com/' + this.full_name + '">' + this.full_name + '</a> ' + sessionStorage.getItem('masterRef').slice(0,7) });
+      domAppend({ tag: 'li', parent: domUlRepo, innerHTML: 'repository: <a href="https://github.com/' + this.full_name + '">' + this.full_name + '</a> ' });
+      domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>master</em> Ref: ' + sessionStorage.getItem('masterRef').slice(0,7) });
       repoType = this.owner.type;
       // ORGANIZATION
       if( this.owner.type == 'Organization' ){
@@ -156,7 +166,7 @@ function repoGet(){
           }
           domAppend({ tag: 'li', parent: monitorString, innerHTML: 'joined: ' + this.created_at });
         }else{
-          domAppend({ tag: 'li', parent: monitorString, innerHTML: 'error: user repo is not a fork' });
+          domAppend({ tag: 'p', parent: domSubmit, innerHTML: 'error: user repo is not a fork' });
         }
       }
       // MENÙ
@@ -236,7 +246,7 @@ function mergePulls(){
 function mergeCallback(result){
   mergeArray.push(result);
   sessionStorage.setItem('dataRef', result.merge.sha);
-  domAppend({ tag: 'li', parent: monitorString, innerHTML: 'merged: ' + result.merged + ' <a href="#" onclick="window.location.reload()">proceed</a>' });
+  domAppend({ tag: 'li', parent: monitorString, innerHTML: 'merged: ' + result.merged + ' <a href="." onclick="window.location.reload()">proceed</a>' });
 }
 
 function checkDataParent(){
@@ -244,7 +254,7 @@ function checkDataParent(){
     url: "https://api.github.com/repos/" + repoContent.parent.full_name + "/git/refs/heads/data",
     cb: function(){
       sessionStorage.setItem('dataParentRef', this.object.sha);
-      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'parent <em>data</em> HEAD: ' + this.object.sha.slice(0,7) });
+      domAppend({ tag: 'li', parent: domUlParent, innerHTML: '<em>data</em> HEAD: ' + this.object.sha.slice(0,7) });
       checkData();
     }
   });
@@ -257,10 +267,10 @@ function checkData(){
       cb: function(){
         sessionStorage.setItem('dataRef', this.object.sha);
         if( this.object.sha == sessionStorage.dataParentRef || repoType == "Organization" ){
-          domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>data</em> HEAD: ' + sessionStorage.dataRef.slice(0,7) });
+          domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>data</em> HEAD: ' + sessionStorage.dataRef.slice(0,7) });
           headMasterParent();
         }else{
-          domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>data</em> HEAD: starting update from ' + sessionStorage.dataParentRef.slice(0,7) });
+          domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>data</em> HEAD: starting update from ' + sessionStorage.dataParentRef.slice(0,7) });
           update('data', sessionStorage.dataParentRef);
         }
       }
@@ -277,11 +287,12 @@ function headMasterParent(){
       url: "https://api.github.com/repos/" + repoContent.parent.full_name + "/git/refs/heads/master",
       cb: function(){
         sessionStorage.setItem('masterParentRef', this.object.sha);
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'parent repository: <a href="http://' + repoContent.parent.owner.login + '.github.io/' + repoContent.parent.name + '">' + repoContent.parent.full_name + '</a> ' + sessionStorage.masterParentRef.slice(0,7) });
+        domAppend({ tag: 'li', parent: domUlParent, innerHTML: 'repository: <a href="http://' + repoContent.parent.owner.login + '.github.io/' + repoContent.parent.name + '">' + repoContent.parent.full_name + '</a>' });
+        domAppend({ tag: 'li', parent: domUlParent, innerHTML: '<em>master</em> Ref: ' + sessionStorage.masterParentRef.slice(0,7) });
         if( sessionStorage.masterRef == sessionStorage.masterParentRef ){
           loadSetup();
         }else{
-          domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>master</em> HEAD: starting update from ' + sessionStorage.masterParentRef.slice(0,7) });
+          domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>master</em> Ref: starting update from ' + sessionStorage.masterParentRef.slice(0,7) });
           update('master', sessionStorage.masterParentRef);
         }
       }
@@ -305,10 +316,10 @@ function loadSetup(){
       loadLeagues();
     },
     err: function(){
-      if(repoType == 'Organization' && userType == 'owner' && urlSlash[2]!=='setup'){
-        domAppend({ tag: 'p', parent: domSection, innerHTML: 'warning: no setup, <a href="' + repoHome + '/setup/">create</a>', attributes: {'role': 'alert'} });
+      if(repoType == 'Organization' && userType == 'owner' && urlSlash[2]!='setup'){
+        domlert('warning: no setup, <a href="' + repoHome + '/setup/">create</a>');
       }else{
-        domAppend({ tag: 'p', parent: domSection, innerHTML: 'error: no setup', attributes: {'role': 'alert'} });
+        domAlert('error: no setup');
       }
       loadPagescript();
     }
@@ -331,9 +342,9 @@ function loadLeagues(){
     },
     err: function(){
       if(repoType == 'Organization' && userType == 'owner'){
-        domAppend({ tag: 'p', parent: domSection, innerHTML: 'warning: no leagues, <a href="' + repoHome + '/league/setup/">create</a>', attributes: {'role': 'alert'} });
+        domAlert('warning: no leagues, <a href="' + repoHome + '/league/setup/">create</a>');
       }else{
-        domAppend({ tag: 'p', parent: domSection, innerHTML: 'error: no leagues', attributes: {'role': 'alert'} });
+        domAlert('error: no leagues');
       }
       loadPagescript();
     }
@@ -350,7 +361,7 @@ function loadTeam(){
       loadPagescript();
     },
     err: function(){
-      domAppend({ tag: 'p', parent: domSection, innerHTML: 'warning: no team, <a href="' + repoHome + '/team/setup/">create</a>', attributes: {'role': 'alert'} });
+      domAlert('warning: no team, <a href="' + repoHome + '/team/setup/">create</a>');
       loadPagescript();
     }
   });
@@ -368,7 +379,7 @@ function update(branch, sha){
     method: 'PATCH',
     cb: function(){
       sessionStorage.setItem(branch + 'Ref', this.object.sha);
-      domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>' + branch + '</em> updated: <a href="#" onclick="window.location.reload()">proceed</a>' });
+      domAppend({ tag: 'li', parent: monitorString, innerHTML: '<em>' + branch + '</em> updated: <a href="." onclick="window.location.reload()">proceed</a>' });
       if(branch=='data') headMasterParent();
       if(branch=='master') repoGet();
     },
@@ -397,6 +408,9 @@ function b64d(str) {
 }
 
 // Details setup
+domLiRepo.appendChild(domUlRepo);
+domLiParent.appendChild(domUlParent);
+domUl.appendChilds([domLiRepo, domLiParent]);
 if (domMonitor.appendChilds([domSummary, domUl])) {
   var addMonitor = document.querySelector('main > section > header').appendChild(domMonitor);
   if(addMonitor) detailsInit();

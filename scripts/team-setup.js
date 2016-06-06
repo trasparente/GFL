@@ -72,7 +72,7 @@ function pullTeam(){
     cb: function(){
       pullResponse = this;
       sessionStorage.setItem('teamsRef', this.commit.sha);
-      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'pull requested #' + pullResponse + ': <a href="#" onclick="window.location.reload()">proceed</a>' });
+      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'pull requested #' + pullResponse + ': <a href="' + repoHome + '">proceed</a>' });
     }
   });
 }

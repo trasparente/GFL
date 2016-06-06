@@ -11,10 +11,10 @@ eleSubmit.addEventListener('click', function(e) {
       url: 'https://api.github.com',
       cb: function(){
         localStorage.setItem('userToken', btoa(token));
-        domAppend({ tag: 'p', parent: domSection, innerHTML: 'logged: <a href="' + repoHome + '">proceed</a>', attributes: {'role': 'alert'} });
+        domAlert('logged: <a href="' + repoHome + '">proceed</a>');
       },
       err: function(){
-        domAppend({ tag: 'li', parent: monitorString, innerHTML: 'error: wrong token, try again' });
+        domAlert('error: wrong token, try again');
         eleSubmit.removeAttribute('disabled');
         eleToken.value = '';
         eleToken.focus();
