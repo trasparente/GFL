@@ -1,7 +1,7 @@
 @charset "UTF-8";
 html { overflow-y: scroll; font-family: serif; }
 body { font-size: 1.2em; display: block; }
-body.request { background-color: #E6E6E6; }
+body.request main { background-color: aliceblue; }
 [aria-hidden="true"] { visibility: hidden; }
 [role='alert'] { background-color: lightgoldenrodyellow; }
 button { cursor: pointer; }
