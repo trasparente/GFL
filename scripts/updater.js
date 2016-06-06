@@ -413,7 +413,7 @@ function b64d(str) {
 domLiRepo.appendChild(domUlRepo);
 domLiParent.appendChild(domUlParent);
 domLiGame.appendChild(domUlGame);
-domUl.appendChilds([domLiRepo, domLiParent, domUlGame]);
+domUl.appendChilds([domLiRepo, domLiParent, domLiGame]);
 if (domMonitor.appendChilds([domSummary, domUl])) {
   var addMonitor = document.querySelector('main > section > header').appendChild(domMonitor);
   if(addMonitor) detailsInit();
