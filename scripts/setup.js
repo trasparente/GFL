@@ -46,7 +46,7 @@ function saveSetup(dati){
     method: 'PUT',
     data: shaSetup ? '{"message": "setup created", "content": "' + encodedSetup + '", "branch": "data"}' : '{"message": "setup modified", "content": "' + encodedSetup + '", "branch": "data", "sha": "' + shaSetup + '"}',
     cb: function(){
-      sessionStorage.setItem('masterRef', this.commit.sha);
+      sessionStorage.setItem('dataRef', this.commit.sha);
       domAlert('saved: <a href="' + repoHome + '">proceed</a>');
     }
   });
