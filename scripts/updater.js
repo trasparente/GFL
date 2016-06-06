@@ -291,7 +291,7 @@ function headMasterParent(){
         sessionStorage.setItem('masterParentRef', this.object.sha);
         domAppend({ tag: 'li', parent: domUlParent, innerHTML: 'repository: <a href="http://' + repoContent.parent.owner.login + '.github.io/' + repoContent.parent.name + '">' + repoContent.parent.full_name + '</a>' });
         domAppend({ tag: 'li', parent: domUlParent, innerHTML: '<em>master</em> Ref: ' + sessionStorage.masterParentRef.slice(0,7) });
-        if( sessionStorage.masterRef == sessionStorage.masterParentRef ){
+        if( sessionStorage.masterRef == sessionStorage.masterParentRef || urlHash == 'updated=master' ){
           loadSetup();
         }else{
           domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>master</em> Ref: starting update from ' + sessionStorage.masterParentRef.slice(0,7) });
@@ -381,7 +381,7 @@ function update(branch, sha){
     method: 'PATCH',
     cb: function(){
       sessionStorage.setItem(branch + 'Ref', this.object.sha);
-      domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>' + branch + '</em> updated: <a href="." onclick="window.location.reload()">proceed</a>' });
+      domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>' + branch + '</em> updated: <a href="#updated=' + branch + '" onclick="window.location.reload()">proceed</a>' });
       if(branch=='data') headMasterParent();
       if(branch=='master') repoGet();
     },
