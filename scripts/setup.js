@@ -44,7 +44,7 @@ function saveSetup(dati){
   apiCall({
     url: repoAPI + '/contents/setup.json',
     method: 'PUT',
-    data: shaSetup ? '{"message": "setup created", "content": "' + encodedSetup + '", "branch": "data"}' : '{"message": "setup modified", "content": "' + encodedSetup + '", "branch": "data", "sha": "' + shaSetup + '"}',
+    data: shaSetup ? '{"message": "setup modified", "content": "' + encodedSetup + '", "branch": "data", "sha": "' + shaSetup + '"}' : '{"message": "setup created", "content": "' + encodedSetup + '", "branch": "data"}',
     cb: function(){
       sessionStorage.setItem('dataRef', this.commit.sha);
       domAlert('saved: <a href="' + repoHome + '">proceed</a>');
