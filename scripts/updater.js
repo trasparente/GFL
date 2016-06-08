@@ -271,24 +271,19 @@ function checkDataParent(){
 }
 
 function checkData(){
-  if(!sessionStorage.dataRef){
-    apiCall({
-      url: repoAPI + "/git/refs/heads/data",
-      cb: function(){
-        sessionStorage.setItem('dataRef', this.object.sha);
-        if( this.object.sha == sessionStorage.dataParentRef || repoType == "Organization" ){
-          domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>data</em> HEAD: ' + sessionStorage.dataRef.slice(0,7) });
-          headMasterParent();
-        }else{
-          domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>data</em> HEAD: starting update from ' + sessionStorage.dataParentRef.slice(0,7) });
-          update('data', sessionStorage.dataParentRef);
-        }
+  apiCall({
+    url: repoAPI + "/git/refs/heads/data",
+    cb: function(){
+      sessionStorage.setItem('dataRef', this.object.sha);
+      if( this.object.sha == sessionStorage.dataParentRef || repoType == "Organization" ){
+        domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>data</em> HEAD: ' + sessionStorage.dataRef.slice(0,7) });
+        headMasterParent();
+      }else{
+        domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>data</em> HEAD: starting update from ' + sessionStorage.dataParentRef.slice(0,7) });
+        update('data', sessionStorage.dataParentRef);
       }
-    });
-  }else{
-    domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>data</em> HEAD: ' + sessionStorage.dataRef.slice(0,7) });
-    headMasterParent();
-  }
+    }
+  });
 }
 
 function headMasterParent(){
@@ -344,7 +339,7 @@ function loadLeagues(){
       shaLeagues = this.sha;
       if(repoType == 'Organization' && userType == 'owner'){
         domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'leagues: <a href="' + repoHome + '/league/setup/">edit</a>' });
-        showLeagues();
+        loadPagescript();
       }else{
         domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'leagues: found' });
         if(repoType == 'User' && userType == 'owner') leadTeam(); else loadPagescript();
