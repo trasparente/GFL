@@ -24,6 +24,7 @@ var domSection = document.querySelector('main > section'),
     repoPulls = {},
     userType = '',
     mergeArray = [],
+    pullsArray = [],
     jsonSetup = {},
     shaSetup,
     jsonLeagues = {},
@@ -83,6 +84,36 @@ function urlScript(){
     }
   }
   return url;
+}
+
+function setupMenu(){
+  if(domHeader.querySelector('nav')) return false;
+  domHeader.appendChild(domNav);
+  var leagues = domAppend({ tag: 'a', innerHTML: 'LEAGUES', attributes: { href: repoHome } }),
+      teams = domAppend({ tag: 'a', innerHTML: 'TEAMS', attributes: { href: repoHome + '/teams' } }),
+      rounds = domAppend({ tag: 'a', innerHTML: 'ROUNDS', attributes: { href: repoHome + '/rounds' } }),
+      login = domAppend({ tag: 'a', innerHTML: 'Login', attributes: { href: repoHome + '/login' } }),
+      team, setup, leagueSetup, teamSetup;
+  if(repoType == 'User'){
+    team = domAppend({ tag: 'a', innerHTML: 'TEAM', attributes: { href: repoHome + '/team' } });
+    if(userType == 'owner'){
+      teamSetup = domAppend({ tag: 'a', innerHTML: 'TEAM SETUP', attributes: { href: repoHome + '/setup/team' } });
+    }
+  }
+  if(repoType == 'Organization'){
+    setup = domAppend({ tag: 'a', innerHTML: 'SETUP', attributes: { href: repoHome + '/setup' } });
+    if(userType == 'owner'){
+      leagueSetup = domAppend({ tag: 'a', innerHTML: 'LEAGUE SETUP', attributes: { href: repoHome + '/league/setup' } });
+    }
+  }
+  if(userLogged) login = domAppend({ tag: 'a', innerHTML: 'Logout', attributes: { href: repoHome + '/logout' } });
+  domNav.appendChilds([leagues, setup, leagueSetup, team, teamSetup, teams, rounds, login]);
+}
+
+function goGuest(){
+  setupMenu();
+  domAppend({ tag: 'li', parent: monitorString, innerHTML: 'guest: <a href="' + repoHome + '/login/">login</a>' });
+  loadSetup();
 }
 
 function apiCall(obj){
@@ -149,6 +180,7 @@ function repoGet(){
         if(this.permissions && this.permissions.admin === true){
           userType = 'owner';
           pullRequests();
+          setupMenu();
         }else{
           userType = 'guest';
           goGuest();
@@ -159,20 +191,19 @@ function repoGet(){
         if(this.fork){
           domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'game started: ' + this.parent.created_at });
           domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'players: ' + this.parent.forks });
+          domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'joined: ' + this.created_at });
           if( this.permissions && this.permissions.admin === true ){
             userType = 'owner';
+            setupMenu();
             pullsMade();
           }else{
             userType = 'guest';
             goGuest();
           }
-          domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'joined: ' + this.created_at });
         }else{
           domAlert('error: user repo is not a fork');
         }
       }
-      // MENÙ
-      if(!domHeader.querySelector('nav')) setupMenu();
     }
   });
 }
@@ -180,38 +211,15 @@ function repoGet(){
 function pullsMade(){
   apiCall({
     url: repoAPI + '/pulls',
-    cb: function(){
-
+    cb: function () {
+      pullsArray = this;
+      if (pullsArray.length) {
+        domAppend({tag: 'li', parent: domUlRepo, innerHTML: pullsArray.length + ' pull request waiting'});
+      } else {
+        checkDataParent();
+      }
     }
   });
-}
-
-function setupMenu(){
-  domHeader.appendChild(domNav);
-  var leagues = domAppend({ tag: 'a', innerHTML: 'LEAGUES', attributes: { href: repoHome } }),
-      teams = domAppend({ tag: 'a', innerHTML: 'TEAMS', attributes: { href: repoHome + '/teams' } }),
-      rounds = domAppend({ tag: 'a', innerHTML: 'ROUNDS', attributes: { href: repoHome + '/rounds' } }),
-      login = domAppend({ tag: 'a', innerHTML: 'Login', attributes: { href: repoHome + '/login' } }),
-      team, setup, leagueSetup, teamSetup;
-  if(repoType == 'User'){
-    team = domAppend({ tag: 'a', innerHTML: 'TEAM', attributes: { href: repoHome + '/team' } });
-    if(userType == 'owner'){
-      teamSetup = domAppend({ tag: 'a', innerHTML: 'TEAM SETUP', attributes: { href: repoHome + '/setup/team' } });
-    }
-  }
-  if(repoType == 'Organization'){
-    setup = domAppend({ tag: 'a', innerHTML: 'SETUP', attributes: { href: repoHome + '/setup' } });
-    if(userType == 'owner'){
-      leagueSetup = domAppend({ tag: 'a', innerHTML: 'LEAGUE SETUP', attributes: { href: repoHome + '/league/setup' } });
-    }
-  }
-  if(userLogged) login = domAppend({ tag: 'a', innerHTML: 'Logout', attributes: { href: repoHome + '/logout' } });
-  domNav.appendChilds([leagues, setup, leagueSetup, team, teamSetup, teams, rounds, login]);
-}
-
-function goGuest(){
-  domAppend({ tag: 'li', parent: monitorString, innerHTML: 'guest: <a href="' + repoHome + '/login/">login</a>' });
-  loadSetup();
 }
 
 function pullRequests(){
@@ -409,13 +417,17 @@ function b64d(str) {
   }).join(''));
 }
 
-// Details setup
-domLiRepo.appendChild(domUlRepo);
-domLiParent.appendChild(domUlParent);
-domLiGame.appendChild(domUlGame);
-domUl.appendChilds([domLiRepo, domLiParent, domLiGame]);
-if (domMonitor.appendChilds([domSummary, domUl])) {
-  var addMonitor = document.querySelector('main > section > header').appendChild(domMonitor);
-  if(addMonitor) detailsInit();
+// Monitor init
+function monitorInit() {
+  domLiRepo.appendChild(domUlRepo);
+  domLiParent.appendChild(domUlParent);
+  domLiGame.appendChild(domUlGame);
+  domUl.appendChilds([domLiRepo, domLiParent, domLiGame]);
+  if (domMonitor.appendChilds([domSummary, domUl])) {
+    var addMonitor = document.querySelector('main > section > header').appendChild(domMonitor);
+    if(addMonitor) detailsInit();
+  }
 }
+
+monitorInit();
 if(userLogged) repoGet(); else goGuest();
