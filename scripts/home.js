@@ -20,4 +20,4 @@ function showReadme(){
   });
 }
 
-if(jsonLeagues.length) loadLeagues();
+if(jsonLeagues.length) showLeagues();
