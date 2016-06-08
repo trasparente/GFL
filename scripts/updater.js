@@ -110,6 +110,10 @@ function setupMenu(){
   domNav.appendChilds([leagues, setup, leagueSetup, team, teamSetup, teams, rounds, login]);
 }
 
+function loadPagescript(){
+  domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript() + '.js', type: 'text/javascript' } });
+}
+
 function goGuest(){
   setupMenu();
   domAppend({ tag: 'li', parent: monitorString, innerHTML: 'guest: <a href="' + repoHome + '/login/">login</a>' });
@@ -307,6 +311,22 @@ function headMasterParent(){
   }
 }
 
+function loadTeam(){
+  apiCall({
+    url: fileUrl('teams', 'teams/' + repoOwner + '.json'),
+    cb: function(){
+      jsonTeam = JSON.parse( b64d(this.content) );
+      shaTeam = this.sha;
+      domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'team: <a href="' + repoHome + '/team/setup/">edit</a>' });
+      loadPagescript();
+    },
+    err: function(){
+      domAlert('warning: no team, <a href="' + repoHome + '/team/setup/">create</a>');
+      loadPagescript();
+    }
+  });
+}
+
 function loadSetup(){
   apiCall({
     url: fileUrl('data', 'setup.json'),
@@ -354,26 +374,6 @@ function loadLeagues(){
       loadPagescript();
     }
   });
-}
-
-function loadTeam(){
-  apiCall({
-    url: fileUrl('teams', 'teams/' + repoOwner + '.json'),
-    cb: function(){
-      jsonTeam = JSON.parse( b64d(this.content) );
-      shaTeam = this.sha;
-      domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'team: <a href="' + repoHome + '/team/setup/">edit</a>' });
-      loadPagescript();
-    },
-    err: function(){
-      domAlert('warning: no team, <a href="' + repoHome + '/team/setup/">create</a>');
-      loadPagescript();
-    }
-  });
-}
-
-function loadPagescript(){
-  domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript() + '.js', type: 'text/javascript' } });
 }
 
 function update(branch, sha){
