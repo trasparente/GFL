@@ -2,7 +2,7 @@
 
 var setupSchema = {}, pullResponse;
 
-if (userType != 'owner' || repoType != 'Organization') window.location = repoHome;
+if (userType != 'owner' || repoType != 'User') window.location = repoHome;
 
 setupEditor();
 
@@ -32,8 +32,8 @@ function loadSetup(){
         disable_edit_json: true,
         disable_array_reorder: false
       });
-      domSubmit.addEventListener('click',function() { saveTeam(editor.getValue()); });
-      domCancel.addEventListener('click',function() { window.location = repoHome; });
+      domSubmit.addEventListener('click',function () { saveTeam(editor.getValue()); });
+      domCancel.addEventListener('click',function () { window.location = repoHome; });
       editor.on('change',function() {
         var errors = editor.validate();
         if(errors.length) {
@@ -49,9 +49,9 @@ function loadSetup(){
   });
 }
 
-function saveTeam(dati){
+function saveTeam (dati) {
   hideEditor();
-  var encodedTeam = b64e( JSON.stringify(dati) );
+  var encodedTeam = b64e(JSON.stringify(dati));
   apiCall({
     url: repoAPI + '/contents/teams/' + repoOwner + '.json',
     method: 'PUT',
