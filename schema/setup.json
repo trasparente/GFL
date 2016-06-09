@@ -163,6 +163,12 @@
             "format": "checkbox",
             "default": false
           },
+          "accept": {
+            "type": "boolean",
+            "title": "League accept entry",
+            "format": "checkbox",
+            "default": false
+          },
           "standings": {
             "type": "array",
             "title": "Standings",
@@ -306,7 +312,8 @@
         },
         "required": [
           "title",
-          "running"
+          "running",
+          "accept"
         ]
       },
       "options": {
