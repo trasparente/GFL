@@ -138,7 +138,7 @@ function showLeagues(leagueArray) {
     domTable.appendChild(row);
   }
   domSection.appendChild(domTable);
-  showReadme();
+  return true;
 }
 
 function goGuest() {
@@ -416,7 +416,7 @@ function loadLeagues() {
         loadPagescript();
       } else {
         domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'leagues: found' });
-        if (repoType == 'User' && userType == 'owner') leadTeam(); else loadPagescript();
+        if (repoType == 'User' && userType == 'owner') loadTeam(); else loadPagescript();
       }
     },
     err: function() {
