@@ -1,9 +1,7 @@
 // loader.js
 
 var userLogged = false,
-userToken = false;
-
-if (localStorage.getItem('userToken')) userToken = localStorage.getItem('userToken');
+    userToken = false;
 
 function apiFirstCall(obj){
   obj.method = 'GET';
@@ -48,4 +46,5 @@ function headMaster(){
 }
 
 // loader
+if (localStorage.getItem('userToken')) userToken = localStorage.getItem('userToken');
 headMaster();

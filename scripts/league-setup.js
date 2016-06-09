@@ -8,8 +8,8 @@ setupEditor();
 
 apiCall({
   url: fileUrl('master', 'schema/setup.json'),
-  cb: function(){
-    setupSchema = JSON.parse( atob(this.content) );
+  cb: function() {
+    setupSchema = JSON.parse(atob(this.content));
     // Initialize the editor
     var editor = new JSONEditor(domEditor,{
       ajax: true,
@@ -26,7 +26,7 @@ apiCall({
     domCancel.addEventListener('click',function() { window.location = repoHome; });
     editor.on('change',function() {
       var errors = editor.validate();
-      if(errors.length) {
+      if (errors.length) {
         console.log(errors);
         domValid.style.color = 'red';
         domValid.textContent = "not valid";
@@ -38,7 +38,7 @@ apiCall({
   }
 });
 
-function saveLeagues(dati){
+function saveLeagues(dati) {
   hideEditor();
   for (var i = 0; i < dati.length; i++) {
     if ( !dati[i].slug ) dati[i].slug = (shaLeagues) ? shaLeagues : sessionStorage.masterRef;

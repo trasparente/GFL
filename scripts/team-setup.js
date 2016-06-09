@@ -15,10 +15,10 @@ apiCall({
   }
 });
 
-function loadSetup(){
+function loadSetup() {
   apiCall({
     url: fileUrl('master', 'schema/setup.json'),
-    cb: function(){
+    cb: function() {
       setupSchema = JSON.parse( atob(this.content) );
       // Initialize the editor
       var editor = new JSONEditor(domEditor,{
@@ -36,7 +36,7 @@ function loadSetup(){
       domCancel.addEventListener('click',function () { window.location = repoHome; });
       editor.on('change',function() {
         var errors = editor.validate();
-        if(errors.length) {
+        if (errors.length) {
           console.log(errors);
           domValid.style.color = 'red';
           domValid.textContent = "not valid";
@@ -58,7 +58,7 @@ function saveTeam (dati) {
     data: shaTeam ? '{"message": "team edited", "content": "' + encodedTeam + '", "branch": "data", "sha": "' + shaTeam + '"}' : '{"message": "team created", "content": "' + encodedTeam + '", "branch": "data"}',
     cb: function(){
       // sessionStorage.setItem('teamsRef', this.commit.sha);
-      domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'saved: creating pull request' });
+      domAppend({tag: 'li', parent: domUlGame, innerHTML: 'saved: creating pull request'});
       pullTeam();
     }
   });
@@ -69,7 +69,7 @@ function pullTeam(){
     url: "https://api.github.com/repos/" + repoContent.parent.full_name + '/pulls',
     method: 'POST',
     data: '{"title": "team changed", "head": "' + repoOwner + ':teams", "base": "teams", "body": "Please pull this in!" }',
-    cb: function(){
+    cb: function() {
       pullResponse = this;
       sessionStorage.setItem('teamsRef', this.commit.sha);
       domAlert('pull requested #' + pullResponse + ': <a href="' + repoHome + '">proceed</a>');

@@ -38,7 +38,7 @@ apiCall({
   }
 });
 
-function saveSetup(dati){
+function saveSetup(dati) {
   hideEditor();
   var encodedSetup = b64e(JSON.stringify(dati));
   apiCall({
