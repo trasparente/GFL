@@ -29,7 +29,8 @@ var domSection = document.querySelector('main > section'),
     jsonLeagues = {},
     shaLeagues,
     jsonTeam = {},
-    shaTeam;
+    shaTeam,
+    applyResponse;
 
 // functions
 Element.prototype.appendChilds = function (elementArray) {
@@ -125,8 +126,15 @@ function showReadme() {
 
 function showLeagues(leagueArray) {
   for( i=0; i < leagueArray.length; i++ ) {
+    var league = leagueArray[i];
     var row = document.createElement('tr');
-    row.innerHTML = '<td><a href="' + repoHome + '/league/#league=' + leagueArray[i].slug + '">' + leagueArray[i].title + '</a></td>';
+    row.innerHTML = '<td><a href="' + repoHome + '/league/#league=' + league.slug + '">' + league.title + '</a></td>';
+    row.innerHTML += '<td>' + league.running.toString() + '</td>';
+    if (league.accepting && !league.running && repoType == 'User' && userType == 'owner') {
+      row.innerHTML += '<td><a href="." onclick="applyLeague(event, \'' + league.slug + '\');">Apply</a></td>';
+    } else {
+      row.innerHTML += '<td></td>';
+    }
     domTable.appendChild(row);
   }
   domSection.appendChild(domTable);
@@ -457,6 +465,19 @@ function b64d(str) {
   return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) {
     return '%' + c.charCodeAt(0).toString(16);
   }).join(''));
+}
+
+function applyLeague(e, slug) {
+  e.preventDefault();
+  apiCall({
+    url: 'https://api.github.com/repos/' + repoContent.parent.full_name + 'issues',
+    method: 'POST',
+    data: '{"title":"Apply to league ' + slug + '"}',
+    cb: function () {
+      applyResponse = this;
+      domAlert('Application sent: <a href="' + repoHome + '">proceed</a>');
+    }
+  });
 }
 
 // Monitor init
