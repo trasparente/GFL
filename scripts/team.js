@@ -12,12 +12,13 @@ if(urlHash && urlHash.slice(0,5) === 'team=') {
       showTeam();
     },
     err: function(){
-      domAppend({ tag: 'li', parent: monitorString, innerHTML: 'team ' + teamLoad + ': not found' });
+      domAlert('team ' + teamLoad + ': not found');
     }
   });
 }
 
 function showTeam(){
-  domAppend({ tag: 'li', parent: monitorString, innerHTML: 'team loaded: ' + teamLoad });
+  domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'team loaded: ' + teamLoad });
   console.log(jsonTeam);
+  showReadme();
 }

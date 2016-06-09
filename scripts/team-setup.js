@@ -10,7 +10,7 @@ apiCall({
   url: fileUrl('teams', 'teams/' + repoOwner + '.json'),
   cb: function(){
     jsonTeam = JSON.parse( b64d(this.content) );
-    domAppend({ tag: 'li', parent: monitorString, innerHTML: 'team: found' });
+    domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'team: found' });
     loadSetup();
   }
 });
