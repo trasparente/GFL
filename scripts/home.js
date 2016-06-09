@@ -1,3 +1,5 @@
 // home.js
 
-if (jsonLeagues.length) showLeagues(jsonLeagues);
+if (jsonLeagues.length) {
+	if (showLeagues(jsonLeagues)) showReadme();
+}
