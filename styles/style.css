@@ -52,3 +52,4 @@ ul { margin: 0; padding: 1em 2em; }
 .tabs { color: blue; width: auto; }
 .markTabInactive { opacity: 0.5; }
 .content { margin-left: 250px; }
+.form-control label { cursor: pointer; }
