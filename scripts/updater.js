@@ -234,12 +234,39 @@ function repoGet() {
 function pullsMade() {
   apiCall({
     url: repoAPI + '/pulls',
+    data: '{"base":"teams"}',
     cb: function () {
       pullsArray = this;
       if (pullsArray.length) {
         domAppend({tag: 'li', parent: domUlRepo, innerHTML: pullsArray.length + ' pull request waiting'});
-      } else {
         checkDataParent();
+      } else checkTeamsParent();
+    }
+  });
+}
+
+function checkTeamsParent() {
+  apiCall({
+    url: "https://api.github.com/repos/" + repoContent.parent.full_name + "/git/refs/heads/teams",
+    cb: function() {
+      sessionStorage.setItem('teamsParentRef', this.object.sha);
+      domAppend({tag: 'li', parent: domUlParent, innerHTML: '<em>teams</em> ref: ' + this.object.sha.slice(0,7)});
+      checkTeams();
+    }
+  });
+}
+
+function checkTeams() {
+  apiCall({
+    url: repoAPI + "/git/refs/heads/teams",
+    cb: function() {
+      sessionStorage.setItem('teamsRef', this.object.sha);
+      if (this.object.sha == sessionStorage.teamsParentRef) {
+        domAppend({tag: 'li', parent: domUlRepo, innerHTML: '<em>teams</em> ref: ' + sessionStorage.teamsRef.slice(0,7)});
+        checkDataParent();
+      } else {
+        domAppend({tag: 'li', parent: domUlRepo, innerHTML: '<em>teams</em> ref: starting update from ' + sessionStorage.teamsParentRef.slice(0,7)});
+        update('teams', sessionStorage.teamsParentRef);
       }
     }
   });
