@@ -4,7 +4,6 @@ var domSection = document.querySelector('main > section'),
     domHeader = document.querySelector('body > header'),
     domNav = document.createElement('nav'),
     domMonitor = domAppend({ tag: 'div', attributes: { open: '' }, class: 'details' }),
-    monitorString = 'main > section > header > div.details > ul',
     domUl = domAppend({ tag: 'ul' }),
     domUlRepo = domAppend({ tag: 'ul' }),
     domUlParent = domAppend({ tag: 'ul' }),
@@ -114,9 +113,29 @@ function loadPagescript(){
   domAppend({ tag: 'script', parent: 'body', attributes: { src: rawgitUrl('master') + '/scripts/' + urlScript() + '.js', type: 'text/javascript' } });
 }
 
+function showReadme(){
+  apiCall({
+    url: repoAPI + '/readme?ref=gh-pages',
+    accept: 'application/vnd.github.v3.html',
+    cb: function(){
+      domAppend({tag: 'div', parent: domSection, innerHTML: this});
+    }
+  });
+}
+
+function showLeagues(leagueArray){
+  for( i=0; i < leagueArray.length; i++ ){
+    var row = document.createElement('tr');
+    row.innerHTML = '<td><a href="' + repoHome + '/league/#league=' + leagueArray[i].slug + '">' + leagueArray[i].title + '</a></td>';
+    domTable.appendChild(row);
+  }
+  domSection.appendChild(domTable);
+  showReadme();
+}
+
 function goGuest(){
   setupMenu();
-  domAppend({ tag: 'li', parent: monitorString, innerHTML: 'guest: <a href="' + repoHome + '/login/">login</a>' });
+  domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'guest: <a href="' + repoHome + '/login/">login</a>' });
   loadSetup();
 }
 
@@ -175,7 +194,7 @@ function repoGet(){
     cb: function(){
       repoContent = this;
       domAppend({ tag: 'li', parent: domUlRepo, innerHTML: 'repository: <a href="https://github.com/' + this.full_name + '">' + this.full_name + '</a> ' });
-      domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>master</em> Ref: ' + sessionStorage.getItem('masterRef').slice(0,7) });
+      domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>master</em> ref: ' + sessionStorage.getItem('masterRef').slice(0,7) });
       repoType = this.owner.type;
       // ORGANIZATION
       if( this.owner.type == 'Organization' ){
@@ -251,7 +270,7 @@ function mergePulls(){
       accept: 'application/vnd.github.polaris-preview',
       data: '{"squash": true,"commit_title": "Merge #' + i + '"}',
       cb: mergeCallback(this),
-      err: domAppend({ tag: 'li', parent: monitorString, innerHTML: 'merged: ' + result.merged + ' error on Merge #' + i })
+      err: domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'merged: ' + result.merged + ' error on Merge #' + i })
     });
   }
   headMasterParent();
@@ -260,7 +279,7 @@ function mergePulls(){
 function mergeCallback(result){
   mergeArray.push(result);
   sessionStorage.setItem('dataRef', result.merge.sha);
-  domAppend({ tag: 'li', parent: monitorString, innerHTML: 'merged: ' + result.merged + ' <a href="." onclick="window.location.reload()">proceed</a>' });
+  domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'merged: ' + result.merged + ' <a href="." onclick="window.location.reload()">proceed</a>' });
 }
 
 function checkDataParent(){
@@ -268,7 +287,7 @@ function checkDataParent(){
     url: "https://api.github.com/repos/" + repoContent.parent.full_name + "/git/refs/heads/data",
     cb: function(){
       sessionStorage.setItem('dataParentRef', this.object.sha);
-      domAppend({ tag: 'li', parent: domUlParent, innerHTML: '<em>data</em> HEAD: ' + this.object.sha.slice(0,7) });
+      domAppend({ tag: 'li', parent: domUlParent, innerHTML: '<em>data</em> ref: ' + this.object.sha.slice(0,7) });
       checkData();
     }
   });
@@ -280,10 +299,10 @@ function checkData(){
     cb: function(){
       sessionStorage.setItem('dataRef', this.object.sha);
       if( this.object.sha == sessionStorage.dataParentRef || repoType == "Organization" ){
-        domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>data</em> HEAD: ' + sessionStorage.dataRef.slice(0,7) });
+        domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>data</em> ref: ' + sessionStorage.dataRef.slice(0,7) });
         headMasterParent();
       }else{
-        domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>data</em> HEAD: starting update from ' + sessionStorage.dataParentRef.slice(0,7) });
+        domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>data</em> ref: starting update from ' + sessionStorage.dataParentRef.slice(0,7) });
         update('data', sessionStorage.dataParentRef);
       }
     }
@@ -297,11 +316,11 @@ function headMasterParent(){
       cb: function(){
         sessionStorage.setItem('masterParentRef', this.object.sha);
         domAppend({ tag: 'li', parent: domUlParent, innerHTML: 'repository: <a href="http://' + repoContent.parent.owner.login + '.github.io/' + repoContent.parent.name + '">' + repoContent.parent.full_name + '</a>' });
-        domAppend({ tag: 'li', parent: domUlParent, innerHTML: '<em>master</em> Ref: ' + sessionStorage.masterParentRef.slice(0,7) });
+        domAppend({ tag: 'li', parent: domUlParent, innerHTML: '<em>master</em> ref: ' + sessionStorage.masterParentRef.slice(0,7) });
         if( sessionStorage.masterRef == sessionStorage.masterParentRef || urlHash == 'updated=master' ){
           loadSetup();
         }else{
-          domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>master</em> Ref: starting update from ' + sessionStorage.masterParentRef.slice(0,7) });
+          domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>master</em> ref: starting update from ' + sessionStorage.masterParentRef.slice(0,7) });
           update('master', sessionStorage.masterParentRef);
         }
       }
