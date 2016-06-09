@@ -19,6 +19,7 @@ summary:focus { outline: none; }
 ul { margin: 0; padding: 1em 2em; }
 /*Details*/
 .details {
+  float: right;
   background: #E6E6E6;
   font-size: smaller; }
 .details > .summary {
