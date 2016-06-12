@@ -375,7 +375,7 @@ function loadTeam() {
       loadPagescript();
     },
     err: function() {
-      domAlert('warning: no team, <a href="' + repoHome + '/team/setup/">create</a>');
+      if (urlScript()!='team-setup') domAlert('warning: no team, <a href="' + repoHome + '/team/setup/">create</a>');
       loadPagescript();
     }
   });
@@ -397,9 +397,7 @@ function loadSetup() {
     err: function() {
       if (repoType == 'Organization' && userType == 'owner' && urlSlash[2]!='setup') {
         domAlert('warning: no setup, <a href="' + repoHome + '/setup/">create</a>');
-      } else if (urlSlash[2]!='setup') {
-        domAlert('error: no setup');
-      }
+      } else domAlert('error: no setup');
       loadPagescript();
     }
   });
@@ -420,11 +418,9 @@ function loadLeagues() {
       }
     },
     err: function() {
-      if (repoType == 'Organization' && userType == 'owner') {
+      if (repoType == 'Organization' && userType == 'owner' && urlScript()!='league-setup') {
         domAlert('warning: no leagues, <a href="' + repoHome + '/league/setup/">create</a>');
-      } else {
-        domAlert('error: no leagues');
-      }
+      } else domAlert('error: no leagues');
       loadPagescript();
     }
   });
