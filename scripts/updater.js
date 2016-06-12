@@ -435,7 +435,7 @@ function update(branch, sha) {
     cb: function() {
       sessionStorage.setItem(branch + 'Ref', this.object.sha);
       sessionStorage.setItem(branch + 'Updated', true);
-      domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>' + branch + '</em> updated: <a href="#updated=' + branch + '" onclick="window.location.reload()">proceed</a>' });
+      domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>' + branch + '</em>: updated'});
       if (branch=='data') headMasterParent();
       if (branch=='master') repoGet();
     },
