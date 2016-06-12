@@ -44,7 +44,7 @@ function saveTeam (dati) {
   apiCall({
     url: repoAPI + '/contents/teams/' + repoOwner + '.json',
     method: 'PUT',
-    data: shaTeam ? '{"message": "team edited", "content": "' + encodedTeam + '", "branch": "data", "sha": "' + shaTeam + '"}' : '{"message": "team created", "content": "' + encodedTeam + '", "branch": "data"}',
+    data: shaTeam ? '{"message": "team edited", "content": "' + encodedTeam + '", "branch": "teams", "sha": "' + shaTeam + '"}' : '{"message": "team created", "content": "' + encodedTeam + '", "branch": "teams"}',
     cb: function(){
       // sessionStorage.setItem('teamsRef', this.commit.sha);
       domAppend({tag: 'li', parent: domUlGame, innerHTML: 'saved: creating pull request'});
