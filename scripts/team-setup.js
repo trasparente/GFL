@@ -1,6 +1,6 @@
 // team-setup.js
 
-var setupSchema = {}, pullResponse;
+var setupSchema = {}, pullResponse, saveResponse;
 
 if (userType != 'owner' || repoType != 'User') window.location = repoHome;
 
@@ -46,7 +46,8 @@ function saveTeam (dati) {
     method: 'PUT',
     data: shaTeam ? '{"message": "team edited", "content": "' + encodedTeam + '", "branch": "teams", "sha": "' + shaTeam + '"}' : '{"message": "team created", "content": "' + encodedTeam + '", "branch": "teams"}',
     cb: function(){
-      // sessionStorage.setItem('teamsRef', this.commit.sha);
+      saveResponse = this;
+      sessionStorage.setItem('teamsRef', this.commit.sha);
       domAppend({tag: 'li', parent: domUlGame, innerHTML: 'saved: creating pull request'});
       pullTeam();
     }
@@ -61,7 +62,7 @@ function pullTeam(){
     cb: function() {
       pullResponse = this;
       sessionStorage.setItem('teamsRef', this.commit.sha);
-      domAlert('pull requested #' + pullResponse + ': <a href="' + repoHome + '">proceed</a>');
+      domAlert('pull requested #' + this.number + ': <a href="' + repoHome + '">proceed</a>');
     }
   });
 }
