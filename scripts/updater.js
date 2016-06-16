@@ -86,6 +86,13 @@ function urlScript() {
   return url;
 }
 
+// Expiration branch update
+function expire(utc) {
+  var diff = Date.now() - utc;
+  var mins = Math.floor(diff / 60000);
+  return (mins > 1) ? true : false;
+}
+
 function setupMenu() {
   if (domHeader.querySelector('nav')) return false;
   domHeader.appendChild(domNav);
@@ -97,7 +104,7 @@ function setupMenu() {
   if (repoType == 'User') {
     team = domAppend({ tag: 'a', innerHTML: 'TEAM', attributes: { href: repoHome + '/team' } });
     if (userType == 'owner') {
-      teamSetup = domAppend({ tag: 'a', innerHTML: 'TEAM SETUP', attributes: { href: repoHome + '/setup/team' } });
+      teamSetup = domAppend({ tag: 'a', innerHTML: 'TEAM SETUP', attributes: { href: repoHome + '/team/setup' } });
     }
   }
   if (repoType == 'Organization') {
@@ -352,7 +359,7 @@ function headMasterParent() {
         sessionStorage.setItem('masterParentRef', this.object.sha);
         domAppend({ tag: 'li', parent: domUlParent, innerHTML: 'repository: <a href="http://' + repoContent.parent.owner.login + '.github.io/' + repoContent.parent.name + '">' + repoContent.parent.full_name + '</a>' });
         domAppend({ tag: 'li', parent: domUlParent, innerHTML: '<em>master</em> ref: ' + sessionStorage.masterParentRef.slice(0,7) });
-        if (sessionStorage.masterRef == sessionStorage.masterParentRef || sessionStorage.masterUpdated) {
+        if (sessionStorage.masterRef == sessionStorage.masterParentRef || !expired(sessionStorage.masterUpdated)) {
           loadSetup();
         }else{
           domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>master</em> ref: starting update from ' + sessionStorage.masterParentRef.slice(0,7) });
@@ -434,7 +441,7 @@ function update(branch, sha) {
     method: 'PATCH',
     cb: function() {
       sessionStorage.setItem(branch + 'Ref', this.object.sha);
-      sessionStorage.setItem(branch + 'Updated', true);
+      sessionStorage.setItem(branch + 'Updated', Date.now());
       domAppend({ tag: 'li', parent: domUlRepo, innerHTML: '<em>' + branch + '</em>: updated'});
       if (branch=='data') headMasterParent();
       if (branch=='master') repoGet();
