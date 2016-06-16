@@ -311,8 +311,8 @@ function mergePulls() {
       method: 'PUT',
       accept: 'application/vnd.github.polaris-preview',
       data: '{"squash": true,"commit_title": "Merge #' + i + '"}',
-      cb: mergeCallback(this),
-      err: domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'merged: ' + result.merged + ' error on Merge #' + i })
+      cb: mergeCallback,
+      err: domAppend({ tag: 'li', parent: domUlGame, innerHTML: 'merged: error on Merge #' + i })
     });
   }
   headMasterParent();
